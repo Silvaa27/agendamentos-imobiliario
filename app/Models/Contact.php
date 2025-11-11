@@ -14,7 +14,7 @@ class Contact extends Model
     protected $fillable = ['name', 'email', 'phone_number'];
     protected $table = 'contacts';
 
-    public function advertise_answers()
+    public function advertise_answers(): HasMany
     {
         return $this->hasMany(AdvertiseAnswer::class);
     }
