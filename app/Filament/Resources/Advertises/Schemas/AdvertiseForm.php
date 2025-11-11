@@ -31,7 +31,7 @@ class AdvertiseForm
                     ->maxLength(255),
 
                 Hidden::make('uuid')
-                    ->default(fn() => (string) Str::uuid()),
+                    ->default(fn() => substr((string) Str::uuid(), 0, 8)),
 
                 TextInput::make('url')
                     ->label('URL do Anúncio')
