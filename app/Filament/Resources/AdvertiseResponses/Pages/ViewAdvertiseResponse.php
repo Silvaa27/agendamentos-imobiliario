@@ -3,17 +3,16 @@
 namespace App\Filament\Resources\AdvertiseResponses\Pages;
 
 use App\Filament\Resources\AdvertiseResponses\AdvertiseResponseResource;
-use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditAdvertiseResponse extends EditRecord
+class ViewAdvertiseResponse extends ViewRecord
 {
     protected static string $resource = AdvertiseResponseResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
         ];
     }
 }

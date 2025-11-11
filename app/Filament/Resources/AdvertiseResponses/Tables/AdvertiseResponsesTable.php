@@ -135,7 +135,7 @@ class AdvertiseResponsesTable
                     ->searchable()
                     ->preload(),
 
-                // Filtro por reservas - CORRIGIDO
+                // Filtro por reservas
                 Filter::make('has_schedules')
                     ->label('Com Reservas')
                     ->query(fn(Builder $query) => $query->has('schedules')),
@@ -144,7 +144,7 @@ class AdvertiseResponsesTable
                     ->label('Sem Reservas')
                     ->query(fn(Builder $query) => $query->doesntHave('schedules')),
 
-                // Filtro por data de submissão - CORRIGIDO
+                // Filtro por data de submissão
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')
@@ -186,7 +186,6 @@ class AdvertiseResponsesTable
             ->emptyStateDescription('Quando receber respostas dos seus anúncios, elas aparecerão aqui.')
             ->emptyStateIcon('heroicon-o-chat-bubble-left-right')
             ->defaultSort('created_at', 'desc')
-            ->striped()
-            ->paginated([10, 25, 50, 100]);
+            ->striped();
     }
 }
