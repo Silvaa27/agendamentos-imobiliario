@@ -70,7 +70,7 @@ class AdvertismentForm extends Component implements HasForms
         $this->dispatch('close-page-execute');
     }
 
-    public bool $showDetailedErrors = false;
+    public bool $showDetailedErrors = true;
 
     public function mount($id = null): void
     {
@@ -428,11 +428,6 @@ class AdvertismentForm extends Component implements HasForms
                 'date' => $selectedDate->toDateString(),
                 'start_time' => $startDateTime,
                 'end_time' => $endDateTime,
-            ]);
-
-            Unavailability::create([
-                'start' => $startDateTime,
-                'end' => $endDateTime,
             ]);
 
         } catch (\Exception $e) {

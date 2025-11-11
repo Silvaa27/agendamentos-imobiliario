@@ -73,7 +73,7 @@
                         
                                 return keys.slice(iStart, iEnd + 1).some(k => !this.options[k]);
                             }
-                        }" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3"
+                        }" class="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-6 gap-3"
                             wire:key="{{ uniqId() }}" wire:ignore>
                             @foreach ($slots as $hora => $disponivel)
                                 <button type="button" @click="toggle('{{ $hora }}', '{{ $classroomId }}')"

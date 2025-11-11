@@ -70,7 +70,7 @@
                             @if ($advertise->description)
                                 <p class="text-gray-600 mt-1">{{ $advertise->description }}</p>
                             @else
-                                <p class="text-gray-600 mt-1">Preencha todos os campos para submeter o formulário</p>
+                                <p class="text-gray-600 mt-1">Preencha todos os campos obrigatórios para submeter o formulário</p>
                             @endif
                         </div>
                     </div>
