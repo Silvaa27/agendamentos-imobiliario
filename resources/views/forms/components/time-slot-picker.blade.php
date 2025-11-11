@@ -3,20 +3,20 @@
 
     @if (empty($getOptions()) || !collect($getOptions())->flatten()->contains(true))
         {{-- AVISO: Nenhum horário disponível --}}
-        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-8 text-center">
+        <div class="bg-warning-50 border border-warning-200 rounded-xl p-8 text-center">
             <div class="flex items-center justify-center gap-3 mb-4">
-                <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-10 h-10 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
             </div>
-            <h4 class="text-xl font-bold text-yellow-800 mb-3">
+            <h4 class="text-xl font-bold text-warning-800 mb-3">
                 ⚠️ Nenhum Horário Disponível
             </h4>
-            <p class="text-yellow-700 mb-4 text-lg">
+            <p class="text-warning-700 mb-4 text-lg">
                 Não existem horários disponíveis para a data selecionada.
             </p>
-            <p class="text-yellow-600 text-base">
+            <p class="text-warning-600 text-base">
                 Por favor, selecione outra data ou entre em contacto connosco.
             </p>
         </div>
@@ -88,17 +88,17 @@
                                             values.start, values.end);
                                     
                                         if (fieldID == values.field_id && isSelected && hasInvalid)
-                                            return 'border-2 border-red-300 bg-red-500 text-white transition-all';
+                                            return 'border-2 border-danger-300 bg-danger-500 text-white transition-all';
                                         if (!options[key])
                                             return 'border-2 border-gray-300 bg-gray-200 text-gray-500 cursor-not-allowed line-through';
                                     
                                         if (fieldID == values.field_id && values.start && (values.start === key ||
                                                 values.end === key))
-                                            return 'border-2 border-blue-500 bg-blue-600 text-white transition-all';
+                                            return 'border-2 border-primary-500 bg-primary-600 text-white transition-all';
                                         if (fieldID == values.field_id && isSelected)
-                                            return 'border-2 border-blue-500 bg-blue-600 text-white transition-all';
+                                            return 'border-2 border-primary-500 bg-primary-600 text-white transition-all';
                                     
-                                        return 'border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all';
+                                        return 'border-2 border-gray-300 bg-white hover:border-primary-500 hover:bg-primary-50 transition-all';
                                     })()"
                                     class="p-3 rounded-lg text-center font-medium text-sm"
                                     :disabled="!options['{{ $hora }}']"></button>

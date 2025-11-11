@@ -30,7 +30,6 @@ class AdvertisesTable
 
                 TextColumn::make('uuid')
                     ->label('UUID')
-                    ->searchable()
                     ->copyable()
                     ->copyableState(fn(Advertise $record): string => $record->uuid)
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -48,7 +47,7 @@ class AdvertisesTable
                     ->color(fn(bool $state): string => $state ? 'success' : 'danger'),
 
 
-                TextColumn::make('uuid') // Usa um campo que existe, mas formata como link
+                TextColumn::make('uuid')
                     ->label('Link do Formulário')
                     ->formatStateUsing(fn() => 'Abrir Formulário') // Texto fixo
                     ->url(fn(Advertise $record): string => route('advertisement.respond', ['id' => $record->uuid]))
@@ -64,13 +63,6 @@ class AdvertisesTable
                     ->falseLabel('Inactive forms'),
             ])
             ->actions([
-                Action::make('view_form')
-                    ->label('View Form')
-                    ->icon('heroicon-o-eye')
-                    ->color('primary')
-                    ->url(fn(Advertise $record): string => route('advertisement.respond', ['id' => $record->uuid]))
-                    ->openUrlInNewTab()
-                    ->hidden(fn(Advertise $record): bool => !$record->is_active),
 
                 EditAction::make()
                     ->icon('heroicon-o-pencil'),

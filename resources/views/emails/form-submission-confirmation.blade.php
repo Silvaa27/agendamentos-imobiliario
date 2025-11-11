@@ -24,7 +24,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background: linear-gradient(135deg, #3b82f6, #3b82f6); /* Primary-500 */
             color: white;
             padding: 32px;
             text-align: center;
@@ -48,15 +48,15 @@
 
         .highlight {
             background: #f8fafc;
-            border-left: 4px solid #4f46e5;
+            border-left: 4px solid #3b82f6; /* Primary-500 */
             padding: 24px;
             margin: 24px 0;
             border-radius: 0 8px 8px 0;
         }
 
         .schedule-box {
-            background: #f0f9ff;
-            border: 2px solid #0ea5e9;
+            background: #eff6ff; /* Primary-50 */
+            border: 2px solid #3b82f6; /* Primary-500 */
             border-radius: 12px;
             padding: 24px;
             margin: 24px 0;
@@ -105,18 +105,18 @@
         }
 
         .no-schedule {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
+            background: #fef3c7; /* Warning-100 */
+            border: 1px solid #f59e0b; /* Warning-500 */
             padding: 20px;
             border-radius: 8px;
             text-align: center;
-            color: #92400e;
+            color: #92400e; /* Warning-800 */
             margin: 24px 0;
         }
 
         .btn {
             display: inline-block;
-            background: #4f46e5;
+            background: #3b82f6; /* Primary-500 */
             color: white;
             padding: 12px 24px;
             text-decoration: none;
@@ -140,7 +140,7 @@
             <p>Recebemos com sucesso a sua submissão para o formulário:</p>
 
             <div class="highlight">
-                <h3 style="margin: 0 0 16px 0; color: #4f46e5; font-size: 20px;">{{ $advertiseTitle }}</h3>
+                <h3 style="margin: 0 0 16px 0; color: #3b82f6; font-size: 20px;">{{ $advertiseTitle }}</h3>
                 <div class="info-item">
                     <span class="info-label">Data de submissão:</span> {{ $submissionDate }}
                 </div>
@@ -152,7 +152,7 @@
             <!-- Secção da Marcação -->
             @if ($schedule && is_array($schedule) && !empty($schedule['data']))
                 <div class="schedule-box">
-                    <h3 style="margin: 0 0 20px 0; color: #0ea5e9; text-align: center; font-size: 20px;">
+                    <h3 style="margin: 0 0 20px 0; color: #3b82f6; text-align: center; font-size: 20px;">
                         📅 Detalhes da Sua Marcação
                     </h3>
 
