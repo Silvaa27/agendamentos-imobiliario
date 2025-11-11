@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Filament\Resources\BusinessHours\Pages;
+
+use App\Filament\Resources\BusinessHours\BusinessHourResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+
+class ListBusinessHours extends ListRecords
+{
+    protected static string $resource = BusinessHourResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make(),
+        ];
+    }
+}
