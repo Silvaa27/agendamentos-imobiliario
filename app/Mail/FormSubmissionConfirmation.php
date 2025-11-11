@@ -57,7 +57,6 @@ class FormSubmissionConfirmation extends Mailable
                 'contactName' => $this->contact->name,
                 'advertiseTitle' => $this->advertiseAnswer->advertise->title ?? 'Formulário',
                 'submissionDate' => $this->advertiseAnswer->created_at->format('d/m/Y H:i'),
-                'referenceNumber' => 'REF-' . $this->advertiseAnswer->id,
                 'schedule' => $this->scheduleInfo, // AGORA é o array formatado
             ],
         );

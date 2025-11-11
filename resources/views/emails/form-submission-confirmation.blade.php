@@ -144,9 +144,6 @@
                 <div class="info-item">
                     <span class="info-label">Data de submissão:</span> {{ $submissionDate }}
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Número de referência:</span> {{ $referenceNumber }}
-                </div>
             </div>
 
             <!-- Secção da Marcação -->
