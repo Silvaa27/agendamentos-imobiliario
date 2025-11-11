@@ -69,15 +69,20 @@ class AdvertiseForm
                 Section::make('Configurações de Agendamento')
                     ->description('Defina os horários disponíveis para agendamento')
                     ->schema([
-                        Repeater::make('dsdsdssv')
+                        Repeater::make('business_hours')
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
-                            ->default([
-                                [
-                                    'day' => 'monday',
-                                    'start_time' => '09:00',
-                                    'end_time' => '17:00',
-                                ]
-                            ])
+                            ->default(function ($state) {
+                                // Buscar dados do banco
+                                $businessHours = \App\Models\BusinessHour::all();
+
+                                return $businessHours->map(function ($hour) {
+                                    return [
+                                        'day' => $hour->day,
+                                        'start_time' => $hour->start_time,
+                                        'end_time' => $hour->end_time,
+                                    ];
+                                })->toArray();
+                            })
                     ])
                     ->collapsible()
                     ->collapsed(),
@@ -156,7 +161,7 @@ class AdvertiseForm
 
                         // Configurações numéricas para Slider
                         if ($fieldType === 'Slider') {
-                            $schema[] = Grid::make(3)
+                            $schema[] = Grid::make(columns: 3)
                                 ->schema([
                                     TextInput::make('min_value')
                                         ->label('Valor Mínimo')
