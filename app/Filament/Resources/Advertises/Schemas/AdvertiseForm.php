@@ -48,7 +48,8 @@ class AdvertiseForm
                 Section::make('Campos do Formulário')
                     ->schema([
                         self::getFieldsRepeater(),
-                    ]),
+                    ])
+                ->collapsible(),
 
                 Section::make('Horários')
                     ->schema([
@@ -67,6 +68,8 @@ class AdvertiseForm
                                     ];
                                 })->toArray();
                             })
+                            ->collapsible()
+                            
                     ])
                     ->collapsible(),
             ]);
@@ -260,7 +263,8 @@ class AdvertiseForm
                 fn(Action $action) => $action->label('Expandir todos os campos'),
             )
             ->helperText('Adicione os campos que compõem o seu formulário personalizado')
-            ->columnSpanFull();
+            ->columnSpanFull()
+            ->collapsible();
     }
 
     /**
