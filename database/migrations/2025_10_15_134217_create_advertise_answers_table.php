@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
             $table->foreignId('advertise_id')->constrained('advertises')->onDelete('cascade');
-            $table->dateTime('date_answered')->nullable();;
             $table->timestamps();
         });
     }

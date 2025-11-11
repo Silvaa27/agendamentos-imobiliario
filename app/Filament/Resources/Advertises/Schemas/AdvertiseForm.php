@@ -51,7 +51,8 @@ class AdvertiseForm
 
                 Section::make('Horários')
                     ->schema([
-                        Repeater::make('business_hours')
+                        Repeater::make('Horários Reserva')
+                            ->relationship('businessHours') 
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
                             ->default(function ($state) {
                                 // Buscar dados do banco
@@ -172,24 +173,6 @@ class AdvertiseForm
                                         ->numeric()
                                         ->default(1)
                                         ->helperText('Passo do slider (ex: 1, 0.5, 10)')
-                                        ->columnSpanFull(),
-                                ]);
-                        }
-
-                        // Configurações para campos numéricos
-                        if ($fieldType === 'TextInput') {
-                            $schema[] = Grid::make(1) // Alterado para 1 coluna
-                                ->schema([
-                                    TextInput::make('min_value')
-                                        ->label('Valor Mínimo')
-                                        ->numeric()
-                                        ->helperText('Valor mínimo permitido (opcional)')
-                                        ->columnSpanFull(),
-
-                                    TextInput::make('max_value')
-                                        ->label('Valor Máximo')
-                                        ->numeric()
-                                        ->helperText('Valor máximo permitido (opcional)')
                                         ->columnSpanFull(),
                                 ]);
                         }
