@@ -92,6 +92,7 @@ class AdvertiseForm
                             ->required()
                             ->options([
                                 'TextInput' => 'Texto Simples',
+                                'NumberInput' => 'Campo Numérico', // NOVO: Campo numérico adicionado
                                 'Select' => 'Lista Suspensa',
                                 'Checkbox' => 'Checkbox',
                                 'Toggle' => 'Toggle (Ligado/Desligado)',
@@ -107,15 +108,17 @@ class AdvertiseForm
                                 // Limpar configurações específicas quando o tipo muda
                                 $set('options', []);
                                 $set('min_value', null);
+                                $set('max_value', null);
                                 $set('step', null);
 
-                                // ADICIONAR: Limpar regras de validação quando o tipo muda
+                                // Limpar regras de validação quando o tipo muda
                                 $set('validation_rules', []);
 
-                                // Para Slider, manter min/max, para outros limpar
-                                if ($state !== 'Slider') {
+                                // Para Slider e NumberInput, manter min/max, para outros limpar
+                                if (!in_array($state, ['Slider', 'NumberInput'])) {
                                     $set('min_value', null);
                                     $set('max_value', null);
+                                    $set('step', null);
                                 }
                             })
                             ->columnSpanFull(),
@@ -164,29 +167,32 @@ class AdvertiseForm
                                 ->columnSpanFull();
                         }
 
-                        // Configurações numéricas apenas para Slider
-                        if ($fieldType === 'Slider') {
+                        // Configurações numéricas para Slider e NumberInput
+                        if (in_array($fieldType, ['Slider', 'NumberInput'])) {
                             $schema[] = Grid::make(1)
                                 ->schema([
                                     TextInput::make('min_value')
                                         ->label('Valor Mínimo')
                                         ->numeric()
-                                        ->default(0)
-                                        ->required()
+                                        ->default($fieldType === 'Slider' ? 0 : null)
+                                        ->required($fieldType === 'Slider')
+                                        ->helperText($fieldType === 'NumberInput' ? 'Valor mínimo permitido (opcional)' : 'Valor mínimo obrigatório para slider')
                                         ->columnSpanFull(),
 
                                     TextInput::make('max_value')
                                         ->label('Valor Máximo')
                                         ->numeric()
-                                        ->default(100)
-                                        ->required()
+                                        ->default($fieldType === 'Slider' ? 100 : null)
+                                        ->required($fieldType === 'Slider')
+                                        ->helperText($fieldType === 'NumberInput' ? 'Valor máximo permitido (opcional)' : 'Valor máximo obrigatório para slider')
                                         ->columnSpanFull(),
 
                                     TextInput::make('step')
                                         ->label('Incremento')
                                         ->numeric()
                                         ->default(1)
-                                        ->helperText('Passo do slider (ex: 1, 2, 10)')
+                                        ->helperText('Passo do campo (ex: 1, 0.1, 10)')
+                                        ->visible(fn(Get $get) => $get('field_type') === 'Slider')
                                         ->columnSpanFull(),
                                 ]);
                         }
@@ -278,8 +284,8 @@ class AdvertiseForm
                 'regex' => 'Expressão Regular',
             ],
 
-            // Campos numéricos (Slider)
-            'Slider' => [
+            // Campos numéricos (Slider e NumberInput) - NOVO: NumberInput adicionado
+            'Slider', 'NumberInput' => [
                 'min' => 'Valor Mínimo',
                 'max' => 'Valor Máximo',
             ],
@@ -290,14 +296,14 @@ class AdvertiseForm
                 'not_in' => 'Valor em Lista Proibida',
             ],
 
-            // Campos de data/hora - CORRIGIDO: usar min/max em vez de date_min/date_max
+            // Campos de data/hora
             'DatePicker' => [
                 'min' => 'Data Mínima',
                 'max' => 'Data Máxima',
             ],
 
             'TimePicker' => [
-                'min' => 'Hora Mínima', 
+                'min' => 'Hora Mínima',
                 'max' => 'Hora Máxima',
             ],
 
@@ -319,7 +325,7 @@ class AdvertiseForm
         return match ($fieldType) {
             'DatePicker' => 'Data no formato YYYY-MM-DD (ex: 2024-12-31)',
             'TimePicker' => 'Hora no formato HH:MM (ex: 09:00)',
-            'Slider' => 'Valor numérico (ex: 18, 100.50)',
+            'Slider', 'NumberInput' => 'Valor numérico (ex: 18, 100.50)', // NOVO: NumberInput adicionado
             default => 'Valor numérico ou de comprimento',
         };
     }
