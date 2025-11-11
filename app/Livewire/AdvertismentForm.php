@@ -1200,16 +1200,20 @@ class AdvertismentForm extends Component implements HasForms
                 ->columns(1)->columnSpan('full'),
 
             'DatePicker' => DatePicker::make($field->answer)
-                ->label($label)->required($required)->minDate(now())
+                ->label($label)->required($required)
                 ->native(false)->displayFormat('d/m/Y')->columnSpan('full'),
 
             'TimePicker' => TimePicker::make($field->answer)
                 ->label($label)->required($required)->columnSpan('full'),
 
             'Slider' => Slider::make($field->answer)
-                ->label($label)->minValue($field->min_value ?? 0)
-                ->maxValue($field->max_value ?? 100)->step($field->step ?? 1)
-                ->required($required)->columnSpan('full'),
+                ->label($label)
+                ->minValue($field->min_value ?? 0)
+                ->maxValue($field->max_value ?? 100)
+                ->step($field->step ?? 1)
+                ->tooltips($field->show_tooltip ? true : false) // MOSTRA TOOLTIP APENAS SE show_tooltip = 1
+                ->required($required)
+                ->columnSpan('full'),
 
             default => TextInput::make($field->answer)
                 ->label($label)->required($required)

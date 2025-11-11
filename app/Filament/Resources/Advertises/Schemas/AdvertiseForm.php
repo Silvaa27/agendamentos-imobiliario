@@ -43,7 +43,8 @@ class AdvertiseForm
                     ->label('Anúncio Ativo')
                     ->default(true)
                     ->helperText('Se desativado, o formulário não estará disponível para respostas')
-                    ->columnSpanFull(), // Ocupa toda a largura disponíve
+                    ->columnSpanFull(),
+
                 Section::make('Campos do Formulário')
                     ->schema([
                         self::getFieldsRepeater(),
@@ -52,7 +53,7 @@ class AdvertiseForm
                 Section::make('Horários')
                     ->schema([
                         Repeater::make('Horários Reserva')
-                            ->relationship('businessHours') 
+                            ->relationship('businessHours')
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
                             ->default(function ($state) {
                                 // Buscar dados do banco
@@ -68,8 +69,6 @@ class AdvertiseForm
                             })
                     ])
                     ->collapsible(),
-
-
             ]);
     }
 
@@ -92,24 +91,32 @@ class AdvertiseForm
                             ->label('Tipo de Campo')
                             ->required()
                             ->options([
-                                'TextInput' => 'Simple Text',
-                                'Select' => 'Dropdown List',
+                                'TextInput' => 'Texto Simples',
+                                'Select' => 'Lista Suspensa',
                                 'Checkbox' => 'Checkbox',
-                                'Toggle' => 'Toggle (On/Off)',
-                                'CheckboxList' => 'Checkbox List',
-                                'Radio' => 'Radio Buttons',
-                                'DatePicker' => 'Date Picker',
-                                'TimePicker' => 'Time Picker',
-                                'Slider' => 'Numeric Slider',
-                                'Textarea' => 'Text Area',
+                                'Toggle' => 'Toggle (Ligado/Desligado)',
+                                'CheckboxList' => 'Lista de Checkboxes',
+                                'Radio' => 'Botões de Rádio',
+                                'DatePicker' => 'Selecionador de Data',
+                                'TimePicker' => 'Selecionador de Hora',
+                                'Slider' => 'Slider Numérico',
+                                'Textarea' => 'Área de Texto',
                             ])
                             ->live()
                             ->afterStateUpdated(function ($state, callable $set) {
                                 // Limpar configurações específicas quando o tipo muda
                                 $set('options', []);
                                 $set('min_value', null);
-                                $set('max_value', null);
                                 $set('step', null);
+
+                                // ADICIONAR: Limpar regras de validação quando o tipo muda
+                                $set('validation_rules', []);
+
+                                // Para Slider, manter min/max, para outros limpar
+                                if ($state !== 'Slider') {
+                                    $set('min_value', null);
+                                    $set('max_value', null);
+                                }
                             })
                             ->columnSpanFull(),
 
@@ -122,16 +129,23 @@ class AdvertiseForm
                         Toggle::make('show_tooltip')
                             ->label('Mostrar Tooltip/Ajuda')
                             ->default(false)
-                            ->helperText('Exibir informação adicional sobre o campo')
+                            ->helperText('Exibir informação adicional sobre o campo (apenas para Slider)')
+                            ->visible(fn(Get $get) => $get('field_type') === 'Slider')
                             ->columnSpanFull(),
                     ])
-                    ->columns(1), // Força 1 coluna no fieldset
+                    ->columns(1),
 
                 Group::make()
                     ->schema(function (Get $get) {
                         $fieldType = $get('field_type');
                         $schema = [];
 
+                        // Verificar se fieldType não é nulo
+                        if (!$fieldType) {
+                            return $schema;
+                        }
+
+                        // Opções para campos de seleção
                         if (in_array($fieldType, ['Select', 'Radio', 'CheckboxList'])) {
                             $schema[] = Repeater::make('options')
                                 ->label('Opções Disponíveis')
@@ -150,9 +164,9 @@ class AdvertiseForm
                                 ->columnSpanFull();
                         }
 
-                        // Configurações numéricas para Slider
+                        // Configurações numéricas apenas para Slider
                         if ($fieldType === 'Slider') {
-                            $schema[] = Grid::make(1) // Alterado para 1 coluna
+                            $schema[] = Grid::make(1)
                                 ->schema([
                                     TextInput::make('min_value')
                                         ->label('Valor Mínimo')
@@ -172,64 +186,58 @@ class AdvertiseForm
                                         ->label('Incremento')
                                         ->numeric()
                                         ->default(1)
-                                        ->helperText('Passo do slider (ex: 1, 0.5, 10)')
+                                        ->helperText('Passo do slider (ex: 1, 2, 10)')
                                         ->columnSpanFull(),
                                 ]);
                         }
 
+                        // Regras de Validação baseadas no tipo de campo
+                        $validationRules = self::getValidationRulesForFieldType($fieldType);
+
+                        if (!empty($validationRules)) {
+                            $schema[] = Section::make('Regras de Validação')
+                                ->schema([
+                                    Repeater::make('validation_rules')
+                                        ->label('Regras de Validação')
+                                        ->schema([
+                                            Select::make('rule_type')
+                                                ->label('Tipo de Regra')
+                                                ->options($validationRules)
+                                                ->required()
+                                                ->live()
+                                                ->columnSpanFull(),
+
+                                            TextInput::make('rule_value')
+                                                ->label('Valor da Regra')
+                                                ->required()
+                                                ->visible(fn(Get $get) => !in_array($get('rule_type'), ['email', 'url']))
+                                                ->helperText(function (Get $get) use ($fieldType) {
+                                                    return match ($get('rule_type')) {
+                                                        'min', 'max' => self::getMinMaxHelperText($fieldType),
+                                                        'min_length', 'max_length' => 'Número de caracteres (ex: 3, 255)',
+                                                        'regex' => 'Expressão regular (ex: ^[A-Za-z ]+$)',
+                                                        'in', 'not_in' => 'Valores separados por vírgula (ex: valor1,valor2,valor3) ou (true,false) para checkbox',
+                                                        default => 'Valor específico da regra',
+                                                    };
+                                                })
+                                                ->columnSpanFull(),
+                                        ])
+                                        ->defaultItems(0)
+                                        ->itemLabel(
+                                            fn(array $state): ?string =>
+                                            $state['rule_type'] ? "Regra: {$state['rule_type']}" : 'Nova regra'
+                                        )
+                                        ->helperText('Adicione regras de validação específicas para este tipo de campo')
+                                        ->collapsible()
+                                        ->columnSpanFull(),
+                                ])
+                                ->collapsible()
+                                ->collapsed()
+                                ->columnSpanFull();
+                        }
+
                         return $schema;
                     })
-                    ->columnSpanFull(),
-
-                // Regras de Validação Avançadas
-                Section::make('Regras de Validação Avançadas')
-                    ->schema([
-                        Repeater::make('validation_rules')
-                            ->label('Regras Personalizadas')
-                            ->schema([
-                                Select::make('rule_type')
-                                    ->label('Tipo de Regra')
-                                    ->options([
-                                        'min' => 'Valor Mínimo',
-                                        'max' => 'Valor Máximo',
-                                        'min_length' => 'Comprimento Mínimo',
-                                        'max_length' => 'Comprimento Máximo',
-                                        'email' => 'Email Válido',
-                                        'url' => 'URL Válida',
-                                        'regex' => 'Expressão Regular',
-                                        'in' => 'Valor em Lista Permitida',
-                                        'not_in' => 'Valor em Lista Proibida',
-                                    ])
-                                    ->required()
-                                    ->live()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('rule_value')
-                                    ->label('Valor da Regra')
-                                    ->required()
-                                    ->visible(fn(Get $get) => !in_array($get('rule_type'), ['email', 'url']))
-                                    ->helperText(function (Get $get) {
-                                        return match ($get('rule_type')) {
-                                            'min', 'max' => 'Valor numérico (ex: 18, 100.50)',
-                                            'min_length', 'max_length' => 'Número de caracteres (ex: 3, 255)',
-                                            'regex' => 'Expressão regular (ex: ^[A-Za-z ]+$)',
-                                            'in', 'not_in' => 'Valores separados por vírgula (ex: opcao1,opcao2,opcao3)',
-                                            default => 'Valor específico da regra',
-                                        };
-                                    })
-                                    ->columnSpanFull(),
-                            ])
-                            ->defaultItems(0)
-                            ->itemLabel(
-                                fn(array $state): ?string =>
-                                $state['rule_type'] ? "Regra: {$state['rule_type']}" : 'Nova regra'
-                            )
-                            ->helperText('Adicione regras de validação específicas para este campo')
-                            ->collapsible()
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible()
-                    ->collapsed()
                     ->columnSpanFull(),
             ])
             ->defaultItems(0)
@@ -247,5 +255,72 @@ class AdvertiseForm
             )
             ->helperText('Adicione os campos que compõem o seu formulário personalizado')
             ->columnSpanFull();
+    }
+
+    /**
+     * Define regras de validação específicas para cada tipo de campo
+     * baseado na lógica do Livewire AdvertismentForm
+     */
+    private static function getValidationRulesForFieldType(?string $fieldType): array
+    {
+        // Se fieldType for nulo, retornar array vazio
+        if (!$fieldType) {
+            return [];
+        }
+
+        return match ($fieldType) {
+            // Campos de texto
+            'TextInput', 'Textarea' => [
+                'min_length' => 'Comprimento Mínimo',
+                'max_length' => 'Comprimento Máximo',
+                'email' => 'Email Válido',
+                'url' => 'URL Válida',
+                'regex' => 'Expressão Regular',
+            ],
+
+            // Campos numéricos (Slider)
+            'Slider' => [
+                'min' => 'Valor Mínimo',
+                'max' => 'Valor Máximo',
+            ],
+
+            // Campos de seleção
+            'Select', 'Radio', 'CheckboxList' => [
+                'in' => 'Valor em Lista Permitida',
+                'not_in' => 'Valor em Lista Proibida',
+            ],
+
+            // Campos de data/hora - CORRIGIDO: usar min/max em vez de date_min/date_max
+            'DatePicker' => [
+                'min' => 'Data Mínima',
+                'max' => 'Data Máxima',
+            ],
+
+            'TimePicker' => [
+                'min' => 'Hora Mínima', 
+                'max' => 'Hora Máxima',
+            ],
+
+            // Campos booleanos
+            'Toggle', 'Checkbox' => [
+                'in' => 'Valores Permitidos',
+                'not_in' => 'Valores Proibidos',
+            ],
+
+            default => [],
+        };
+    }
+
+    /**
+     * Helper text específico para regras min/max baseado no tipo de campo
+     */
+    private static function getMinMaxHelperText(string $fieldType): string
+    {
+        return match ($fieldType) {
+            'DatePicker' => 'Data no formato YYYY-MM-DD (ex: 2024-12-31)',
+            'TimePicker' => 'Hora no formato HH:MM (ex: 09:00)',
+            'Slider' => 'Valor numérico (ex: 18, 100.50)',
+            default => 'Valor numérico ou de comprimento',
+        };
     }
 }
