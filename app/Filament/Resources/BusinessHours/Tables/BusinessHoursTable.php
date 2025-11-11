@@ -34,13 +34,6 @@ class BusinessHoursTable
                     ->label('Fim'),
             ])
             ->filters([
-                Filter::make('default_hours')
-                    ->label('Horários Default')
-                    ->query(fn(Builder $query) => $query->whereNull('advertise_id')),
-
-                Filter::make('form_hours')
-                    ->label('Horários de Formulários')
-                    ->query(fn(Builder $query) => $query->whereNotNull('advertise_id')),
             ])
             ->actions([
                 ReplicateAction::make()
@@ -53,6 +46,9 @@ class BusinessHoursTable
                 DeleteBulkAction::make(),
             ])
             ->defaultSort('day')
-            ->modifyQueryUsing(fn(Builder $query) => $query->with('advertise'));
+            ->modifyQueryUsing(fn(Builder $query) => $query
+                ->whereNull('advertise_id') // Mostra apenas horários default
+                ->with('advertise')
+            );
     }
 }
