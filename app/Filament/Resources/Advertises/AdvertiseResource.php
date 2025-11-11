@@ -19,6 +19,7 @@ class AdvertiseResource extends Resource
     protected static ?string $model = Advertise::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'Anúncio';
 
     public static function form(Schema $schema): Schema
     {

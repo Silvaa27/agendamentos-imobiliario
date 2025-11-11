@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 class UnavailabilityResource extends Resource
 {
     protected static ?string $model = Unavailability::class;
+    protected static ?string $modelLabel = 'Indisponibilidade';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
