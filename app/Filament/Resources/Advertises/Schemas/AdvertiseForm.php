@@ -28,14 +28,7 @@ class AdvertiseForm
                 TextInput::make('title')
                     ->label('Título do Anúncio')
                     ->required()
-                    ->maxLength(255)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        if (!empty($state)) {
-                            $set('uuid', Str::random(6));
-                        }
-                    })
-                    ->columnSpanFull(), // Ocupa toda a largura disponível
+                    ->maxLength(255),
 
                 Hidden::make('uuid')
                     ->default(fn() => (string) Str::uuid()),
@@ -44,8 +37,7 @@ class AdvertiseForm
                     ->label('URL do Anúncio')
                     ->url()
                     ->maxLength(500)
-                    ->helperText('Link para onde o anúncio redireciona (opcional)')
-                    ->columnSpanFull(), // Ocupa toda a largura disponível
+                    ->helperText('Link para onde o anúncio redireciona (opcional)'),
 
                 Toggle::make('is_active')
                     ->label('Anúncio Ativo')
