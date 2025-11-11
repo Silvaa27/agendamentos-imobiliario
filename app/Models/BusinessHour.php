@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Advertise;
 
 class BusinessHour extends Model
 {
@@ -26,9 +27,8 @@ class BusinessHour extends Model
         'saturday' => 'Sábado',
         'sunday' => 'Domingo',
     ];
-
-    /*public function getDayNameAttribute(): string
+    public function advertise()
     {
-        return self::DAYS[$this->days] ?? $this->days;
-    }*/
+        return $this->belongsTo(Advertise::class, 'advertise_id');
+    }
 }

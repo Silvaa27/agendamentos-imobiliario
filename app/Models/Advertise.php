@@ -30,4 +30,14 @@ class Advertise extends Model
     {
         return $this->hasMany(BusinessHour::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Quando um advertise for deletado, deletar os business_hours relacionados
+        static::deleting(function ($advertise) {
+            $advertise->businessHours()->delete();
+        });
+    }
 }

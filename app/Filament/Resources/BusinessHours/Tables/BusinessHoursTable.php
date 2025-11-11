@@ -24,7 +24,6 @@ class BusinessHoursTable
         return $table
             ->columns([
                 TextColumn::make('day')
-                    //->formatStateUsing(fn($state) => BusinessHour::DAYS[$state])
                     ->sortable()
                     ->label('Dia'),
 
@@ -33,21 +32,36 @@ class BusinessHoursTable
 
                 TextColumn::make('end_time')
                     ->label('Fim'),
+
+                TextColumn::make('advertise.title')
+                    ->label('Formulário')
+                    ->badge()
+                    ->color(function ($state, BusinessHour $record) {
+                        return 'primary'; // Azul para formulários
+                    })
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
+                Filter::make('default_hours')
+                    ->label('Horários Default')
+                    ->query(fn(Builder $query) => $query->whereNull('advertise_id')),
+
+                Filter::make('form_hours')
+                    ->label('Horários de Formulários')
+                    ->query(fn(Builder $query) => $query->whereNotNull('advertise_id')),
             ])
             ->actions([
                 ReplicateAction::make()
-                ->schema(fn($schema) => BusinessHourForm::configure($schema))
-                ->requiresConfirmation(false),
+                    ->schema(fn($schema) => BusinessHourForm::configure($schema))
+                    ->requiresConfirmation(false),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),
             ])
-            ->defaultSort('day');
-
+            ->defaultSort('day')
+            ->modifyQueryUsing(fn(Builder $query) => $query->with('advertise'));
     }
-
 }
