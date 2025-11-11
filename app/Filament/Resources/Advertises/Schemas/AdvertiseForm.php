@@ -24,50 +24,40 @@ class AdvertiseForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([
-                Section::make('Informações do Anúncio')
-                    ->description('Configurações básicas do anúncio e formulário')
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('title')
-                                    ->label('Título do Anúncio')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if (!empty($state)) {
-                                            $set('uuid', Str::random(6));
-                                        }
-                                    }),
+            ->schema([
+                TextInput::make('title')
+                    ->label('Título do Anúncio')
+                    ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if (!empty($state)) {
+                            $set('uuid', Str::random(6));
+                        }
+                    })
+                    ->columnSpanFull(), // Ocupa toda a largura disponível
 
-                                Hidden::make('uuid')
-                                    ->default(fn() => (string) Str::uuid()),
+                Hidden::make('uuid')
+                    ->default(fn() => (string) Str::uuid()),
 
-                            ]),
+                TextInput::make('url')
+                    ->label('URL do Anúncio')
+                    ->url()
+                    ->maxLength(500)
+                    ->helperText('Link para onde o anúncio redireciona (opcional)')
+                    ->columnSpanFull(), // Ocupa toda a largura disponível
 
-                        TextInput::make('url')
-                            ->label('URL do Anúncio')
-                            ->url()
-                            ->maxLength(500)
-                            ->helperText('Link para onde o anúncio redireciona (opcional)'),
-
-                        Toggle::make('is_active')
-                            ->label('Anúncio Ativo')
-                            ->default(true)
-                            ->helperText('Se desativado, o formulário não estará disponível para respostas'),
-                    ]),
-
+                Toggle::make('is_active')
+                    ->label('Anúncio Ativo')
+                    ->default(true)
+                    ->helperText('Se desativado, o formulário não estará disponível para respostas')
+                    ->columnSpanFull(), // Ocupa toda a largura disponíve
                 Section::make('Campos do Formulário')
-                    ->description('Configure os campos dinâmicos que aparecerão no formulário público')
                     ->schema([
                         self::getFieldsRepeater(),
-                    ])
-                    ->collapsible()
-                    ->collapsed(fn($operation) => $operation === 'edit'),
+                    ]),
 
-                Section::make('Configurações de Agendamento')
-                    ->description('Defina os horários disponíveis para agendamento')
+                Section::make('Horários')
                     ->schema([
                         Repeater::make('business_hours')
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
@@ -84,8 +74,9 @@ class AdvertiseForm
                                 })->toArray();
                             })
                     ])
-                    ->collapsible()
-                    ->collapsed(),
+                    ->collapsible(),
+
+
             ]);
     }
 
@@ -101,7 +92,8 @@ class AdvertiseForm
                             ->label('Nome do Campo')
                             ->required()
                             ->maxLength(255)
-                            ->helperText('Ex: Nome Completo, Email, Telefone, etc.'),
+                            ->helperText('Ex: Nome Completo, Email, Telefone, etc.')
+                            ->columnSpanFull(),
 
                         Select::make('field_type')
                             ->label('Tipo de Campo')
@@ -125,18 +117,22 @@ class AdvertiseForm
                                 $set('min_value', null);
                                 $set('max_value', null);
                                 $set('step', null);
-                            }),
+                            })
+                            ->columnSpanFull(),
 
                         Toggle::make('is_required')
                             ->label('Campo Obrigatório')
                             ->default(false)
-                            ->helperText('Usuário deve preencher este campo'),
+                            ->helperText('Usuário deve preencher este campo')
+                            ->columnSpanFull(),
 
                         Toggle::make('show_tooltip')
                             ->label('Mostrar Tooltip/Ajuda')
                             ->default(false)
-                            ->helperText('Exibir informação adicional sobre o campo'),
-                    ]),
+                            ->helperText('Exibir informação adicional sobre o campo')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1), // Força 1 coluna no fieldset
 
                 Group::make()
                     ->schema(function (Get $get) {
@@ -151,56 +147,64 @@ class AdvertiseForm
                                         ->label('Valor da Opção')
                                         ->required()
                                         ->maxLength(255)
-                                        ->helperText('Texto que aparecerá para o usuário'),
+                                        ->helperText('Texto que aparecerá para o usuário')
+                                        ->columnSpanFull(),
                                 ])
                                 ->defaultItems(2)
                                 ->itemLabel(fn(array $state): ?string => $state['option'] ?? 'Nova opção')
                                 ->helperText('Adicione as opções que o usuário poderá selecionar')
-                                ->collapsible();
+                                ->collapsible()
+                                ->columnSpanFull();
                         }
 
                         // Configurações numéricas para Slider
                         if ($fieldType === 'Slider') {
-                            $schema[] = Grid::make(columns: 3)
+                            $schema[] = Grid::make(1) // Alterado para 1 coluna
                                 ->schema([
                                     TextInput::make('min_value')
                                         ->label('Valor Mínimo')
                                         ->numeric()
                                         ->default(0)
-                                        ->required(),
+                                        ->required()
+                                        ->columnSpanFull(),
 
                                     TextInput::make('max_value')
                                         ->label('Valor Máximo')
                                         ->numeric()
                                         ->default(100)
-                                        ->required(),
+                                        ->required()
+                                        ->columnSpanFull(),
 
                                     TextInput::make('step')
                                         ->label('Incremento')
                                         ->numeric()
                                         ->default(1)
-                                        ->helperText('Passo do slider (ex: 1, 0.5, 10)'),
+                                        ->helperText('Passo do slider (ex: 1, 0.5, 10)')
+                                        ->columnSpanFull(),
                                 ]);
                         }
 
                         // Configurações para campos numéricos
                         if ($fieldType === 'TextInput') {
-                            $schema[] = Grid::make(2)
+                            $schema[] = Grid::make(1) // Alterado para 1 coluna
                                 ->schema([
                                     TextInput::make('min_value')
                                         ->label('Valor Mínimo')
                                         ->numeric()
-                                        ->helperText('Valor mínimo permitido (opcional)'),
+                                        ->helperText('Valor mínimo permitido (opcional)')
+                                        ->columnSpanFull(),
 
                                     TextInput::make('max_value')
                                         ->label('Valor Máximo')
                                         ->numeric()
-                                        ->helperText('Valor máximo permitido (opcional)'),
+                                        ->helperText('Valor máximo permitido (opcional)')
+                                        ->columnSpanFull(),
                                 ]);
                         }
 
                         return $schema;
-                    }),
+                    })
+                    ->columnSpanFull(),
 
                 // Regras de Validação Avançadas
                 Section::make('Regras de Validação Avançadas')
@@ -222,7 +226,8 @@ class AdvertiseForm
                                         'not_in' => 'Valor em Lista Proibida',
                                     ])
                                     ->required()
-                                    ->live(),
+                                    ->live()
+                                    ->columnSpanFull(),
 
                                 TextInput::make('rule_value')
                                     ->label('Valor da Regra')
@@ -236,7 +241,8 @@ class AdvertiseForm
                                             'in', 'not_in' => 'Valores separados por vírgula (ex: opcao1,opcao2,opcao3)',
                                             default => 'Valor específico da regra',
                                         };
-                                    }),
+                                    })
+                                    ->columnSpanFull(),
                             ])
                             ->defaultItems(0)
                             ->itemLabel(
@@ -244,10 +250,12 @@ class AdvertiseForm
                                 $state['rule_type'] ? "Regra: {$state['rule_type']}" : 'Nova regra'
                             )
                             ->helperText('Adicione regras de validação específicas para este campo')
-                            ->collapsible(),
+                            ->collapsible()
+                            ->columnSpanFull(),
                     ])
                     ->collapsible()
-                    ->collapsed(),
+                    ->collapsed()
+                    ->columnSpanFull(),
             ])
             ->defaultItems(0)
             ->itemLabel(
@@ -262,6 +270,7 @@ class AdvertiseForm
             ->expandAllAction(
                 fn(Action $action) => $action->label('Expandir todos os campos'),
             )
-            ->helperText('Adicione os campos que compõem o seu formulário personalizado');
+            ->helperText('Adicione os campos que compõem o seu formulário personalizado')
+            ->columnSpanFull();
     }
 }
