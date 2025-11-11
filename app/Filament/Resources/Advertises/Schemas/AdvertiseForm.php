@@ -292,8 +292,8 @@ class AdvertiseForm
 
             // Campos de seleção
             'Select', 'Radio', 'CheckboxList' => [
-                'in' => 'Valor em Lista Permitida',
-                'not_in' => 'Valor em Lista Proibida',
+                'in' => 'Valor Permitido',
+                'not_in' => 'Valor Proibido',
             ],
 
             // Campos de data/hora
