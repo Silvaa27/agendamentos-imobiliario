@@ -29,7 +29,7 @@ class AdvertiseResponsesTable
                     ->label('Anúncio')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->advertise->url ?? 'Sem URL')
+                    ->description(fn($record    ) => $record->title)
                     ->icon('heroicon-o-megaphone')
                     ->color('primary'),
 
@@ -94,30 +94,6 @@ class AdvertiseResponsesTable
                     ->icon('heroicon-o-clock')
                     ->color(fn($record) => $record->schedules->isNotEmpty() ? 'success' : 'gray')
                     ->tooltip('Data e horário reservado'),
-
-                // Estatísticas
-                TextColumn::make('field_answers_count')
-                    ->label('Campos')
-                    ->counts('fieldAnswers')
-                    ->icon('heroicon-o-document-text')
-                    ->color('gray')
-                    ->tooltip('Campos respondidos'),
-
-                TextColumn::make('schedules_count')
-                    ->label('Reservas')
-                    ->counts('schedules')
-                    ->icon('heroicon-o-calendar')
-                    ->color(fn($state) => $state > 0 ? 'success' : 'gray')
-                    ->tooltip('Total de horários reservados'),
-
-                // Data de submissão
-                TextColumn::make('created_at')
-                    ->label('Submetido em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->icon('heroicon-o-clock')
-                    ->color('gray')
-                    ->tooltip('Data de submissão'),
 
                 // Status - CORRIGIDO
                 TextColumn::make('status')
