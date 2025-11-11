@@ -32,15 +32,6 @@ class BusinessHoursTable
 
                 TextColumn::make('end_time')
                     ->label('Fim'),
-
-                TextColumn::make('advertise.title')
-                    ->label('Formulário')
-                    ->badge()
-                    ->color(function ($state, BusinessHour $record) {
-                        return 'primary'; // Azul para formulários
-                    })
-                    ->sortable()
-                    ->searchable(),
             ])
             ->filters([
                 Filter::make('default_hours')

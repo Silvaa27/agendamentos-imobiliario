@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UnavailabilitiesTable
 {
@@ -39,6 +40,10 @@ class UnavailabilitiesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                // Filtra para mostrar apenas registros com end (fim) maior ou igual ao momento atual
+                return $query->where('end', '>=', now());
+            });
     }
 }

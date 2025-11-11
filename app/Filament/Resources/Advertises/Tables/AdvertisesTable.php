@@ -57,6 +57,7 @@ class AdvertisesTable
             ])
             ->filters([
                 TernaryFilter::make('is_active')
+                    ->default()
                     ->label('Status')
                     ->placeholder('All forms')
                     ->trueLabel('Active forms')
