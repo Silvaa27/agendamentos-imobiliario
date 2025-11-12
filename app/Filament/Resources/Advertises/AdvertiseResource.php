@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class AdvertiseResource extends Resource
 {
@@ -45,5 +46,24 @@ class AdvertiseResource extends Resource
             'create' => CreateAdvertise::route('/create'),
             'edit' => EditAdvertise::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        // Se o user NÃO tiver a permissão personalizada 'view_all:advertise', aplica filtros
+        if (!$user->can('view_all:advertise')) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('associatedUsers', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    });
+            });
+        }
+
+        return $query;
     }
 }

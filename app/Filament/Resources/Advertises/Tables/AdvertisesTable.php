@@ -28,17 +28,16 @@ class AdvertisesTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('uuid')
-                    ->label('UUID')
-                    ->copyable()
-                    ->copyableState(fn(Advertise $record): string => $record->uuid)
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Criado por')
+                    ->sortable()
+                    ->searchable(),
 
-                TextColumn::make('url')
-                    ->label('Destination URL')
-                    ->searchable()
-                    ->limit(50)
-                    ->toggleable(),
+                Tables\Columns\TextColumn::make('associatedUsers.name')
+                    ->label('Utilizadores com acesso')
+                    ->badge()
+                    ->color('success')
+                    ->limitList(3),
 
                 IconColumn::make('is_active')
                     ->label('Active')
@@ -64,12 +63,20 @@ class AdvertisesTable
                     ->falseLabel('Inactive forms'),
             ])
             ->actions([
-
                 EditAction::make()
-                    ->icon('heroicon-o-pencil'),
+                    ->visible(
+                        fn(Advertise $record): bool =>
+                        auth()->user()->hasRole('super_admin') ||
+                        $record->user_id === auth()->id() ||
+                        $record->associatedUsers->contains(auth()->id())
+                    ),
 
                 DeleteAction::make()
-                    ->icon('heroicon-o-trash'),
+                    ->visible(
+                        fn(Advertise $record): bool =>
+                        auth()->user()->hasRole('super_admin') ||
+                        $record->user_id === auth()->id()
+                    ),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

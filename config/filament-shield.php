@@ -29,7 +29,7 @@ return [
             'pages' => true,
             'widgets' => true,
             'resources' => true,
-            'custom_permissions' => false,
+            'custom_permissions' => true,
         ],
     ],
 
@@ -162,7 +162,7 @@ return [
     */
 
     'localization' => [
-        'enabled' => false,
+        'enabled' => true,
         'key' => 'filament-shield::filament-shield',
     ],
 
@@ -243,7 +243,9 @@ return [
     |
     */
 
-    'custom_permissions' => [],
+    'custom_permissions' => [
+        'view_all:advertise' => 'Ver Todos os Anúncios',
+    ],
 
     /*
     |--------------------------------------------------------------------------

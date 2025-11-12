@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Advertises\Schemas;
 
 use App\Filament\Resources\BusinessHours\Schemas\BusinessHourForm;
 use App\Models\Advertise;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -25,6 +26,27 @@ class AdvertiseForm
     {
         return $schema
             ->schema([
+                // Campo para associar o utilizador criador (apenas visível para super_admin)
+                Hidden::make('user_id')
+                    ->default(auth()->id()),
+
+                // Campo para adicionar outros utilizadores com acesso total a ESTE anúncio
+                Select::make('associatedUsers')
+                    ->label('Adicionar utilizadores com acesso total')
+                    ->relationship('associatedUsers', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->visible(
+                        fn($record): bool =>
+                        // Apenas o criador ou super_admin podem adicionar utilizadores
+                        !$record ||
+                        $record->user_id === auth()->id() ||
+                        auth()->user()->hasRole('super_admin')
+                    )
+                    ->helperText('Estes utilizadores terão as mesmas permissões que tu para gerir este anúncio específico')
+                    ->columnSpanFull(),
+
                 TextInput::make('title')
                     ->label('Título do Anúncio')
                     ->required()
@@ -49,11 +71,12 @@ class AdvertiseForm
                     ->schema([
                         self::getFieldsRepeater(),
                     ])
-                ->collapsible(),
+                    ->collapsible(),
 
                 Section::make('Horários')
                     ->schema([
-                        Repeater::make('Horários Reserva')
+                        Repeater::make('businessHours')
+                            ->label('Horários de Funcionamento')
                             ->relationship('businessHours')
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
                             ->default(function ($state) {
@@ -69,7 +92,7 @@ class AdvertiseForm
                                 })->toArray();
                             })
                             ->collapsible()
-                            
+                            ->helperText('Configure os horários disponíveis para marcações')
                     ])
                     ->collapsible(),
             ]);
@@ -95,7 +118,7 @@ class AdvertiseForm
                             ->required()
                             ->options([
                                 'TextInput' => 'Texto Simples',
-                                'NumberInput' => 'Campo Numérico', // NOVO: Campo numérico adicionado
+                                'NumberInput' => 'Campo Numérico',
                                 'Select' => 'Lista Suspensa',
                                 'Checkbox' => 'Checkbox',
                                 'Toggle' => 'Toggle (Ligado/Desligado)',
@@ -288,7 +311,7 @@ class AdvertiseForm
                 'regex' => 'Expressão Regular',
             ],
 
-            // Campos numéricos (Slider e NumberInput) - NOVO: NumberInput adicionado
+            // Campos numéricos (Slider e NumberInput)
             'Slider', 'NumberInput' => [
                 'min' => 'Valor Mínimo',
                 'max' => 'Valor Máximo',
@@ -329,7 +352,7 @@ class AdvertiseForm
         return match ($fieldType) {
             'DatePicker' => 'Data no formato YYYY-MM-DD (ex: 2024-12-31)',
             'TimePicker' => 'Hora no formato HH:MM (ex: 09:00)',
-            'Slider', 'NumberInput' => 'Valor numérico (ex: 18, 100.50)', // NOVO: NumberInput adicionado
+            'Slider', 'NumberInput' => 'Valor numérico (ex: 18, 100.50)',
             default => 'Valor numérico ou de comprimento',
         };
     }

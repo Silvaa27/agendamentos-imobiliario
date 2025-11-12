@@ -31,7 +31,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'nav.group' => 'Definições',
+    'nav.group' => 'Definicoes',
     'nav.role.label' => 'Cargos',
     'nav.role.icon' => 'heroicon-o-shield-check',
     'resource.label.role' => 'Cargo',
