@@ -79,17 +79,20 @@ class AdvertiseForm
                             ->label('Horários de Funcionamento')
                             ->relationship('businessHours')
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
-                            ->default(function ($state) {
-                                // Buscar dados do banco
-                                $businessHours = \App\Models\BusinessHour::all();
+                            ->default(function ($state, $operation) {
+                                if ($operation === 'create' && empty($state)) {
+                                    $businessHours = \App\Models\BusinessHour::whereNull('advertise_id')->get();
 
-                                return $businessHours->map(function ($hour) {
-                                    return [
-                                        'day' => $hour->day,
-                                        'start_time' => $hour->start_time,
-                                        'end_time' => $hour->end_time,
-                                    ];
-                                })->toArray();
+                                    return $businessHours->map(function ($hour) {
+                                        return [
+                                            'day' => $hour->day,
+                                            'start_time' => $hour->start_time,
+                                            'end_time' => $hour->end_time,
+                                        ];
+                                    })->toArray();
+                                }
+
+                                return $state;
                             })
                             ->collapsible()
                             ->helperText('Configure os horários disponíveis para marcações')

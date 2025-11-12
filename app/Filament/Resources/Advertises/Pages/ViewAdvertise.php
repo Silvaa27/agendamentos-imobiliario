@@ -42,17 +42,20 @@ class ViewAdvertise extends ViewRecord
                                 Section::make(function ($record) {
                                     $name = $record->contact->name ?? 'N/A';
 
-                                    // 🔥 PEGA A DATA DA PRIMEIRA RESERVA (se existir)
-                                    $reservationDate = 'Sem reserva';
+                                    $reservationInfo = '📅 Sem reserva marcada';
                                     if ($record->schedules && $record->schedules->count() > 0) {
                                         $firstSchedule = $record->schedules->first();
-                                        $reservationDate = $firstSchedule->date->format('d/m/Y');
+                                        $startTime = $firstSchedule->start_time->format('H:i');
+                                        $endTime = $firstSchedule->end_time->format('H:i');
+                                        $dayName = $firstSchedule->date->translatedFormat('l'); // Ex: "Segunda-feira"
+                                        $date = $firstSchedule->date->format('d/m/Y');
+
+                                        $reservationInfo = "{$dayName}, {$date} | {$startTime} - {$endTime}";
                                     }
 
-                                    return "👤 {$name} - 📅 {$reservationDate}";
+                                    return "🗓️ {$name} | {$reservationInfo}";
                                 })
                                     ->schema([
-                                        // 👤 Informações do Contacto
                                         Section::make('👤 Informações do Contacto')
                                             ->schema([
                                                 TextEntry::make('contact.name')
