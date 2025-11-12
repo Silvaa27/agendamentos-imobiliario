@@ -245,6 +245,9 @@ return [
 
     'custom_permissions' => [
         'view_all:advertise' => 'Ver Todos os Anúncios',
+        'view_all:businesshours' => 'Ver Todos os Horários',
+        'create_default:businesshours' => 'Criar horarios default',
+        'view_all:unavailabilities' => 'Ver Todas as indisponibilidades',
     ],
 
     /*

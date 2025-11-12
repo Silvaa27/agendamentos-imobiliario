@@ -5,16 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Schedule extends Model
 {
     use HasFactory;
+
     protected $fillable = [
+        'user_id', // 👈 ADICIONA ESTE CAMPO
         'advertise_answer_id',
         'date',
         'start_time',
         'end_time',
     ];
+
     protected $casts = [
         'date' => 'date',
         'start_time' => 'datetime',
@@ -29,6 +33,22 @@ class Schedule extends Model
     public function advertiseAnswer()
     {
         return $this->belongsTo(AdvertiseAnswer::class);
+    }
+
+    /**
+     * Get the user that owns the schedule.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Scope para agendamentos do utilizador atual
+     */
+    public function scopeForCurrentUser($query)
+    {
+        return $query->where('user_id', auth()->id());
     }
 
     /**
@@ -134,5 +154,4 @@ class Schedule extends Model
             $this->attributes['end_time'] = $value;
         }
     }
-
 }

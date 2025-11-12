@@ -80,22 +80,40 @@ class AdvertiseForm
                             ->relationship('businessHours')
                             ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
                             ->default(function ($state, $operation) {
+                                // 🔥 PREENCHE COM OS BUSINESS HOURS DO UTILIZADOR
                                 if ($operation === 'create' && empty($state)) {
-                                    $businessHours = \App\Models\BusinessHour::whereNull('advertise_id')->get();
+                                    $user = auth()->user();
 
-                                    return $businessHours->map(function ($hour) {
-                                        return [
-                                            'day' => $hour->day,
-                                            'start_time' => $hour->start_time,
-                                            'end_time' => $hour->end_time,
-                                        ];
-                                    })->toArray();
+                                    // Se tiver permissão, pode usar templates globais também
+                                    if ($user->can('view_all:businesshours')) {
+                                        $businessHours = \App\Models\BusinessHour::whereNull('advertise_id')
+                                            ->where(function ($query) use ($user) {
+                                                $query->where('user_id', $user->id)
+                                                    ->orWhereNull('user_id'); // Inclui templates globais
+                                            })
+                                            ->get();
+                                    } else {
+                                        // Apenas os templates do utilizador
+                                        $businessHours = \App\Models\BusinessHour::where('user_id', $user->id)
+                                            ->whereNull('advertise_id')
+                                            ->get();
+                                    }
+
+                                    if ($businessHours->count() > 0) {
+                                        return $businessHours->map(function ($hour) {
+                                            return [
+                                                'day' => $hour->day,
+                                                'start_time' => $hour->start_time,
+                                                'end_time' => $hour->end_time,
+                                            ];
+                                        })->toArray();
+                                    }
                                 }
 
                                 return $state;
                             })
                             ->collapsible()
-                            ->helperText('Configure os horários disponíveis para marcações')
+                            ->helperText('Horários preenchidos automaticamente com base nos seus templates')
                     ])
                     ->collapsible(),
             ]);

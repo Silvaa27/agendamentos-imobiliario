@@ -53,15 +53,14 @@ class AdvertiseResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-
         $user = auth()->user();
 
         // Se o user NÃO tiver a permissão personalizada 'view_all:advertise', aplica filtros
         if (!$user->can('view_all:advertise')) {
             $query->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)
-                    ->orWhereHas('associatedUsers', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
+                    ->orWhereHas('associatedUsers', function ($subQuery) use ($user) {
+                        $subQuery->where('user_id', $user->id);
                     });
             });
         }
