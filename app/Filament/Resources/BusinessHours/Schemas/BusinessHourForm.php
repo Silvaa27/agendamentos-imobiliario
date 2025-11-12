@@ -35,6 +35,23 @@ class BusinessHourForm
                 ->label('Hora de Fim'),
         ];
 
+        // 🔥 DETERMINA SE ESTAMOS NUM REPEATER PELO CONTEXTO
+        // No Repeater, normalmente não mostramos o campo user_id
+        $isInRepeater = request()->routeIs('filament.admin.resources.advertises.*');
+
+        if ($isInRepeater) {
+            // 🔥 NO REPEATER: MOSTRA APENAS OS CAMPOS BÁSICOS + user_id HIDDEN
+            array_unshift(
+                $fields,
+                Hidden::make('user_id')
+                    ->default($user->id) // No repeater, assume-se que é pessoal
+                    ->dehydrated(true)
+            );
+
+            return $schema->schema($fields);
+        }
+
+        // 🔥 FORMULÁRIO NORMAL: MOSTRA A LÓGICA DE PERMISSÕES
         // 🔥 SE O UTILIZADOR TEM PERMISSÃO PARA EDITAR TODOS OS HORÁRIOS
         if ($user->can('edit_all:businesshours')) {
             array_unshift(
@@ -59,12 +76,12 @@ class BusinessHourForm
             array_unshift(
                 $fields,
                 Select::make('user_id')
-                    ->label('Tipo de Horário') // 🔥 CORRIGIDO O LABEL
+                    ->label('Tipo de Horário')
                     ->options([
                         '' => '🌍 Horário Default (Para utilizadores que não tenham horários)',
-                        $user->id => '👤 Horário Pessoal (Apenas para mim)', // 🔥 APENAS ESTAS DUAS OPÇÕES
+                        $user->id => '👤 Horário Pessoal (Apenas para mim)',
                     ])
-                    ->default($user->id) // 🔥 DEFAULT PESSOAL
+                    ->default($user->id)
                     ->helperText('Escolha se quer criar um horário para todos ou apenas para si')
                     ->afterStateUpdated(function ($state) {
                         \Log::info("DEBUG FORM - Tipo de horário selecionado: " . $state);

@@ -93,7 +93,7 @@ class UnavailabilitiesTable
                         }
                         return 'gray';
                     })
-                    ->sortable()
+                    ->badge()
                     ->wrap(), // 🔥 PERMITE QUEBRAR LINHA SE FOR MUITO LONGO
             ])
             ->filters([])

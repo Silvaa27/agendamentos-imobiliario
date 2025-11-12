@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Advertises\Schemas;
 
 use App\Filament\Resources\BusinessHours\Schemas\BusinessHourForm;
 use App\Models\Advertise;
+use App\Models\BusinessHour;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
@@ -78,33 +79,41 @@ class AdvertiseForm
                         Repeater::make('businessHours')
                             ->label('Horários de Funcionamento')
                             ->relationship('businessHours')
-                            ->schema(components: BusinessHourForm::configure(new Schema())->getComponents())
+                            ->schema(BusinessHourForm::configure(new Schema())->getComponents())
                             ->default(function ($state, $operation) {
                                 // 🔥 PREENCHE COM OS BUSINESS HOURS DO UTILIZADOR
                                 if ($operation === 'create' && empty($state)) {
                                     $user = auth()->user();
 
-                                    // Se tiver permissão, pode usar templates globais também
-                                    if ($user->can('view_all:businesshours')) {
-                                        $businessHours = \App\Models\BusinessHour::whereNull('advertise_id')
-                                            ->where(function ($query) use ($user) {
-                                                $query->where('user_id', $user->id)
-                                                    ->orWhereNull('user_id'); // Inclui templates globais
-                                            })
-                                            ->get();
-                                    } else {
-                                        // Apenas os templates do utilizador
-                                        $businessHours = \App\Models\BusinessHour::where('user_id', $user->id)
-                                            ->whereNull('advertise_id')
-                                            ->get();
-                                    }
+                                    // 🔥 PRIMEIRO: Tenta buscar horários pessoais do utilizador
+                                    $personalBusinessHours = BusinessHour::where('user_id', $user->id)
+                                        ->whereNull('advertise_id')
+                                        ->get();
 
-                                    if ($businessHours->count() > 0) {
-                                        return $businessHours->map(function ($hour) {
+                                    // 🔥 SE O UTILIZADOR TEM HORÁRIOS PESSOAIS, USA ESSES
+                                    if ($personalBusinessHours->count() > 0) {
+                                        return $personalBusinessHours->map(function ($hour) {
                                             return [
                                                 'day' => $hour->day,
                                                 'start_time' => $hour->start_time,
                                                 'end_time' => $hour->end_time,
+                                                'user_id' => $hour->user_id,
+                                            ];
+                                        })->toArray();
+                                    }
+
+                                    // 🔥 SE NÃO TEM HORÁRIOS PESSOAIS, USA OS HORÁRIOS DEFAULT (user_id = null)
+                                    $defaultBusinessHours = BusinessHour::whereNull('user_id')
+                                        ->whereNull('advertise_id')
+                                        ->get();
+
+                                    if ($defaultBusinessHours->count() > 0) {
+                                        return $defaultBusinessHours->map(function ($hour) {
+                                            return [
+                                                'day' => $hour->day,
+                                                'start_time' => $hour->start_time,
+                                                'end_time' => $hour->end_time,
+                                                'user_id' => $hour->user_id, // Será null
                                             ];
                                         })->toArray();
                                     }
@@ -113,7 +122,12 @@ class AdvertiseForm
                                 return $state;
                             })
                             ->collapsible()
-                            ->helperText('Horários preenchidos automaticamente com base nos seus templates')
+                            ->itemLabel(function (array $state): string {
+                                $day = BusinessHour::DAYS[$state['day'] ?? ''] ?? $state['day'] ?? 'N/A';
+                                $type = isset($state['user_id']) && $state['user_id'] === null ? '🌍' : '👤';
+                                return "{$type} {$day}: {$state['start_time']} - {$state['end_time']}";
+                            })
+                            ->helperText('Horários preenchidos automaticamente: primeiro os seus horários pessoais, depois os horários default')
                     ])
                     ->collapsible(),
             ]);

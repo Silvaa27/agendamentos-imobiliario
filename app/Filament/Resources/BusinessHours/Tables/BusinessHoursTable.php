@@ -56,6 +56,7 @@ class BusinessHoursTable
                         return $record->user_id === null ? 'info' : 'gray';
                     })
                     ->sortable()
+                    ->badge()
                     ->searchable(),
             ])
             ->filters([
