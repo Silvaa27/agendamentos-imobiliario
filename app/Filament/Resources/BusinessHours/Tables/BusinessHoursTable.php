@@ -4,6 +4,7 @@ namespace App\Filament\Resources\BusinessHours\Tables;
 
 use App\Filament\Resources\BusinessHours\Schemas\BusinessHourForm;
 use App\Models\BusinessHour;
+use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -35,39 +36,30 @@ class BusinessHoursTable
                     ->label('Fim')
                     ->time('H:i'),
 
-                // 🔥 COLUNA DO UTILIZADOR - SEMPRE visível para admins
-                TextColumn::make('user_id')
-                    ->label($hasViewAll ? 'Utilizador' : 'Tipo')
-                    ->formatStateUsing(function ($state) use ($hasViewAll, $user) {
-                        if ($state === null) {
+                // 🔥 COLUNA SIMPLES E DIRETA
+                TextColumn::make('Utilizador')
+                    ->label('Utilizador')
+                    ->state(function ($record) {
+                        \Log::info('DEBUG - Coluna Utilizador:', [
+                            'record_id' => $record->id,
+                            'user_id' => $record->user_id
+                        ]);
+
+                        if ($record->user_id === null) {
                             return '🌍 Horário Default';
                         }
 
-                        if ($hasViewAll) {
-                            // Para admins: mostra nome do utilizador
-                            $userModel = \App\Models\User::find($state);
-                            return $userModel ? $userModel->name : 'Utilizador #' . $state;
-                        } else {
-                            // Para não-admins: mostra tipo
-                            if ($state === $user->id) {
-                                return '👤 Meu Horário';
-                            }
-                            return '👤 Horário de Utilizador';
-                        }
+                        $user = User::find($record->user_id);
+                        return $user ? $user->name : 'Utilizador #' . $record->user_id;
                     })
-                    ->color(function ($state) use ($hasViewAll, $user) {
-                        if ($state === null) {
-                            return 'info';
-                        }
-                        if (!$hasViewAll && $state === $user->id) {
-                            return 'success';
-                        }
-                        return 'gray';
+                    ->color(function ($record) {
+                        return $record->user_id === null ? 'info' : 'gray';
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
-                // Podes adicionar filtros se quiseres
+                //
             ])
             ->actions([
                 ReplicateAction::make()

@@ -59,12 +59,12 @@ class BusinessHourForm
             array_unshift(
                 $fields,
                 Select::make('user_id')
-                    ->label('Tipo de Horário')
+                    ->label('Tipo de Horário') // 🔥 CORRIGIDO O LABEL
                     ->options([
                         '' => '🌍 Horário Default (Para utilizadores que não tenham horários)',
-                        $user->id => '👤 Horário Pessoal (Apenas para mim)',
+                        $user->id => '👤 Horário Pessoal (Apenas para mim)', // 🔥 APENAS ESTAS DUAS OPÇÕES
                     ])
-                    ->default($user->id)
+                    ->default($user->id) // 🔥 DEFAULT PESSOAL
                     ->helperText('Escolha se quer criar um horário para todos ou apenas para si')
                     ->afterStateUpdated(function ($state) {
                         \Log::info("DEBUG FORM - Tipo de horário selecionado: " . $state);

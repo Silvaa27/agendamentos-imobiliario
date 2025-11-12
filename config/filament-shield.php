@@ -248,6 +248,7 @@ return [
         'view_all:businesshours' => 'Ver Todos os Horários',
         'create_default:businesshours' => 'Criar horarios default',
         'view_all:unavailabilities' => 'Ver Todas as indisponibilidades',
+        'create_default:unavailabilities' => 'Criar eventos default',
     ],
 
     /*
