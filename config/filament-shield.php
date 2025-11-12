@@ -13,6 +13,14 @@ return [
     |
     */
 
+    'navigation' => [
+        'icon' => 'heroicon-o-shield-check',
+        'sort' => -1,
+        'group' => 'Administração', // ← ALTERA AQUI
+        'badge' => true,
+        'breadcrumb' => true,
+    ],
+
     'shield_resource' => [
         'slug' => 'shield/roles',
         'show_model_path' => true,
@@ -120,8 +128,17 @@ return [
         'merge' => true,
         'generate' => true,
         'methods' => [
-            'viewAny', 'view', 'create', 'update', 'delete', 'restore',
-            'forceDelete', 'forceDeleteAny', 'restoreAny', 'replicate', 'reorder',
+            'viewAny',
+            'view',
+            'create',
+            'update',
+            'delete',
+            'restore',
+            'forceDelete',
+            'forceDeleteAny',
+            'restoreAny',
+            'replicate',
+            'reorder',
         ],
         'single_parameter_methods' => [
             'viewAny',
