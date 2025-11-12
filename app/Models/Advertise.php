@@ -20,13 +20,49 @@ class Advertise extends Model
         'is_active' => 'boolean',
     ];
 
-    public function advertise_fields()
+    public function advertise_fields(): HasMany
     {
         return $this->hasMany(AdvertiseField::class);
     }
-    public function advertise_answers()
+
+    public function advertise_answers(): HasMany
     {
         return $this->hasMany(AdvertiseAnswer::class);
+    }
+
+    // 🔥 ADICIONA ESTAS RELAÇÕES QUE ESTAVAM A FALTAR:
+
+    /**
+     * Respostas com eager loading das relações necessárias
+     */
+    public function advertiseAnswersWithRelations(): HasMany
+    {
+        return $this->hasMany(AdvertiseAnswer::class)
+            ->with(['contact', 'fieldAnswers.advertise_field', 'schedules']);
+    }
+
+    /**
+     * Contactos através das respostas
+     */
+    public function contacts()
+    {
+        return $this->hasManyThrough(Contact::class, AdvertiseAnswer::class, 'advertise_id', 'id', 'id', 'contact_id');
+    }
+
+    /**
+     * FieldAnswers através das respostas
+     */
+    public function allFieldAnswers()
+    {
+        return $this->hasManyThrough(FieldAnswer::class, AdvertiseAnswer::class, 'advertise_id', 'advertise_answer_id');
+    }
+
+    /**
+     * Horários através das respostas
+     */
+    public function allSchedules()
+    {
+        return $this->hasManyThrough(Schedule::class, AdvertiseAnswer::class, 'advertise_id', 'advertise_answer_id');
     }
 
     public function businessHours(): HasMany
@@ -41,6 +77,8 @@ class Advertise extends Model
         // Quando um advertise for deletado, deletar os business_hours relacionados
         static::deleting(function ($advertise) {
             $advertise->businessHours()->delete();
+            $advertise->advertise_answers()->delete();
+            $advertise->advertise_fields()->delete();
         });
     }
 
@@ -59,5 +97,30 @@ class Advertise extends Model
     {
         return $this->belongsToMany(User::class, 'advertise_user')
             ->withTimestamps();
+    }
+
+    // 🔥 MÉTODOS AUXILIARES PARA A VIEW:
+
+    /**
+     * Carrega todas as relações necessárias para a view
+     */
+    public function loadForView()
+    {
+        return $this->load([
+            'advertiseAnswersWithRelations',
+            'advertiseAnswersWithRelations.contact',
+            'advertiseAnswersWithRelations.fieldAnswers.advertise_field',
+            'advertiseAnswersWithRelations.schedules',
+            'user',
+            'associatedUsers'
+        ]);
+    }
+
+    /**
+     * Getter para o número total de respostas
+     */
+    public function getTotalAnswersAttribute()
+    {
+        return $this->advertise_answers()->count();
     }
 }

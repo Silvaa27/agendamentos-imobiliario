@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Advertises;
 use App\Filament\Resources\Advertises\Pages\CreateAdvertise;
 use App\Filament\Resources\Advertises\Pages\EditAdvertise;
 use App\Filament\Resources\Advertises\Pages\ListAdvertises;
+use App\Filament\Resources\Advertises\Pages\ViewAdvertise;
 use App\Filament\Resources\Advertises\Schemas\AdvertiseForm;
 use App\Filament\Resources\Advertises\Tables\AdvertisesTable;
 use App\Models\Advertise;
@@ -45,6 +46,7 @@ class AdvertiseResource extends Resource
             'index' => ListAdvertises::route('/'),
             'create' => CreateAdvertise::route('/create'),
             'edit' => EditAdvertise::route('/{record}/edit'),
+            'view' => ViewAdvertise::route('/{record}/view'),
         ];
     }
 

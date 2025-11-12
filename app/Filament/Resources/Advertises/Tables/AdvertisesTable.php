@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Advertises\Tables;
 
+use App\Filament\Resources\Advertises\AdvertiseResource;
 use App\Models\Advertise;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -10,6 +11,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -34,7 +36,7 @@ class AdvertisesTable
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('associatedUsers.name')
-                    ->label('Utilizadores com acesso')
+                    ->label('Partilhado com')
                     ->badge()
                     ->color('success')
                     ->limitList(3),
@@ -70,6 +72,11 @@ class AdvertisesTable
                         $record->user_id === auth()->id() ||
                         $record->associatedUsers->contains(auth()->id())
                     ),
+                Action::make('viewResponses')
+                    ->label('Ver Respostas')
+                    ->icon('heroicon-o-eye')
+                    ->color('secundary')
+                    ->url(fn(Advertise $record): string => AdvertiseResource::getUrl('view', ['record' => $record])),
 
                 DeleteAction::make()
                     ->visible(
