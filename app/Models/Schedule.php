@@ -12,7 +12,6 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', // 👈 ADICIONA ESTE CAMPO
         'advertise_answer_id',
         'date',
         'start_time',

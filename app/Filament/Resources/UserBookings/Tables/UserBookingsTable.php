@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\UserSchedules\Tables;
+namespace App\Filament\Resources\UserBookings\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 
-class UserSchedulesTable
+class UserBookingsTable
 {
     public static function configure(Table $table): Table
     {
