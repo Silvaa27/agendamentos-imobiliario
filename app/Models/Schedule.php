@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 
-class Schedule extends Model
+class Schedule extends Model implements Eventable
 {
     use HasFactory;
 
@@ -27,6 +29,68 @@ class Schedule extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'contact_name',
+        'contact_email',
+        'contact_phone',
+        'advertise_title',
+        'formatted_date',
+        'formatted_start_time',
+        'formatted_end_time',
+        'formatted_period',
+    ];
+
+    /**
+     * Implementação CORRETA da interface Eventable
+     */
+    public function toCalendarEvent(): CalendarEvent
+    {
+        return CalendarEvent::make($this)
+            ->title($this->getEventTitle())
+            ->start($this->getEventStart())
+            ->end($this->getEventEnd())
+            ->backgroundColor($this->getEventColor()); // ✅ Método correto
+    }
+
+    /**
+     * Título do evento para o calendário
+     */
+    protected function getEventTitle(): string
+    {
+        $advertiseTitle = $this->advertiseAnswer->advertise->title ?? 'Sem título';
+        $contactName = $this->advertiseAnswer->contact->name ?? 'Sem nome';
+
+        return "{$advertiseTitle} - {$contactName}";
+    }
+
+    /**
+     * Data/hora de início para o calendário
+     */
+    protected function getEventStart(): string
+    {
+        return $this->date->format('Y-m-d') . 'T' . $this->start_time->format('H:i:s');
+    }
+
+    /**
+     * Data/hora de fim para o calendário
+     */
+    protected function getEventEnd(): string
+    {
+        return $this->date->format('Y-m-d') . 'T' . $this->end_time->format('H:i:s');
+    }
+
+    /**
+     * Cor do evento
+     */
+    protected function getEventColor(): string
+    {
+        $colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+        $advertiseId = $this->advertiseAnswer->advertise->id ?? 0;
+        return $colors[$advertiseId % count($colors)];
+    }
+
+    // ... mantém todos os outros métodos existentes ...
+
     /**
      * Get the advertise answer that owns the schedule.
      */
@@ -43,10 +107,10 @@ class Schedule extends Model
         return $this->hasOneThrough(
             Contact::class,
             AdvertiseAnswer::class,
-            'id', // Foreign key on AdvertiseAnswer table
-            'id', // Foreign key on Contact table
-            'advertise_answer_id', // Local key on Schedule table
-            'contact_id' // Local key on AdvertiseAnswer table
+            'id',
+            'id',
+            'advertise_answer_id',
+            'contact_id'
         );
     }
 
@@ -82,10 +146,10 @@ class Schedule extends Model
         return $this->hasOneThrough(
             Advertise::class,
             AdvertiseAnswer::class,
-            'id', // Foreign key on AdvertiseAnswer table
-            'id', // Foreign key on Advertise table
-            'advertise_answer_id', // Local key on Schedule table
-            'advertise_id' // Local key on AdvertiseAnswer table
+            'id',
+            'id',
+            'advertise_answer_id',
+            'advertise_id'
         );
     }
 
@@ -96,8 +160,6 @@ class Schedule extends Model
     {
         return $this->advertiseAnswer->advertise->title ?? null;
     }
-
-    // ... mantém os outros métodos existentes
 
     /**
      * Get the user that owns the schedule.
@@ -173,7 +235,7 @@ class Schedule extends Model
      */
     public function getFormattedStartTimeAttribute()
     {
-        return Carbon::parse($this->start_time)->format('H:i');
+        return $this->start_time ? Carbon::parse($this->start_time)->format('H:i') : null;
     }
 
     /**
@@ -181,7 +243,7 @@ class Schedule extends Model
      */
     public function getFormattedEndTimeAttribute()
     {
-        return Carbon::parse($this->end_time)->format('H:i');
+        return $this->end_time ? Carbon::parse($this->end_time)->format('H:i') : null;
     }
 
     /**
@@ -189,7 +251,10 @@ class Schedule extends Model
      */
     public function getFormattedPeriodAttribute()
     {
-        return $this->formatted_start_time . ' - ' . $this->formatted_end_time;
+        if ($this->formatted_start_time && $this->formatted_end_time) {
+            return $this->formatted_start_time . ' - ' . $this->formatted_end_time;
+        }
+        return null;
     }
 
     /**
@@ -198,7 +263,6 @@ class Schedule extends Model
     public function setStartTimeAttribute($value)
     {
         if (is_string($value) && preg_match('/^\d{2}:\d{2}$/', $value)) {
-            // Combina com a data atual se não houver date definido
             $date = $this->date ?? now()->format('Y-m-d');
             $this->attributes['start_time'] = Carbon::parse($date . ' ' . $value);
         } else {

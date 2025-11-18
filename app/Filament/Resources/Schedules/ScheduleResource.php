@@ -2,9 +2,6 @@
 
 namespace App\Filament\Resources\Schedules;
 
-use App\Filament\Resources\Schedules\Pages\CreateSchedule;
-use App\Filament\Resources\Schedules\Pages\EditSchedule;
-use App\Filament\Resources\Schedules\Pages\ListSchedules;
 use App\Filament\Resources\Schedules\Schemas\ScheduleForm;
 use App\Filament\Resources\Schedules\Tables\SchedulesTable;
 use App\Models\Schedule;
@@ -30,6 +27,14 @@ class ScheduleResource extends Resource
         return SchedulesTable::configure($table);
     }
 
+    public static function getSchemas(): array
+    {
+        return [
+            'form' => ScheduleForm::class,
+            'table' => SchedulesTable::class,
+        ];
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -40,9 +45,21 @@ class ScheduleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListSchedules::route('/'),
-            'create' => CreateSchedule::route('/create'),
-            'edit' => EditSchedule::route('/{record}/edit'),
+            'index' => Pages\ListSchedules::route('/'),
+            'create' => Pages\CreateSchedule::route('/create'),
+            'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('super_admin') ||
+            auth()->user()->can('view_shared_advertises_bookings') ||
+            Schedule::whereHas('advertiseAnswer.advertise', function ($q) {
+                $q->where('user_id', auth()->id())
+                    ->orWhereHas('associatedUsers', function ($q) {
+                        $q->where('users.id', auth()->id());
+                    });
+            })->exists();
     }
 }

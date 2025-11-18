@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Filament\Resources\Schedules\Pages;
+namespace App\Filament\Resources\ScheduleResource\Pages;
 
+use App\Filament\Resources\ScheduleResource\Widgets\ScheduleCalendarWidget;
 use App\Filament\Resources\Schedules\ScheduleResource;
-use App\Filament\Resources\Schedules\Widgets\ScheduleCalendarWidget;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\Page;
 
-class ListSchedules extends ListRecords
+class CalendarPage extends Page
 {
     protected static string $resource = ScheduleResource::class;
+
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('Novo Agendamento'),
+                ->label('Nova Marcação')
+                ->url(ScheduleResource::getUrl('create')),
         ];
     }
 
@@ -26,7 +28,6 @@ class ListSchedules extends ListRecords
         ];
     }
 
-    // 🔥 MÉTODO PÚBLICO PARA COLUNAS DO WIDGET
     public function getHeaderWidgetsColumns(): int|array
     {
         return 1;
