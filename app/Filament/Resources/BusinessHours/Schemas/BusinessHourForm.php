@@ -16,6 +16,7 @@ class BusinessHourForm
     public static function configure(Schema $schema): Schema
     {
         $user = Auth::user();
+        $canCreateDefault = $user->can('create_default_businesshours');
 
         $fields = [
             Select::make('day')
@@ -35,68 +36,51 @@ class BusinessHourForm
                 ->label('Hora de Fim'),
         ];
 
-        // 🔥 DETERMINA SE ESTAMOS NUM REPEATER PELO CONTEXTO
-        // No Repeater, normalmente não mostramos o campo user_id
-        $isInRepeater = request()->routeIs('filament.admin.resources.advertises.*');
+        if ($canCreateDefault) {
+            $fields[] = Select::make('user_id')
+                ->label('Tipo de Horário')
+                ->options([
+                    '' => 'Horário Default (user_id = NULL)',
+                    $user->id => 'Horário Pessoal (apenas para mim)',
+                    ...User::where('id', '!=', $user->id)
+                        ->pluck('name', 'id')
+                        ->toArray()
+                ])
+                ->default($user->id)
+                ->searchable()
+                ->helperText('Escolha o tipo de horário a criar')
+                ->dehydrated(true);
 
-        if ($isInRepeater) {
-            // 🔥 NO REPEATER: MOSTRA APENAS OS CAMPOS BÁSICOS + user_id HIDDEN
-            array_unshift(
-                $fields,
-                Hidden::make('user_id')
-                    ->default($user->id) // No repeater, assume-se que é pessoal
-                    ->dehydrated(true)
-            );
-
-            return $schema->schema($fields);
-        }
-
-        if ($user->can('create_default_businesshours')) {
-            array_unshift(
-                $fields,
-                Select::make('user_id')
-                    ->label('Associar a Utilizador')
-                    ->options([
-                        '' => '🌍 Horário Default (Para utilizadores que não tenham horários)',
-                        ...User::pluck('name', 'id')
-                    ])
-                    ->default('')
-                    ->searchable()
-                    ->helperText('Selecione um utilizador específico ou "Horário Default" para todos')
-                    ->afterStateUpdated(function ($state) {
-                        \Log::info("DEBUG FORM - User ID selecionado: " . $state);
-                    })
-                    ->dehydrated(true)
-            );
-        }
-        // 🔥 SE O UTILIZADOR TEM PERMISSÃO PARA CRIAR HORÁRIOS DEFAULT
-        elseif ($user->can('create_default_businesshours')) {
-            array_unshift(
-                $fields,
-                Select::make('user_id')
-                    ->label('Tipo de Horário')
-                    ->options([
-                        '' => '🌍 Horário Default (Para utilizadores que não tenham horários)',
-                        $user->id => '👤 Horário Pessoal (Apenas para mim)',
-                    ])
-                    ->default($user->id)
-                    ->helperText('Escolha se quer criar um horário para todos ou apenas para si')
-                    ->afterStateUpdated(function ($state) {
-                        \Log::info("DEBUG FORM - Tipo de horário selecionado: " . $state);
-                    })
-                    ->dehydrated(true)
-            );
-        }
-        // 🔥 UTILIZADORES NORMAIS - APENAS CRIAM PARA SI MESMOS
-        else {
-            array_unshift(
-                $fields,
-                Hidden::make('user_id')
-                    ->default($user->id)
-                    ->dehydrated(true)
-            );
+        } else {
+            $fields[] = Hidden::make('user_id')
+                ->default($user->id)
+                ->dehydrated(true);
         }
 
         return $schema->schema($fields);
+    }
+    public static function forAdvertiseRepeater(): array
+    {
+        return [
+            Select::make('day')
+                ->options(BusinessHour::DAYS)
+                ->required()
+                ->label('Dia da Semana'),
+
+            TimePicker::make('start_time')
+                ->seconds(false)
+                ->required()
+                ->label('Hora de Início'),
+
+            TimePicker::make('end_time')
+                ->seconds(false)
+                ->required()
+                ->after('start_time')
+                ->label('Hora de Fim'),
+
+            Hidden::make('user_id')
+                ->default(auth()->id())
+                ->dehydrated(true),
+        ];
     }
 }

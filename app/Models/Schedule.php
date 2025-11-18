@@ -46,10 +46,28 @@ class Schedule extends Model implements Eventable
     public function toCalendarEvent(): CalendarEvent
     {
         return CalendarEvent::make($this)
-            ->title($this->getEventTitle())
+            ->title($this->getShortEventTitle()) // Título curto
             ->start($this->getEventStart())
             ->end($this->getEventEnd())
-            ->backgroundColor($this->getEventColor()); // ✅ Método correto
+            ->backgroundColor($this->getEventColor())
+            ->extendedProps([
+                'contact' => $this->contact_name,
+                'phone' => $this->contact_phone,
+                'email' => $this->contact_email,
+                'full_title' => $this->getEventTitle(), // Título completo para tooltip
+            ]);
+    }
+
+    protected function getShortEventTitle(): string
+    {
+        $title = $this->advertiseAnswer->advertise->title ?? 'Agendamento';
+
+        // Se for muito longo, encurta
+        if (strlen($title) > 12) {
+            return substr($title, 0, 10) . '...';
+        }
+
+        return $title;
     }
 
     /**
@@ -59,9 +77,10 @@ class Schedule extends Model implements Eventable
     {
         $advertiseTitle = $this->advertiseAnswer->advertise->title ?? 'Sem título';
         $contactName = $this->advertiseAnswer->contact->name ?? 'Sem nome';
-
         return "{$advertiseTitle} - {$contactName}";
     }
+
+
 
     /**
      * Data/hora de início para o calendário
@@ -74,19 +93,17 @@ class Schedule extends Model implements Eventable
     /**
      * Data/hora de fim para o calendário
      */
-    protected function getEventEnd(): string
-    {
-        return $this->date->format('Y-m-d') . 'T' . $this->end_time->format('H:i:s');
-    }
+protected function getEventEnd(): string
+{
+    return $this->date->format('Y-m-d') . 'T' . $this->end_time->format('H:i:s');
+}
 
     /**
      * Cor do evento
      */
     protected function getEventColor(): string
     {
-        $colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
-        $advertiseId = $this->advertiseAnswer->advertise->id ?? 0;
-        return $colors[$advertiseId % count($colors)];
+        return '#3b82f6'; // Azul forte e profissional
     }
 
     // ... mantém todos os outros métodos existentes ...

@@ -12,6 +12,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class BusinessHoursTable
@@ -20,31 +21,29 @@ class BusinessHoursTable
     {
         $user = auth()->user();
         $hasViewAll = $user->can('view_all_businesshours');
+        $canCreateDefault = $user->can('create_default_businesshours');
 
         return $table
             ->columns([
                 TextColumn::make('day')
                     ->sortable()
                     ->label('Dia')
-                    ->formatStateUsing(fn($state) => BusinessHour::DAYS[$state] ?? $state),
+                    ->formatStateUsing(fn($state) => BusinessHour::DAYS[$state] ?? $state)
+                    ->searchable(),
 
                 TextColumn::make('start_time')
-                    ->label('Inicio')
-                    ->time('H:i'),
+                    ->label('Início')
+                    ->time('H:i')
+                    ->sortable(),
 
                 TextColumn::make('end_time')
                     ->label('Fim')
-                    ->time('H:i'),
+                    ->time('H:i')
+                    ->sortable(),
 
-                // 🔥 COLUNA SIMPLES E DIRETA
                 TextColumn::make('Utilizador')
                     ->label('Utilizador')
                     ->state(function ($record) {
-                        \Log::info('DEBUG - Coluna Utilizador:', [
-                            'record_id' => $record->id,
-                            'user_id' => $record->user_id
-                        ]);
-
                         if ($record->user_id === null) {
                             return '🌍 Horário Default';
                         }
@@ -53,20 +52,108 @@ class BusinessHoursTable
                         return $user ? $user->name : 'Utilizador #' . $record->user_id;
                     })
                     ->color(function ($record) {
-                        return $record->user_id === null ? 'info' : 'gray';
+                        return $record->user_id === null ? 'success' : 'gray';
                     })
                     ->sortable()
                     ->badge()
                     ->searchable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('acesso')
+                    ->label('Meus Horários')
+                    ->options([
+                        'meus' => '👤 Apenas os meus horários',
+                        'meus_default' => '👤 Meus + Horários Default',
+                        'todos' => '🌍 Todos os horários',
+                    ])
+                    ->default(function () use ($user, $hasViewAll, $canCreateDefault) {
+                        if ($hasViewAll)
+                            return 'todos';
+                        if ($canCreateDefault)
+                            return 'meus_default';
+                        return 'meus';
+                    })
+                    ->query(function (Builder $query, array $data) use ($user, $hasViewAll) {
+                        if ($hasViewAll) {
+                            if (isset($data['value'])) {
+                                switch ($data['value']) {
+                                    case 'meus':
+                                        $query->where('user_id', $user->id);
+                                        break;
+                                    case 'meus_default':
+                                        $query->where(function ($q) use ($user) {
+                                            $q->where('user_id', $user->id)
+                                                ->orWhereNull('user_id');
+                                        });
+                                        break;
+                                    case 'todos':
+                                        break;
+                                }
+                            }
+                            return;
+                        }
+
+                        if (!isset($data['value'])) {
+                            if ($user->can('create_default_businesshours')) {
+                                $query->where(function ($q) use ($user) {
+                                    $q->where('user_id', $user->id)
+                                        ->orWhereNull('user_id');
+                                });
+                            } else {
+                                $query->where('user_id', $user->id);
+                            }
+                        } else {
+                            switch ($data['value']) {
+                                case 'meus':
+                                    $query->where('user_id', $user->id);
+                                    break;
+                                case 'meus_default':
+                                    $query->where(function ($q) use ($user) {
+                                        $q->where('user_id', $user->id)
+                                            ->orWhereNull('user_id');
+                                    });
+                                    break;
+                            }
+                        }
+                    })
+                    ->hidden(fn() => $user->can('view_all_businesshours')),
+
+                SelectFilter::make('user_id')
+                    ->label('Filtrar por Utilizador')
+                    ->options(function () {
+                        $users = User::query()
+                            ->pluck('name', 'id')
+                            ->toArray();
+
+                        return [
+                            'null' => '🌍 Horário Default',
+                            ...$users
+                        ];
+                    })
+                    ->query(function (Builder $query, array $data) {
+                        if (!isset($data['value'])) {
+                            return;
+                        }
+
+                        if ($data['value'] === 'null') {
+                            $query->whereNull('user_id');
+                        } else {
+                            $query->where('user_id', $data['value']);
+                        }
+                    })
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('day')
+                    ->label('Dia da Semana')
+                    ->options(BusinessHour::DAYS)
+                    ->searchable(),
             ])
             ->actions([
+                EditAction::make(),
                 ReplicateAction::make()
                     ->schema(fn($schema) => BusinessHourForm::configure($schema))
                     ->requiresConfirmation(false),
-                EditAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
@@ -76,26 +163,7 @@ class BusinessHoursTable
             ])
             ->defaultSort('day')
             ->modifyQueryUsing(function (Builder $query) use ($user) {
-                $query->whereNull('advertise_id'); // Apenas templates
-    
-                // 🔥 SE TIVER PERMISSÃO VIEW_ALL, MOSTRA TODOS OS HORÁRIOS
-                if ($user->can('view_all_businesshours')) {
-                    return $query;
-                }
-
-                // 🔥 SE TIVER PERMISSÃO CREATE_DEFAULT, MOSTRA OS SEUS + OS DEFAULT
-                if ($user->can('create_default_businesshours')) {
-                    $query->where(function ($q) use ($user) {
-                        $q->where('user_id', $user->id)
-                            ->orWhereNull('user_id');
-                    });
-                    return $query;
-                }
-
-                // 🔥 UTILIZADORES NORMAIS - APENAS OS SEUS HORÁRIOS
-                $query->where('user_id', $user->id);
-
-                return $query;
+                $query->whereNull('advertise_id');
             });
     }
 }

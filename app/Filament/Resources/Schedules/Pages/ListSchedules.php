@@ -11,24 +11,9 @@ class ListSchedules extends ListRecords
 {
     protected static string $resource = ScheduleResource::class;
 
-    protected function getHeaderActions(): array
+    public function mount(): void
     {
-        return [
-            Actions\CreateAction::make()
-                ->label('Novo Agendamento'),
-        ];
-    }
-
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            ScheduleCalendarWidget::class,
-        ];
-    }
-
-    // 🔥 MÉTODO PÚBLICO PARA COLUNAS DO WIDGET
-    public function getHeaderWidgetsColumns(): int|array
-    {
-        return 1;
+        // Redireciona automaticamente para o calendário
+        redirect()->route('filament.admin.resources.schedules.calendar');
     }
 }

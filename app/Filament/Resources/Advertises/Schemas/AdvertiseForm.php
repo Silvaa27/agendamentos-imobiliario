@@ -79,7 +79,7 @@ class AdvertiseForm
                         Repeater::make('businessHours')
                             ->label('Horários de Funcionamento')
                             ->relationship('businessHours')
-                            ->schema(BusinessHourForm::configure(new Schema())->getComponents())
+                            ->schema(BusinessHourForm::forAdvertiseRepeater())
                             ->default(function ($state, $operation) {
                                 // 🔥 PREENCHE COM OS BUSINESS HOURS DO UTILIZADOR
                                 if ($operation === 'create' && empty($state)) {

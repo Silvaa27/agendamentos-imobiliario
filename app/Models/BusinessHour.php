@@ -45,6 +45,16 @@ class BusinessHour extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function setUserIdAttribute($value)
+    {
+        \Log::info("🎯 MODEL - Valor recebido para user_id:", [
+            'valor_original' => $value,
+            'valor_final' => $value === '' ? null : $value
+        ]);
+
+        $this->attributes['user_id'] = $value === '' ? null : $value;
+    }
+
     /**
      * Scope para business hours do utilizador atual
      */

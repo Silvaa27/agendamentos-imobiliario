@@ -7,6 +7,7 @@ use Carbon\WeekDay;
 use Guava\Calendar\Filament\CalendarWidget;
 use Guava\Calendar\Filament\Actions\CreateAction;
 use Guava\Calendar\ValueObjects\FetchInfo;
+use Guava\Calendar\Enums\CalendarViewType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -18,11 +19,23 @@ class ScheduleCalendarWidget extends CalendarWidget
 
     protected ?string $defaultEventClickAction = 'edit';
 
+    protected CalendarViewType $calendarView = CalendarViewType::ListWeek; // Diário
+
     /**
-     * MÉTODO SIMPLES - retorna o Builder
+     * MÉTODO OTIMIZADO
      */
+
+    public function mount() {
+        $this->setOption('slotMinTime', '08:00:00');
+        $this->setOption('slotMaxTime', '10:00:00');
+    }
     public function getEvents(FetchInfo $info): Collection|Builder|array
     {
+        \Log::info('🎯 CALENDARIO - Buscando eventos', [
+            'user_id' => auth()->id(),
+            'periodo' => $info->start->toDateString() . ' a ' . $info->end->toDateString()
+        ]);
+
         return $this->getQuery()
             ->with(['advertiseAnswer.advertise', 'advertiseAnswer.contact'])
             ->whereBetween('date', [
@@ -58,24 +71,28 @@ class ScheduleCalendarWidget extends CalendarWidget
         });
     }
 
+    /**
+     * CONFIGURAÇÕES MELHORADAS PARA EVENTOS CURTOS
+     */
     public function getFirstDay(): WeekDay
     {
         return WeekDay::Monday;
     }
 
-    public function getSlotMinTime(): string
+
+    public function getAllDaySlot(): bool
     {
-        return '07:00:00';
+        return false; // Não mostrar slot "all day"
     }
 
-    public function getSlotMaxTime(): string
+    public function getNowIndicator(): bool
     {
-        return '22:00:00';
+        return true; // Mostrar indicador de hora atual
     }
 
-    public function getInitialView(): string
+    public function getScrollTime(): string
     {
-        return 'timeGridWeek';
+        return '07:00:00'; // Começar scroll às 7h
     }
 
     public function getLocale(): string
@@ -83,6 +100,9 @@ class ScheduleCalendarWidget extends CalendarWidget
         return 'pt';
     }
 
+    /**
+     * AÇÕES DO CALENDÁRIO
+     */
     public function getDateClickContextMenuActions(): array
     {
         return [
