@@ -37,7 +37,7 @@ class UnavailabilityForm
         ];
 
         // 🔥 SE O UTILIZADOR TEM PERMISSÃO PARA CRIAR DEFAULT
-        if ($user->can('create_default:unavailabilities')) {
+        if ($user->can('create_default_unavailabilities')) {
             array_unshift(
                 $fields,
                 Select::make('unavailability_type')

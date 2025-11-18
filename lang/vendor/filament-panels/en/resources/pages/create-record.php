@@ -2,24 +2,24 @@
 
 return [
 
-    'title' => 'Create :label',
+    'title' => 'Criar :label',
 
-    'breadcrumb' => 'Create',
+    'breadcrumb' => 'Criar',
 
     'form' => [
 
         'actions' => [
 
             'cancel' => [
-                'label' => 'Cancel',
+                'label' => 'Cancelar',
             ],
 
             'create' => [
-                'label' => 'Create',
+                'label' => 'Criar',
             ],
 
             'create_another' => [
-                'label' => 'Create & create another',
+                'label' => 'Guardar e criar outro',
             ],
 
         ],
@@ -29,7 +29,7 @@ return [
     'notifications' => [
 
         'created' => [
-            'title' => 'Created',
+            'title' => 'Criado',
         ],
 
     ],

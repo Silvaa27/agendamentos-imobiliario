@@ -2,29 +2,29 @@
 
 return [
 
-    'title' => 'Reset your password',
+    'title' => 'Redefina sua senha',
 
-    'heading' => 'Reset your password',
+    'heading' => 'Redefina sua senha',
 
     'form' => [
 
         'email' => [
-            'label' => 'Email address',
+            'label' => 'E-mail',
         ],
 
         'password' => [
-            'label' => 'Password',
-            'validation_attribute' => 'password',
+            'label' => 'Senha',
+            'validation_attribute' => 'senha',
         ],
 
         'password_confirmation' => [
-            'label' => 'Confirm password',
+            'label' => 'Confirmar senha',
         ],
 
         'actions' => [
 
             'reset' => [
-                'label' => 'Reset password',
+                'label' => 'Redefinir senha',
             ],
 
         ],
@@ -34,8 +34,8 @@ return [
     'notifications' => [
 
         'throttled' => [
-            'title' => 'Too many reset attempts',
-            'body' => 'Please try again in :seconds seconds.',
+            'title' => 'Muitas tentativas de redefinição',
+            'body' => 'Por favor tente novamente em :seconds segundos.',
         ],
 
     ],

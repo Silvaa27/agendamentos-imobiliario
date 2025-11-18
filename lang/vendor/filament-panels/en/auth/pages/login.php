@@ -4,17 +4,17 @@ return [
 
     'title' => 'Login',
 
-    'heading' => 'Sign in',
+    'heading' => 'Faça login',
 
     'actions' => [
 
         'register' => [
-            'before' => 'or',
-            'label' => 'sign up for an account',
+            'before' => 'ou',
+            'label' => 'crie uma conta',
         ],
 
         'request_password_reset' => [
-            'label' => 'Forgot password?',
+            'label' => 'Esqueceu sua senha?',
         ],
 
     ],
@@ -22,21 +22,21 @@ return [
     'form' => [
 
         'email' => [
-            'label' => 'Email address',
+            'label' => 'E-mail',
         ],
 
         'password' => [
-            'label' => 'Password',
+            'label' => 'Senha',
         ],
 
         'remember' => [
-            'label' => 'Remember me',
+            'label' => 'Lembre de mim',
         ],
 
         'actions' => [
 
             'authenticate' => [
-                'label' => 'Sign in',
+                'label' => 'Login',
             ],
 
         ],
@@ -45,20 +45,20 @@ return [
 
     'multi_factor' => [
 
-        'heading' => 'Verify your identity',
+        'heading' => 'Verifique sua identidade',
 
-        'subheading' => 'To continue signing in, you need to verify your identity.',
+        'subheading' => 'Para continuar o login, você precisa verificar sua identidade.',
 
         'form' => [
 
             'provider' => [
-                'label' => 'How would you like to verify?',
+                'label' => 'Como você gostaria de verificar?',
             ],
 
             'actions' => [
 
                 'authenticate' => [
-                    'label' => 'Confirm sign in',
+                    'label' => 'Confirmar login',
                 ],
 
             ],
@@ -69,15 +69,15 @@ return [
 
     'messages' => [
 
-        'failed' => 'These credentials do not match our records.',
+        'failed' => 'Essas credenciais não correspondem aos nossos registros.',
 
     ],
 
     'notifications' => [
 
         'throttled' => [
-            'title' => 'Too many login attempts',
-            'body' => 'Please try again in :seconds seconds.',
+            'title' => 'Muitas tentativas de login',
+            'body' => 'Por favor tente novamente em :seconds segundos.',
         ],
 
     ],

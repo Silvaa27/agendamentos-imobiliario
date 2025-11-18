@@ -2,22 +2,22 @@
 
 return [
 
-    'title' => 'Edit :label',
+    'title' => 'Editar :label',
 
-    'breadcrumb' => 'Edit',
+    'breadcrumb' => 'Editar',
 
-    'navigation_label' => 'Edit',
+    'navigation_label' => 'Editar',
 
     'form' => [
 
         'actions' => [
 
             'cancel' => [
-                'label' => 'Cancel',
+                'label' => 'Cancelar',
             ],
 
             'save' => [
-                'label' => 'Save changes',
+                'label' => 'Guardar alterações',
             ],
 
         ],
@@ -27,7 +27,7 @@ return [
     'content' => [
 
         'tab' => [
-            'label' => 'Edit',
+            'label' => 'Editar',
         ],
 
     ],
@@ -35,7 +35,7 @@ return [
     'notifications' => [
 
         'saved' => [
-            'title' => 'Saved',
+            'title' => 'Gravado',
         ],
 
     ],

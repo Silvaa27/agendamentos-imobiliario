@@ -2,8 +2,8 @@
 
 return [
 
-    'title' => 'Error while loading page',
+    'title' => 'Erro ao carregar a página',
 
-    'body' => 'There was an error while attempting to load this page. Please try again later.',
+    'body' => 'Ocorreu um erro ao tentar carregar esta página. Por favor, tente novamente mais tarde.',
 
 ];

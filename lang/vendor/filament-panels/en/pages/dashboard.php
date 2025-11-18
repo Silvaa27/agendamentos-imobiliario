@@ -2,23 +2,23 @@
 
 return [
 
-    'title' => 'Dashboard',
+    'title' => 'Painel de Controle',
 
     'actions' => [
 
         'filter' => [
 
-            'label' => 'Filter',
+            'label' => 'Filtros',
 
             'modal' => [
 
-                'heading' => 'Filter',
+                'heading' => 'Filtros',
 
                 'actions' => [
 
                     'apply' => [
 
-                        'label' => 'Apply',
+                        'label' => 'Aplicar',
 
                     ],
 

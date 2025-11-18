@@ -6,13 +6,13 @@ return [
 
         'actions' => [
 
-            'label' => 'Email verification codes',
+            'label' => 'Códigos de verificação por e-mail',
 
-            'below_content' => 'Receive a temporary code at your email address to verify your identity during login.',
+            'below_content' => 'Receba um código temporário no seu e-mail para verificar sua identidade durante o login.',
 
             'messages' => [
-                'enabled' => 'Enabled',
-                'disabled' => 'Disabled',
+                'enabled' => 'Ativado',
+                'disabled' => 'Desativado',
             ],
 
         ],
@@ -21,28 +21,24 @@ return [
 
     'login_form' => [
 
-        'label' => 'Send a code to your email',
+        'label' => 'Enviar um código para seu e-mail',
 
         'code' => [
 
-            'label' => 'Enter the 6-digit code we sent you by email',
+            'label' => 'Digite o código de 6 dígitos que enviamos por e-mail',
 
-            'validation_attribute' => 'code',
+            'validation_attribute' => 'código',
 
             'actions' => [
 
                 'resend' => [
 
-                    'label' => 'Send a new code by email',
+                    'label' => 'Enviar um novo código por e-mail',
 
                     'notifications' => [
 
                         'resent' => [
-                            'title' => 'We\'ve sent you a new code by email',
-                        ],
-
-                        'throttled' => [
-                            'title' => 'Too many resend attempts. Please wait before requesting another code.',
+                            'title' => 'Enviamos um novo código por e-mail',
                         ],
 
                     ],
@@ -53,7 +49,7 @@ return [
 
             'messages' => [
 
-                'invalid' => 'The code you entered is invalid.',
+                'invalid' => 'O código informado é inválido.',
 
             ],
 

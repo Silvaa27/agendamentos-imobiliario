@@ -2,25 +2,25 @@
 
 return [
 
-    'label' => 'Regenerate recovery codes',
+    'label' => 'Gerar novos códigos de recuperação',
 
     'modal' => [
 
-        'heading' => 'Regenerate authenticator app recovery codes',
+        'heading' => 'Gerar novos códigos de recuperação do app autenticador',
 
-        'description' => 'If you lose your recovery codes, you can regenerate them here. Your old recovery codes will be invalidated immediately.',
+        'description' => 'Se você perder seus códigos de recuperação, pode gerá-los novamente aqui. Seus códigos antigos serão invalidados imediatamente.',
 
         'form' => [
 
             'code' => [
 
-                'label' => 'Enter the 6-digit code from the authenticator app',
+                'label' => 'Digite o código de 6 dígitos do app autenticador',
 
-                'validation_attribute' => 'code',
+                'validation_attribute' => 'código',
 
                 'messages' => [
 
-                    'invalid' => 'The code you entered is invalid.',
+                    'invalid' => 'O código informado é inválido.',
 
                 ],
 
@@ -28,9 +28,9 @@ return [
 
             'password' => [
 
-                'label' => 'Or, enter your current password',
+                'label' => 'Ou, digite sua senha atual',
 
-                'validation_attribute' => 'password',
+                'validation_attribute' => 'senha',
 
             ],
 
@@ -39,7 +39,7 @@ return [
         'actions' => [
 
             'submit' => [
-                'label' => 'Regenerate recovery codes',
+                'label' => 'Gerar novos códigos de recuperação',
             ],
 
         ],
@@ -49,7 +49,7 @@ return [
     'notifications' => [
 
         'regenerated' => [
-            'title' => 'New authenticator app recovery codes have been generated',
+            'title' => 'Novos códigos de recuperação do app autenticador foram gerados',
         ],
 
     ],
@@ -58,14 +58,14 @@ return [
 
         'modal' => [
 
-            'heading' => 'New recovery codes',
+            'heading' => 'Novos códigos de recuperação',
 
-            'description' => 'Please save the following recovery codes in a safe place. They will only be shown once, but you\'ll need them if you lose access to your authenticator app:',
+            'description' => 'Salve os seguintes códigos de recuperação em um local seguro. Eles serão exibidos apenas uma vez, mas você precisará deles se perder o acesso ao app autenticador:',
 
             'actions' => [
 
                 'submit' => [
-                    'label' => 'Close',
+                    'label' => 'Fechar',
                 ],
 
             ],

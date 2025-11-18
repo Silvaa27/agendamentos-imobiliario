@@ -42,6 +42,7 @@ return [
     | Section & Tabs
     |--------------------------------------------------------------------------
     */
+
     'section' => 'Entidades',
     'resources' => 'Recursos',
     'widgets' => 'Widgets',
@@ -62,18 +63,26 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    // 'resource_permission_prefixes_labels' => [
-    //     'view' => 'View',
-    //     'view_any' => 'View Any',
-    //     'create' => 'Create',
-    //     'update' => 'Update',
-    //     'delete' => 'Delete',
-    //     'delete_any' => 'Delete Any',
-    //     'force_delete' => 'Force Delete',
-    //     'force_delete_any' => 'Force Delete Any',
-    //     'restore' => 'Restore',
-    //     'reorder' => 'Reorder',
-    //     'restore_any' => 'Restore Any',
-    //     'replicate' => 'Replicate',
-    // ],
+    'resource_permission_prefixes_labels' => [
+        'view' => 'Visualizar',
+        'view_any' => 'Visualizar Todos',
+        'create' => 'Criar',
+        'update' => 'Editar',
+        'delete' => 'Eliminar',
+        'delete_any' => 'Eliminar Todos',
+        'force_delete' => 'Eliminar Permanentemente',
+        'force_delete_any' => 'Eliminar Permanentemente Todos',
+        'restore' => 'Restaurar',
+        'restore_any' => 'Restaurar Todos',
+        'replicate' => 'Replicar',
+        'reorder' => 'Reordenar',
+
+        //Customs
+        'view_all_advertise' => 'Ver todos os anúncios',
+        'view_all_businesshours' => 'Ver Todos os Horários',
+        'create_default_businesshours' => 'Criar Horários Padrão',
+        'view_all_unavailabilities' => 'Ver Todas as Indisponibilidades',
+        'create_default_unavailabilities' => 'Criar Eventos Padrão',
+        'view_shared_advertises_bookings' => 'Ver Marcações de Formulários Partilhados',
+    ],
 ];

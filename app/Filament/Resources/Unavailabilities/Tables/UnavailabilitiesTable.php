@@ -16,7 +16,7 @@ class UnavailabilitiesTable
     public static function configure(Table $table): Table
     {
         $user = auth()->user();
-        $hasViewAll = $user->can('view_all:unavailabilities');
+        $hasViewAll = $user->can('view_all_unavailabilities');
 
         return $table
             ->columns([
@@ -113,7 +113,7 @@ class UnavailabilitiesTable
                 // 🔥 CARREGAMENTO DAS RELAÇÕES
                 $query->with(['user', 'associatedUsers']);
 
-                if ($user->can('view_all:unavailabilities')) {
+                if ($user->can('view_all_unavailabilities')) {
                     return $query;
                 }
 

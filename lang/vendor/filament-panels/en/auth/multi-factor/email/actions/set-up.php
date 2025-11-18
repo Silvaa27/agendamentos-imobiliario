@@ -2,36 +2,32 @@
 
 return [
 
-    'label' => 'Set up',
+    'label' => 'Configurar',
 
     'modal' => [
 
-        'heading' => 'Set up email verification codes',
+        'heading' => 'Configurar códigos de verificação por e-mail',
 
-        'description' => 'You\'ll need to enter the 6-digit code we send you by email each time you sign in or perform sensitive actions. Check your email for a 6-digit code to complete the setup.',
+        'description' => 'Você precisará inserir o código de 6 dígitos que enviamos por e-mail sempre que fizer login ou realizar ações sensíveis. Verifique seu e-mail para obter um código de 6 dígitos e concluir a configuração.',
 
         'form' => [
 
             'code' => [
 
-                'label' => 'Enter the 6-digit code we sent you by email',
+                'label' => 'Digite o código de 6 dígitos que enviamos por e-mail',
 
-                'validation_attribute' => 'code',
+                'validation_attribute' => 'código',
 
                 'actions' => [
 
                     'resend' => [
 
-                        'label' => 'Send a new code by email',
+                        'label' => 'Enviar um novo código por e-mail',
 
                         'notifications' => [
 
                             'resent' => [
-                                'title' => 'We\'ve sent you a new code by email',
-                            ],
-
-                            'throttled' => [
-                                'title' => 'Too many resend attempts. Please wait before requesting another code.',
+                                'title' => 'Enviamos um novo código por e-mail',
                             ],
 
                         ],
@@ -42,7 +38,7 @@ return [
 
                 'messages' => [
 
-                    'invalid' => 'The code you entered is invalid.',
+                    'invalid' => 'O código informado é inválido.',
 
                 ],
 
@@ -53,7 +49,7 @@ return [
         'actions' => [
 
             'submit' => [
-                'label' => 'Enable email verification codes',
+                'label' => 'Ativar códigos de verificação por e-mail',
             ],
 
         ],
@@ -63,7 +59,7 @@ return [
     'notifications' => [
 
         'enabled' => [
-            'title' => 'Email verification codes have been enabled',
+            'title' => 'Os códigos de verificação por e-mail foram ativados',
         ],
 
     ],

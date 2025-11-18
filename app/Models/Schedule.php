@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Schedule extends Model
 {
@@ -29,10 +30,74 @@ class Schedule extends Model
     /**
      * Get the advertise answer that owns the schedule.
      */
-    public function advertiseAnswer()
+    public function advertiseAnswer(): BelongsTo
     {
         return $this->belongsTo(AdvertiseAnswer::class);
     }
+
+    /**
+     * Get the contact through advertise answer.
+     */
+    public function contact(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Contact::class,
+            AdvertiseAnswer::class,
+            'id', // Foreign key on AdvertiseAnswer table
+            'id', // Foreign key on Contact table
+            'advertise_answer_id', // Local key on Schedule table
+            'contact_id' // Local key on AdvertiseAnswer table
+        );
+    }
+
+    /**
+     * Get the contact name through advertise answer.
+     */
+    public function getContactNameAttribute()
+    {
+        return $this->advertiseAnswer->contact->name ?? null;
+    }
+
+    /**
+     * Get the contact email through advertise answer.
+     */
+    public function getContactEmailAttribute()
+    {
+        return $this->advertiseAnswer->contact->email ?? null;
+    }
+
+    /**
+     * Get the contact phone through advertise answer.
+     */
+    public function getContactPhoneAttribute()
+    {
+        return $this->advertiseAnswer->contact->phone_number ?? null;
+    }
+
+    /**
+     * Get the advertise through advertise answer.
+     */
+    public function advertise(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Advertise::class,
+            AdvertiseAnswer::class,
+            'id', // Foreign key on AdvertiseAnswer table
+            'id', // Foreign key on Advertise table
+            'advertise_answer_id', // Local key on Schedule table
+            'advertise_id' // Local key on AdvertiseAnswer table
+        );
+    }
+
+    /**
+     * Get the advertise title through advertise answer.
+     */
+    public function getAdvertiseTitleAttribute()
+    {
+        return $this->advertiseAnswer->advertise->title ?? null;
+    }
+
+    // ... mantém os outros métodos existentes
 
     /**
      * Get the user that owns the schedule.

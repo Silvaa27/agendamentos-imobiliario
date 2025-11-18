@@ -2,14 +2,14 @@
 
 return [
 
-    'title' => 'Reset your password',
+    'title' => 'Redefina sua senha',
 
-    'heading' => 'Forgot password?',
+    'heading' => 'Esqueceu sua senha?',
 
     'actions' => [
 
         'login' => [
-            'label' => 'back to login',
+            'label' => 'voltar ao login',
         ],
 
     ],
@@ -17,13 +17,13 @@ return [
     'form' => [
 
         'email' => [
-            'label' => 'Email address',
+            'label' => 'E-mail',
         ],
 
         'actions' => [
 
             'request' => [
-                'label' => 'Send email',
+                'label' => 'Enviar email',
             ],
 
         ],
@@ -33,12 +33,12 @@ return [
     'notifications' => [
 
         'sent' => [
-            'body' => 'If your account doesn\'t exist, you will not receive the email.',
+            'body' => 'Se sua conta não existir, você não receberá o e-mail.',
         ],
 
         'throttled' => [
-            'title' => 'Too many requests',
-            'body' => 'Please try again in :seconds seconds.',
+            'title' => 'Muitas solicitações',
+            'body' => 'Por favor tente novamente em :seconds segundos.',
         ],
 
     ],

@@ -2,16 +2,16 @@
 
 return [
 
-    'title' => 'Set up two-factor authentication (2FA)',
+    'title' => 'Configurar autenticação de dois fatores (2FA)',
 
-    'heading' => 'Set up two-factor authentication',
+    'heading' => 'Configurar autenticação de dois fatores',
 
-    'subheading' => '2FA adds an extra layer of security to your account by requiring a second form of verification when signing in.',
+    'subheading' => 'A 2FA adiciona uma camada extra de segurança à sua conta ao exigir uma segunda forma de verificação ao entrar.',
 
     'actions' => [
 
         'continue' => [
-            'label' => 'Continue',
+            'label' => 'Continuar',
         ],
 
     ],

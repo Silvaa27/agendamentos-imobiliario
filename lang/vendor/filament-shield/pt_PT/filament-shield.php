@@ -8,10 +8,10 @@ return [
     */
 
     'column.name' => 'Nome',
-    'column.guard_name' => 'Nome da Protecção',
+    'column.guard_name' => 'Guard',
     'column.roles' => 'Funções',
     'column.permissions' => 'Permissões',
-    'column.updated_at' => 'Actualizado em',
+    'column.updated_at' => 'Alterado em',
 
     /*
     |--------------------------------------------------------------------------
@@ -20,10 +20,10 @@ return [
     */
 
     'field.name' => 'Nome',
-    'field.guard_name' => 'Nome da Protecção',
+    'field.guard_name' => 'Guard',
     'field.permissions' => 'Permissões',
-    'field.select_all.name' => 'Selecionar Todos',
-    'field.select_all.message' => 'Selecionar todas as Permissões <span class="text-primary font-medium">Activas</span> para esta função',
+    'field.select_all.name' => 'Selecionar todos',
+    'field.select_all.message' => 'Habilitar todas as permissões para essa função',
 
     /*
     |--------------------------------------------------------------------------
@@ -31,23 +31,22 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'nav.group' => 'Filament Shield',
-    'nav.role.label' => 'Funções',
+    'nav.group' => 'Definições',
+    'nav.role.label' => 'Cargos',
     'nav.role.icon' => 'heroicon-o-shield-check',
-    'resource.label.role' => 'Função',
-    'resource.label.roles' => 'Funções',
+    'resource.label.role' => 'Cargo',
+    'resource.label.roles' => 'Cargos',
 
     /*
     |--------------------------------------------------------------------------
     | Section & Tabs
     |--------------------------------------------------------------------------
     */
-
     'section' => 'Entidades',
     'resources' => 'Recursos',
     'widgets' => 'Widgets',
     'pages' => 'Páginas',
-    'custom' => 'Permissões Personalizadas',
+    'custom' => 'Permissões customizadas',
 
     /*
     |--------------------------------------------------------------------------
@@ -55,7 +54,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'forbidden' => 'Não possui permissões para aceder',
+    'forbidden' => 'Você não tem permissão para acessar',
 
     /*
     |--------------------------------------------------------------------------
@@ -65,16 +64,16 @@ return [
 
     'resource_permission_prefixes_labels' => [
         'view' => 'Visualizar',
-        'view_any' => 'Visualizar Tudo',
+        'view_any' => 'Visualizar Todos',
         'create' => 'Criar',
-        'update' => 'Actualizar',
+        'update' => 'Editar',
         'delete' => 'Eliminar',
-        'delete_any' => 'Eliminar Tudo',
+        'delete_any' => 'Eliminar Todos',
         'force_delete' => 'Eliminar Permanentemente',
-        'force_delete_any' => 'Eliminar Permanentemente Tudo',
+        'force_delete_any' => 'Eliminar Permanentemente Todos',
         'restore' => 'Restaurar',
         'reorder' => 'Reordenar',
-        'restore_any' => 'Restaurar Tudo',
+        'restore_any' => 'Restaurar Todos',
         'replicate' => 'Replicar',
     ],
 ];

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AdvertiseResource extends Resource
 {
     protected static ?string $model = Advertise::class;
+    protected static ?string $permissionPrefix = 'Advertise';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static ?string $modelLabel = 'Anúncio';
@@ -56,7 +57,7 @@ class AdvertiseResource extends Resource
         $user = auth()->user();
 
         // Se o user NÃO tiver a permissão personalizada 'view_all:advertise', aplica filtros
-        if (!$user->can('view_all:advertise')) {
+        if (!$user->can('view_all_advertise')) {
             $query->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)
                     ->orWhereHas('associatedUsers', function ($subQuery) use ($user) {

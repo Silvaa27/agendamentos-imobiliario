@@ -19,7 +19,7 @@ class BusinessHoursTable
     public static function configure(Table $table): Table
     {
         $user = auth()->user();
-        $hasViewAll = $user->can('view_all:businesshours');
+        $hasViewAll = $user->can('view_all_businesshours');
 
         return $table
             ->columns([
@@ -79,12 +79,12 @@ class BusinessHoursTable
                 $query->whereNull('advertise_id'); // Apenas templates
     
                 // 🔥 SE TIVER PERMISSÃO VIEW_ALL, MOSTRA TODOS OS HORÁRIOS
-                if ($user->can('view_all:businesshours')) {
+                if ($user->can('view_all_businesshours')) {
                     return $query;
                 }
 
                 // 🔥 SE TIVER PERMISSÃO CREATE_DEFAULT, MOSTRA OS SEUS + OS DEFAULT
-                if ($user->can('create_default:businesshours')) {
+                if ($user->can('create_default_businesshours')) {
                     $query->where(function ($q) use ($user) {
                         $q->where('user_id', $user->id)
                             ->orWhereNull('user_id');

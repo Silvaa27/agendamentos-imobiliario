@@ -2,36 +2,32 @@
 
 return [
 
-    'label' => 'Turn off',
+    'label' => 'Desativar',
 
     'modal' => [
 
-        'heading' => 'Disable email verification codes',
+        'heading' => 'Desativar códigos de verificação por e-mail',
 
-        'description' => 'Are you sure you want to stop receiving email verification codes? Disabling this will remove an extra layer of security from your account.',
+        'description' => 'Tem certeza de que deseja parar de receber códigos de verificação por e-mail? Desativar isso removerá uma camada extra de segurança da sua conta.',
 
         'form' => [
 
             'code' => [
 
-                'label' => 'Enter the 6-digit code we sent you by email',
+                'label' => 'Digite o código de 6 dígitos que enviamos por e-mail',
 
-                'validation_attribute' => 'code',
+                'validation_attribute' => 'código',
 
                 'actions' => [
 
                     'resend' => [
 
-                        'label' => 'Send a new code by email',
+                        'label' => 'Enviar um novo código por e-mail',
 
                         'notifications' => [
 
                             'resent' => [
-                                'title' => 'We\'ve sent you a new code by email',
-                            ],
-
-                            'throttled' => [
-                                'title' => 'Too many resend attempts. Please wait before requesting another code.',
+                                'title' => 'Enviamos um novo código por e-mail',
                             ],
 
                         ],
@@ -42,7 +38,7 @@ return [
 
                 'messages' => [
 
-                    'invalid' => 'The code you entered is invalid.',
+                    'invalid' => 'O código informado é inválido.',
 
                 ],
 
@@ -53,7 +49,7 @@ return [
         'actions' => [
 
             'submit' => [
-                'label' => 'Disable email verification codes',
+                'label' => 'Desativar códigos de verificação por e-mail',
             ],
 
         ],
@@ -63,7 +59,7 @@ return [
     'notifications' => [
 
         'disabled' => [
-            'title' => 'Email verification codes have been disabled',
+            'title' => 'Os códigos de verificação por e-mail foram desativados',
         ],
 
     ],

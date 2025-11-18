@@ -14,57 +14,57 @@ class AdvertisePolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Advertise');
+        return $authUser->can('view_any_advertise');
     }
 
     public function view(AuthUser $authUser, Advertise $advertise): bool
     {
-        return $authUser->can('View:Advertise');
+        return $authUser->can('view_advertise');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Advertise');
+        return $authUser->can('create_advertise');
     }
 
     public function update(AuthUser $authUser, Advertise $advertise): bool
     {
-        return $authUser->can('Update:Advertise');
+        return $authUser->can('update_advertise');
     }
 
     public function delete(AuthUser $authUser, Advertise $advertise): bool
     {
-        return $authUser->can('Delete:Advertise');
+        return $authUser->can('delete_advertise');
     }
 
     public function restore(AuthUser $authUser, Advertise $advertise): bool
     {
-        return $authUser->can('Restore:Advertise');
+        return $authUser->can('restore_advertise');
     }
 
     public function forceDelete(AuthUser $authUser, Advertise $advertise): bool
     {
-        return $authUser->can('ForceDelete:Advertise');
+        return $authUser->can('force_delete_advertise');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:Advertise');
+        return $authUser->can('force_delete_any_advertise');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:Advertise');
+        return $authUser->can('restore_any_advertise');
     }
 
     public function replicate(AuthUser $authUser, Advertise $advertise): bool
     {
-        return $authUser->can('Replicate:Advertise');
+        return $authUser->can('replicate_advertise');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:Advertise');
+        return $authUser->can('reorder_advertise');
     }
 
 }

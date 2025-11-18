@@ -2,39 +2,39 @@
 
 return [
 
-    'label' => 'Set up',
+    'label' => 'Configurar',
 
     'modal' => [
 
-        'heading' => 'Set up authenticator app',
+        'heading' => 'Configurar app autenticador',
 
         'description' => <<<'BLADE'
-            You'll need an app like Google Authenticator (<x-filament::link href="https://itunes.apple.com/us/app/google-authenticator/id388497605" target="_blank">iOS</x-filament::link>, <x-filament::link href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Android</x-filament::link>) to complete this process.
+            Você precisará de um aplicativo como o Google Authenticator (<x-filament::link href="https://itunes.apple.com/us/app/google-authenticator/id388497605" target="_blank">iOS</x-filament::link>, <x-filament::link href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Android</x-filament::link>) para concluir este processo.
             BLADE,
 
         'content' => [
 
             'qr_code' => [
 
-                'instruction' => 'Scan this QR code with your authenticator app:',
+                'instruction' => 'Escaneie este QR Code com seu app autenticador:',
 
-                'alt' => 'QR code to scan with an authenticator app',
+                'alt' => 'QR Code para escanear com um app autenticador',
 
             ],
 
             'text_code' => [
 
-                'instruction' => 'Or enter this code manually:',
+                'instruction' => 'Ou insira este código manualmente:',
 
                 'messages' => [
-                    'copied' => 'Copied',
+                    'copied' => 'Copiado',
                 ],
 
             ],
 
             'recovery_codes' => [
 
-                'instruction' => 'Please save the following recovery codes in a safe place. They will only be shown once, but you\'ll need them if you lose access to your authenticator app:',
+                'instruction' => 'Salve os seguintes códigos de recuperação em um local seguro. Eles serão exibidos apenas uma vez, mas você precisará deles se perder o acesso ao seu app autenticador:',
 
             ],
 
@@ -44,15 +44,15 @@ return [
 
             'code' => [
 
-                'label' => 'Enter the 6-digit code from the authenticator app',
+                'label' => 'Digite o código de 6 dígitos do app autenticador',
 
-                'validation_attribute' => 'code',
+                'validation_attribute' => 'código',
 
-                'below_content' => 'You will need to enter the 6-digit code from your authenticator app each time you sign in or perform sensitive actions.',
+                'below_content' => 'Você precisará inserir o código de 6 dígitos do seu app autenticador sempre que fizer login ou realizar ações sensíveis.',
 
                 'messages' => [
 
-                    'invalid' => 'The code you entered is invalid.',
+                    'invalid' => 'O código informado é inválido.',
 
                 ],
 
@@ -63,7 +63,7 @@ return [
         'actions' => [
 
             'submit' => [
-                'label' => 'Enable authenticator app',
+                'label' => 'Ativar app autenticador',
             ],
 
         ],
@@ -73,7 +73,7 @@ return [
     'notifications' => [
 
         'enabled' => [
-            'title' => 'Authenticator app has been enabled',
+            'title' => 'App autenticador ativado',
         ],
 
     ],

@@ -2,38 +2,38 @@
 
 return [
 
-    'label' => 'Profile',
+    'label' => 'Perfil',
 
     'form' => [
 
         'email' => [
-            'label' => 'Email address',
+            'label' => 'E-mail',
         ],
 
         'name' => [
-            'label' => 'Name',
+            'label' => 'Nome',
         ],
 
         'password' => [
-            'label' => 'New password',
-            'validation_attribute' => 'password',
+            'label' => 'Nova palavra-passe',
+            'validation_attribute' => 'palavra-passe',
         ],
 
         'password_confirmation' => [
-            'label' => 'Confirm new password',
-            'validation_attribute' => 'password confirmation',
+            'label' => 'Confirmar nova palavra-passe',
+            'validation_attribute' => 'confirmação de palavra-passe',
         ],
 
         'current_password' => [
-            'label' => 'Current password',
-            'below_content' => 'For security, please confirm your password to continue.',
-            'validation_attribute' => 'current password',
+            'label' => 'Palavra-passe atual',
+            'below_content' => 'Por segurança, confirme a sua palavra-passe para continuar.',
+            'validation_attribute' => 'palavra-passe atual',
         ],
 
         'actions' => [
 
             'save' => [
-                'label' => 'Save changes',
+                'label' => 'Guardar alterações',
             ],
 
         ],
@@ -41,18 +41,18 @@ return [
     ],
 
     'multi_factor_authentication' => [
-        'label' => 'Two-factor authentication (2FA)',
+        'label' => 'Autenticação de dois fatores (2FA)',
     ],
 
     'notifications' => [
 
         'email_change_verification_sent' => [
-            'title' => 'Email address change request sent',
-            'body' => 'A request to change your email address has been sent to :email. Please check your email to verify the change.',
+            'title' => 'Pedido de alteração de e-mail enviado',
+            'body' => 'Foi enviado um pedido para alterar o seu endereço de e-mail para :email. Verifique o seu e-mail para confirmar a alteração.',
         ],
 
         'saved' => [
-            'title' => 'Saved',
+            'title' => 'Gravado',
         ],
 
     ],
@@ -60,7 +60,7 @@ return [
     'actions' => [
 
         'cancel' => [
-            'label' => 'Cancel',
+            'label' => 'Cancelar',
         ],
 
     ],

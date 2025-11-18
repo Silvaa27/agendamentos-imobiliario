@@ -6,13 +6,13 @@ return [
 
         'actions' => [
 
-            'label' => 'Authenticator app',
+            'label' => 'App autenticador',
 
-            'below_content' => 'Use a secure app to generate a temporary code for login verification.',
+            'below_content' => 'Use um app seguro para gerar um código temporário para verificação de login.',
 
             'messages' => [
-                'enabled' => 'Enabled',
-                'disabled' => 'Disabled',
+                'enabled' => 'Ativado',
+                'disabled' => 'Desativado',
             ],
 
         ],
@@ -21,25 +21,25 @@ return [
 
     'login_form' => [
 
-        'label' => 'Use a code from your authenticator app',
+        'label' => 'Usar um código do seu app autenticador',
 
         'code' => [
 
-            'label' => 'Enter the 6-digit code from the authenticator app',
+            'label' => 'Digite o código de 6 dígitos do app autenticador',
 
-            'validation_attribute' => 'code',
+            'validation_attribute' => 'código',
 
             'actions' => [
 
                 'use_recovery_code' => [
-                    'label' => 'Use a recovery code instead',
+                    'label' => 'Usar um código de recuperação',
                 ],
 
             ],
 
             'messages' => [
 
-                'invalid' => 'The code you entered is invalid.',
+                'invalid' => 'O código informado é inválido.',
 
             ],
 
@@ -47,13 +47,13 @@ return [
 
         'recovery_code' => [
 
-            'label' => 'Or, enter a recovery code',
+            'label' => 'Ou, digite um código de recuperação',
 
-            'validation_attribute' => 'recovery code',
+            'validation_attribute' => 'código de recuperação',
 
             'messages' => [
 
-                'invalid' => 'The recovery code you entered is invalid.',
+                'invalid' => 'O código de recuperação informado é inválido.',
 
             ],
 

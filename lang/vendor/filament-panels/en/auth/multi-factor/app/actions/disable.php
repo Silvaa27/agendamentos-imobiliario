@@ -2,33 +2,33 @@
 
 return [
 
-    'label' => 'Turn off',
+    'label' => 'Desativar',
 
     'modal' => [
 
-        'heading' => 'Disable authenticator app',
+        'heading' => 'Desativar app autenticador',
 
-        'description' => 'Are you sure you want to stop using the authenticator app? Disabling this will remove an extra layer of security from your account.',
+        'description' => 'Tem certeza de que deseja parar de usar o app autenticador? Desativar isso removerá uma camada extra de segurança da sua conta.',
 
         'form' => [
 
             'code' => [
 
-                'label' => 'Enter the 6-digit code from the authenticator app',
+                'label' => 'Digite o código de 6 dígitos do app autenticador',
 
-                'validation_attribute' => 'code',
+                'validation_attribute' => 'código',
 
                 'actions' => [
 
                     'use_recovery_code' => [
-                        'label' => 'Use a recovery code instead',
+                        'label' => 'Usar um código de recuperação',
                     ],
 
                 ],
 
                 'messages' => [
 
-                    'invalid' => 'The code you entered is invalid.',
+                    'invalid' => 'O código informado é inválido.',
 
                 ],
 
@@ -36,13 +36,13 @@ return [
 
             'recovery_code' => [
 
-                'label' => 'Or, enter a recovery code',
+                'label' => 'Ou, digite um código de recuperação',
 
-                'validation_attribute' => 'recovery code',
+                'validation_attribute' => 'código de recuperação',
 
                 'messages' => [
 
-                    'invalid' => 'The recovery code you entered is invalid.',
+                    'invalid' => 'O código de recuperação informado é inválido.',
 
                 ],
 
@@ -53,7 +53,7 @@ return [
         'actions' => [
 
             'submit' => [
-                'label' => 'Disable authenticator app',
+                'label' => 'Desativar app autenticador',
             ],
 
         ],
@@ -63,7 +63,7 @@ return [
     'notifications' => [
 
         'disabled' => [
-            'title' => 'Authenticator app has been disabled',
+            'title' => 'App autenticador desativado',
         ],
 
     ],

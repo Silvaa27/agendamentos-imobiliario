@@ -4,24 +4,24 @@ return [
 
     'actions' => [
 
-        'Click to',
+        'Clique para',
 
         'copy' => [
-            'label' => 'copy',
+            'label' => 'copiar',
         ],
 
-        'or',
+        'ou',
 
         'download' => [
-            'label' => 'download',
+            'label' => 'baixar',
         ],
 
-        'all the codes at once.',
+        'todos os códigos de uma só vez.',
 
     ],
 
     'messages' => [
-        'copied' => 'Copied',
+        'copied' => 'Copiado',
     ],
 
 ];

@@ -5,8 +5,8 @@ return [
     'notifications' => [
 
         'verified' => [
-            'title' => 'Email address changed',
-            'body' => 'Your email address has been successfully changed to :email.',
+            'title' => 'Endereço de e-mail alterado',
+            'body' => 'Seu endereço de e-mail foi alterado com sucesso para :email.',
         ],
 
     ],

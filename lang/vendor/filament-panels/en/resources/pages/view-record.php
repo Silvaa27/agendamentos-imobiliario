@@ -2,16 +2,16 @@
 
 return [
 
-    'title' => 'View :label',
+    'title' => 'Visualizar :label',
 
-    'breadcrumb' => 'View',
+    'breadcrumb' => 'Visualizar',
 
-    'navigation_label' => 'View',
+    'navigation_label' => 'Visualizar',
 
     'content' => [
 
         'tab' => [
-            'label' => 'View',
+            'label' => 'Visualizar',
         ],
 
     ],

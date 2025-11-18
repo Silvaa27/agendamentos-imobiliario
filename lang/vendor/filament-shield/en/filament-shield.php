@@ -7,12 +7,11 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'column.name' => 'Name',
-    'column.guard_name' => 'Guard Name',
-    'column.team' => 'Team',
-    'column.roles' => 'Roles',
-    'column.permissions' => 'Permissions',
-    'column.updated_at' => 'Updated At',
+    'column.name' => 'Nome',
+    'column.guard_name' => 'Guard',
+    'column.roles' => 'Funções',
+    'column.permissions' => 'Permissões',
+    'column.updated_at' => 'Alterado em',
 
     /*
     |--------------------------------------------------------------------------
@@ -20,13 +19,11 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'field.name' => 'Name',
-    'field.guard_name' => 'Guard Name',
-    'field.permissions' => 'Permissions',
-    'field.team' => 'Team',
-    'field.team.placeholder' => 'Select a team ...',
-    'field.select_all.name' => 'Select All',
-    'field.select_all.message' => 'Enables/Disables all Permissions for this role',
+    'field.name' => 'Nome',
+    'field.guard_name' => 'Guard',
+    'field.permissions' => 'Permissões',
+    'field.select_all.name' => 'Selecionar todos',
+    'field.select_all.message' => 'Habilitar todas as permissões para essa função',
 
     /*
     |--------------------------------------------------------------------------
@@ -34,23 +31,22 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'nav.group' => 'Filament Shield',
-    'nav.role.label' => 'Roles',
+    'nav.group' => 'Definições',
+    'nav.role.label' => 'Cargos',
     'nav.role.icon' => 'heroicon-o-shield-check',
-    'resource.label.role' => 'Role',
-    'resource.label.roles' => 'Roles',
+    'resource.label.role' => 'Cargo',
+    'resource.label.roles' => 'Cargos',
 
     /*
     |--------------------------------------------------------------------------
     | Section & Tabs
     |--------------------------------------------------------------------------
     */
-
-    'section' => 'Entities',
-    'resources' => 'Resources',
+    'section' => 'Entidades',
+    'resources' => 'Recursos',
     'widgets' => 'Widgets',
-    'pages' => 'Pages',
-    'custom' => 'Custom Permissions',
+    'pages' => 'Páginas',
+    'custom' => 'Permissões customizadas',
 
     /*
     |--------------------------------------------------------------------------
@@ -58,7 +54,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'forbidden' => 'You do not have permission to access',
+    'forbidden' => 'Você não tem permissão para acessar',
 
     /*
     |--------------------------------------------------------------------------
@@ -67,17 +63,17 @@ return [
     */
 
     'resource_permission_prefixes_labels' => [
-        'view' => 'View',
-        'view_any' => 'View Any',
-        'create' => 'Create',
-        'update' => 'Update',
-        'delete' => 'Delete',
-        'delete_any' => 'Delete Any',
-        'force_delete' => 'Force Delete',
-        'force_delete_any' => 'Force Delete Any',
-        'restore' => 'Restore',
-        'reorder' => 'Reorder',
-        'restore_any' => 'Restore Any',
-        'replicate' => 'Replicate',
+        'view' => 'Visualizar',
+        'view_any' => 'Visualizar Todos',
+        'create' => 'Criar',
+        'update' => 'Editar',
+        'delete' => 'Eliminar',
+        'delete_any' => 'Eliminar Todos',
+        'force_delete' => 'Eliminar Permanentemente',
+        'force_delete_any' => 'Eliminar Permanentemente Todos',
+        'restore' => 'Restaurar',
+        'reorder' => 'Reordenar',
+        'restore_any' => 'Restaurar Todos',
+        'replicate' => 'Replicar',
     ],
 ];

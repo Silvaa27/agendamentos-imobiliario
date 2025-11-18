@@ -2,15 +2,15 @@
 
 return [
 
-    'title' => 'Register',
+    'title' => 'Cadastrar',
 
-    'heading' => 'Sign up',
+    'heading' => 'Inscrever-se',
 
     'actions' => [
 
         'login' => [
-            'before' => 'or',
-            'label' => 'sign in to your account',
+            'before' => 'ou',
+            'label' => 'faça login em sua conta',
         ],
 
     ],
@@ -18,26 +18,26 @@ return [
     'form' => [
 
         'email' => [
-            'label' => 'Email address',
+            'label' => 'E-mail',
         ],
 
         'name' => [
-            'label' => 'Name',
+            'label' => 'Nome',
         ],
 
         'password' => [
-            'label' => 'Password',
-            'validation_attribute' => 'password',
+            'label' => 'Senha',
+            'validation_attribute' => 'senha',
         ],
 
         'password_confirmation' => [
-            'label' => 'Confirm password',
+            'label' => 'Confirmar senha',
         ],
 
         'actions' => [
 
             'register' => [
-                'label' => 'Sign up',
+                'label' => 'Criar conta',
             ],
 
         ],
@@ -47,8 +47,8 @@ return [
     'notifications' => [
 
         'throttled' => [
-            'title' => 'Too many registration attempts',
-            'body' => 'Please try again in :seconds seconds.',
+            'title' => 'Muitas tentativas de cadastro',
+            'body' => 'Por favor, tente novamente em :seconds segundos.',
         ],
 
     ],

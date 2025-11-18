@@ -2,15 +2,15 @@
 
 return [
 
-    'subject' => 'Your email address is being changed',
+    'subject' => 'Seu endereço de e-mail está sendo alterado',
 
     'lines' => [
-        'We received a request to change the email address associated with your account. Your password was used to confirm this change.',
-        'Once verified, the new email address on your account will be: :email.',
-        'You can block the change before it is verified by clicking the button below.',
-        'If you did not make this request, please contact us immediately.',
+        'Recebemos uma solicitação para alterar o endereço de e-mail associado à sua conta. Sua senha foi usada para confirmar essa alteração.',
+        'Após a verificação, o novo endereço de e-mail da sua conta será: :email.',
+        'Você pode bloquear a alteração antes que ela seja verificada clicando no botão abaixo.',
+        'Se você não fez essa solicitação, entre em contato conosco imediatamente.',
     ],
 
-    'action' => 'Block Email Change',
+    'action' => 'Bloquear alteração de e-mail',
 
 ];

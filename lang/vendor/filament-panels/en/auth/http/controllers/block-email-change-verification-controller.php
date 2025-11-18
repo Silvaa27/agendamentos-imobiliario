@@ -5,13 +5,13 @@ return [
     'notifications' => [
 
         'blocked' => [
-            'title' => 'Email address change blocked',
-            'body' => 'You have successfully blocked an email address change attempt to :email. If you did not make the original request, please contact us immediately.',
+            'title' => 'Alteração de e-mail bloqueada',
+            'body' => 'Você bloqueou com sucesso uma tentativa de alterar o endereço de e-mail para :email. Se você não fez a solicitação original, entre em contato conosco imediatamente.',
         ],
 
         'failed' => [
-            'title' => 'Failed to block email address change',
-            'body' => 'Unfortunately, you were unable to prevent the email address from being changed to :email, since it was already verified before you blocked it. If you did not make the original request, please contact us immediately.',
+            'title' => 'Falha ao bloquear a alteração de e-mail',
+            'body' => 'Infelizmente, não foi possível impedir que o e-mail fosse alterado para :email, pois ele já havia sido verificado antes do bloqueio. Se você não fez a solicitação original, entre em contato conosco imediatamente.',
         ],
 
     ],

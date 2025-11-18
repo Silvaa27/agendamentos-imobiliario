@@ -107,8 +107,8 @@ return [
     */
 
     'permissions' => [
-        'separator' => ':',
-        'case' => 'pascal',
+        'separator' => '_',
+        'case' => 'snake',
         'generate' => true,
     ],
 
@@ -163,7 +163,7 @@ return [
 
     'localization' => [
         'enabled' => true,
-        'key' => 'filament-shield::filament-shield',
+        'key' => 'filament-shield::filament-shield.resource_permission_prefixes_labels',// Namespace base para traduções
     ],
 
     /*
@@ -239,16 +239,17 @@ return [
     |
     | Sometimes you need permissions that don't map to resources, pages, or
     | widgets. Define any custom permissions here and they'll be available
-    | when editing roles in your application.
+    | when editing roles in y   our application.
     |
     */
 
     'custom_permissions' => [
-        'view_all:advertise' => 'Ver Todos os Anúncios',
-        'view_all:businesshours' => 'Ver Todos os Horários',
-        'create_default:businesshours' => 'Criar horarios default',
-        'view_all:unavailabilities' => 'Ver Todas as indisponibilidades',
-        'create_default:unavailabilities' => 'Criar eventos default',
+        'view_all_advertise',
+        'view_all_businesshours',
+        'create_default_businesshours',
+        'view_all_unavailabilities',
+        'create_default_unavailabilities',
+        'view_shared_advertises_bookings',
     ],
 
     /*

@@ -51,9 +51,7 @@ class BusinessHourForm
             return $schema->schema($fields);
         }
 
-        // 🔥 FORMULÁRIO NORMAL: MOSTRA A LÓGICA DE PERMISSÕES
-        // 🔥 SE O UTILIZADOR TEM PERMISSÃO PARA EDITAR TODOS OS HORÁRIOS
-        if ($user->can('edit_all:businesshours')) {
+        if ($user->can('create_default_businesshours')) {
             array_unshift(
                 $fields,
                 Select::make('user_id')
@@ -72,7 +70,7 @@ class BusinessHourForm
             );
         }
         // 🔥 SE O UTILIZADOR TEM PERMISSÃO PARA CRIAR HORÁRIOS DEFAULT
-        elseif ($user->can('create_default:businesshours')) {
+        elseif ($user->can('create_default_businesshours')) {
             array_unshift(
                 $fields,
                 Select::make('user_id')

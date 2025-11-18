@@ -14,57 +14,57 @@ class BusinessHourPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:BusinessHour');
+        return $authUser->can('view_any_business_hour');
     }
 
     public function view(AuthUser $authUser, BusinessHour $businessHour): bool
     {
-        return $authUser->can('View:BusinessHour');
+        return $authUser->can('view_business_hour');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:BusinessHour');
+        return $authUser->can('create_business_hour');
     }
 
     public function update(AuthUser $authUser, BusinessHour $businessHour): bool
     {
-        return $authUser->can('Update:BusinessHour');
+        return $authUser->can('update_business_hour');
     }
 
     public function delete(AuthUser $authUser, BusinessHour $businessHour): bool
     {
-        return $authUser->can('Delete:BusinessHour');
+        return $authUser->can('delete_business_hour');
     }
 
     public function restore(AuthUser $authUser, BusinessHour $businessHour): bool
     {
-        return $authUser->can('Restore:BusinessHour');
+        return $authUser->can('restore_business_hour');
     }
 
     public function forceDelete(AuthUser $authUser, BusinessHour $businessHour): bool
     {
-        return $authUser->can('ForceDelete:BusinessHour');
+        return $authUser->can('force_delete_business_hour');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:BusinessHour');
+        return $authUser->can('force_delete_any_business_hour');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:BusinessHour');
+        return $authUser->can('restore_any_business_hour');
     }
 
     public function replicate(AuthUser $authUser, BusinessHour $businessHour): bool
     {
-        return $authUser->can('Replicate:BusinessHour');
+        return $authUser->can('replicate_business_hour');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:BusinessHour');
+        return $authUser->can('reorder_business_hour');
     }
 
 }

@@ -7,29 +7,29 @@ return [
     'actions' => [
 
         'billing' => [
-            'label' => 'Manage subscription',
+            'label' => 'Gerenciar assinatura',
         ],
 
         'logout' => [
-            'label' => 'Sign out',
+            'label' => 'Sair',
         ],
 
         'open_database_notifications' => [
-            'label' => 'Notifications',
+            'label' => 'Abrir notificações',
         ],
 
         'open_user_menu' => [
-            'label' => 'User menu',
+            'label' => 'Menu do usuário',
         ],
 
         'sidebar' => [
 
             'collapse' => [
-                'label' => 'Collapse sidebar',
+                'label' => 'Recolher barra lateral',
             ],
 
             'expand' => [
-                'label' => 'Expand sidebar',
+                'label' => 'Expandir barra lateral',
             ],
 
         ],
@@ -37,15 +37,15 @@ return [
         'theme_switcher' => [
 
             'dark' => [
-                'label' => 'Enable dark theme',
+                'label' => 'Mudar para tema escuro',
             ],
 
             'light' => [
-                'label' => 'Enable light theme',
+                'label' => 'Mudar para tema claro',
             ],
 
             'system' => [
-                'label' => 'Enable system theme',
+                'label' => 'Mudar para tema do sistema',
             ],
 
         ],
@@ -53,18 +53,18 @@ return [
     ],
 
     'avatar' => [
-        'alt' => 'Avatar of :name',
+        'alt' => 'Avatar de :name',
     ],
 
     'logo' => [
-        'alt' => ':name logo',
+        'alt' => 'Logotipo de :name',
     ],
 
     'tenant_menu' => [
 
         'search_field' => [
-            'label' => 'Tenant search',
-            'placeholder' => 'Search',
+            'label' => 'Buscar locatário',
+            'placeholder' => 'Buscar',
         ],
 
     ],

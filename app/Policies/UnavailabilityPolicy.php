@@ -14,57 +14,57 @@ class UnavailabilityPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Unavailability');
+        return $authUser->can('view_any_unavailability');
     }
 
     public function view(AuthUser $authUser, Unavailability $unavailability): bool
     {
-        return $authUser->can('View:Unavailability');
+        return $authUser->can('view_unavailability');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Unavailability');
+        return $authUser->can('create_unavailability');
     }
 
     public function update(AuthUser $authUser, Unavailability $unavailability): bool
     {
-        return $authUser->can('Update:Unavailability');
+        return $authUser->can('update_unavailability');
     }
 
     public function delete(AuthUser $authUser, Unavailability $unavailability): bool
     {
-        return $authUser->can('Delete:Unavailability');
+        return $authUser->can('delete_unavailability');
     }
 
     public function restore(AuthUser $authUser, Unavailability $unavailability): bool
     {
-        return $authUser->can('Restore:Unavailability');
+        return $authUser->can('restore_unavailability');
     }
 
     public function forceDelete(AuthUser $authUser, Unavailability $unavailability): bool
     {
-        return $authUser->can('ForceDelete:Unavailability');
+        return $authUser->can('force_delete_unavailability');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:Unavailability');
+        return $authUser->can('force_delete_any_unavailability');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:Unavailability');
+        return $authUser->can('restore_any_unavailability');
     }
 
     public function replicate(AuthUser $authUser, Unavailability $unavailability): bool
     {
-        return $authUser->can('Replicate:Unavailability');
+        return $authUser->can('replicate_unavailability');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:Unavailability');
+        return $authUser->can('reorder_unavailability');
     }
 
 }
