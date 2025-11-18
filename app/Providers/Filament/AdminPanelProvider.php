@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Advertises\AdvertiseResource;
+use App\Livewire\CalendarWidget;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
