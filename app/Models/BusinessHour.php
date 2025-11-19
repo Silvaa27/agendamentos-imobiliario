@@ -28,18 +28,12 @@ class BusinessHour extends Model
         'saturday' => 'Sábado',
         'sunday' => 'Domingo',
     ];
-
-    /**
-     * Relação com o advertise
-     */
+    
     public function advertise(): BelongsTo
     {
         return $this->belongsTo(Advertise::class, 'advertise_id');
     }
 
-    /**
-     * Relação com o utilizador
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -51,33 +45,21 @@ class BusinessHour extends Model
         $this->attributes['user_id'] = $value === '' ? null : $value;
     }
 
-    /**
-     * Scope para business hours do utilizador atual
-     */
     public function scopeForCurrentUser($query)
     {
         return $query->where('user_id', auth()->id());
     }
 
-    /**
-     * Scope para templates (business hours sem advertise_id)
-     */
     public function scopeTemplates($query)
     {
         return $query->whereNull('advertise_id');
     }
 
-    /**
-     * Scope para business hours específicos de um advertise
-     */
     public function scopeForAdvertise($query, $advertiseId)
     {
         return $query->where('advertise_id', $advertiseId);
     }
 
-    /**
-     * Gerar business hours a partir dos templates do utilizador
-     */
     public static function getUserTemplatesForAdvertise()
     {
         return self::forCurrentUser()
@@ -93,8 +75,6 @@ class BusinessHour extends Model
             ->toArray();
     }
 
-
-    // No modelo BusinessHour.php
     public function associatedUsers()
     {
         return $this->belongsToMany(User::class, 'business_hour_user');

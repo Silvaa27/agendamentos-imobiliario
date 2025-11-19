@@ -36,13 +36,6 @@ class ScheduleCalendarWidget extends CalendarWidget
     {
         return 'Gerencie seus agendamentos';
     }
-    public function configureEvent(CalendarEvent $event, mixed $record): CalendarEvent
-    {
-        $title = $record->advertiseAnswer->advertise->title ?? 'Agendamento';
-        $contact = $record->advertiseAnswer->contact->name ?? 'Sem contacto';
-
-        return $event->title("{$title} - {$contact}");
-    }
 
     public function getQuery(): Builder
     {

@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'heading' => 'Calendar',
+    'heading' => 'Calendário',
     'today' => 'Hoje',
 ];

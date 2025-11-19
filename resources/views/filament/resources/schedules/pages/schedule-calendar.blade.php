@@ -1,4 +1,3 @@
-{{-- resources/views/filament/pages/calendar.blade.php --}}
 <x-filament::page>
     @if (method_exists($this, 'getHeaderWidgets'))
         @foreach ($this->getHeaderWidgets() as $widget)

@@ -80,7 +80,7 @@ class ViewSchedule extends ViewRecord
                                         $url = $record->advertiseAnswer?->advertise?->url;
 
                                         if (filled($url)) {
-                                            return '🔗 Abrir URL';
+                                            return 'Abrir URL';
                                         }
 
                                         return 'N/A';

@@ -29,35 +29,23 @@ class Advertise extends Model
     {
         return $this->hasMany(AdvertiseAnswer::class);
     }
-
-    /**
-     * Respostas com eager loading das relações necessárias
-     */
+    
     public function advertiseAnswersWithRelations(): HasMany
     {
         return $this->hasMany(AdvertiseAnswer::class)
             ->with(['contact', 'fieldAnswers.advertise_field', 'schedules']);
     }
 
-    /**
-     * Contactos através das respostas
-     */
     public function contacts()
     {
         return $this->hasManyThrough(Contact::class, AdvertiseAnswer::class, 'advertise_id', 'id', 'id', 'contact_id');
     }
 
-    /**
-     * FieldAnswers através das respostas
-     */
     public function allFieldAnswers()
     {
         return $this->hasManyThrough(FieldAnswer::class, AdvertiseAnswer::class, 'advertise_id', 'advertise_answer_id');
     }
 
-    /**
-     * Horários através das respostas
-     */
     public function allSchedules()
     {
         return $this->hasManyThrough(Schedule::class, AdvertiseAnswer::class, 'advertise_id', 'advertise_answer_id');
@@ -80,27 +68,17 @@ class Advertise extends Model
         });
     }
 
-    /**
-     * Utilizador que criou o advertise
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Utilizadores associados que podem gerir este advertise
-     */
     public function associatedUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'advertise_user')
             ->withTimestamps();
     }
 
-
-    /**
-     * Carrega todas as relações necessárias para a view
-     */
     public function loadForView()
     {
         return $this->load([
@@ -113,9 +91,6 @@ class Advertise extends Model
         ]);
     }
 
-    /**
-     * Getter para o número total de respostas
-     */
     public function getTotalAnswersAttribute()
     {
         return $this->advertise_answers()->count();
