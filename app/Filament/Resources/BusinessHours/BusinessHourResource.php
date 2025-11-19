@@ -13,13 +13,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class BusinessHourResource extends Resource
 {
     protected static ?string $model = BusinessHour::class;
     protected static ?string $modelLabel = 'Horário';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|UnitEnum|null $navigationGroup = 'Conteúdo';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClock;
     public static function form(Schema $schema): Schema
     {
         return BusinessHourForm::configure($schema);

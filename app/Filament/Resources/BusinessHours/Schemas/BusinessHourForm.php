@@ -7,7 +7,6 @@ use App\Models\User;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
-use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,19 +36,31 @@ class BusinessHourForm
         ];
 
         if ($canCreateDefault) {
+            $otherUsers = User::where('id', '!=', $user->id)
+                ->whereNotNull('email')
+                ->pluck('name', 'id')
+                ->filter()
+                ->toArray();
+
+            // CORREÇÃO: Usar array_merge em vez de spread operator
+            $options = [
+                null => 'Horário Default (user_id = NULL)',
+                $user->id => 'Horário Pessoal (apenas para mim)',
+            ];
+
+            // Merge manual para preservar as chaves corretas
+            foreach ($otherUsers as $id => $name) {
+                $options[$id] = $name;
+            }
+
             $fields[] = Select::make('user_id')
                 ->label('Tipo de Horário')
-                ->options([
-                    '' => 'Horário Default (user_id = NULL)',
-                    $user->id => 'Horário Pessoal (apenas para mim)',
-                    ...User::where('id', '!=', $user->id)
-                        ->pluck('name', 'id')
-                        ->toArray()
-                ])
+                ->options($options) // ← Array corrigido
                 ->default($user->id)
                 ->searchable()
                 ->helperText('Escolha o tipo de horário a criar')
-                ->dehydrated(true);
+                ->dehydrated(true)
+                ->nullable();
 
         } else {
             $fields[] = Hidden::make('user_id')
@@ -59,6 +70,7 @@ class BusinessHourForm
 
         return $schema->schema($fields);
     }
+
     public static function forAdvertiseRepeater(): array
     {
         return [

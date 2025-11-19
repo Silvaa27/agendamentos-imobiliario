@@ -14,12 +14,8 @@ use Illuminate\Support\Collection;
 
 class ScheduleCalendarWidget extends CalendarWidget
 {
-    protected bool $dateClickEnabled = true;
-    protected bool $eventClickEnabled = true;
-    protected bool $eventDragEnabled = true;
-
-    protected ?string $defaultEventClickAction = 'edit';
-    protected CalendarViewType $calendarView = CalendarViewType::ListWeek;
+    protected bool $eventClickEnabled = true; //Para abrir o menu de contexto
+    protected CalendarViewType $calendarView = CalendarViewType::ListWeek; //Para tipo de lista
 
     public function getEvents(FetchInfo $info): Collection|Builder|array
     {

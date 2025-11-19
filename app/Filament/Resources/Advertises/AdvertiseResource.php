@@ -15,13 +15,14 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class AdvertiseResource extends Resource
 {
     protected static ?string $model = Advertise::class;
     protected static ?string $permissionPrefix = 'Advertise';
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\UnitEnum|null $navigationGroup = 'Conteúdo';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
     protected static ?string $modelLabel = 'Anúncio';
 
     public static function form(Schema $schema): Schema

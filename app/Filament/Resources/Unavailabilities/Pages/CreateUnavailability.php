@@ -13,21 +13,21 @@ class CreateUnavailability extends CreateRecord
     {
         $user = auth()->user();
 
+        \Log::info('DEBUG CREATE - Dados recebidos:', $data);
+
         if (isset($data['unavailability_type'])) {
             switch ($data['unavailability_type']) {
                 case 'global':
-                    $data['user_id'] = null; // Global - sem dono específico
+                    $data['user_id'] = null;
                     $data['associatedUsers'] = [];
                     break;
                 case 'shared':
-                    // 🔥 NOVA LÓGICA: Para partilhadas, o user_id é null (sem dono específico)
-                    // e apenas os utilizadores selecionados têm acesso
                     $data['user_id'] = null;
                     // associatedUsers mantém-se como está
                     break;
                 case 'personal':
                 default:
-                    $data['user_id'] = $user->id; // Pessoal - o criador é o dono
+                    $data['user_id'] = $user->id;
                     $data['associatedUsers'] = [];
                     break;
             }
@@ -35,6 +35,21 @@ class CreateUnavailability extends CreateRecord
             unset($data['unavailability_type']);
         }
 
+        \Log::info('DEBUG CREATE - Dados processados:', $data);
+
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $data = $this->form->getState();
+        $associatedUsers = $data['associatedUsers'] ?? [];
+
+        \Log::info('DEBUG CREATE - afterCreate - associatedUsers para sincronizar:', $associatedUsers);
+
+        // 🔥 SINCRONIZA OS UTILIZADORES ASSOCIADOS APÓS A CRIAÇÃO
+        $this->record->associatedUsers()->sync($associatedUsers);
+
+        \Log::info('DEBUG CREATE - Utilizadores sincronizados na criação com sucesso!');
     }
 }

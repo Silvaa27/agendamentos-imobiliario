@@ -11,13 +11,16 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class ScheduleResource extends Resource
 {
     protected static ?string $model = Schedule::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
+    protected static ?string $modelLabel = 'Agenda';
+    protected static string|UnitEnum|null $navigationGroup = 'Conteúdo';
+    protected static ?string $pluralModelLabel = 'Agenda';
     public static function form(Schema $schema): Schema
     {
         return ScheduleForm::configure($schema);

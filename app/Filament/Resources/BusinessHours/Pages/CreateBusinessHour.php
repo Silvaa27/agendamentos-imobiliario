@@ -9,12 +9,4 @@ class CreateBusinessHour extends CreateRecord
 {
     protected static string $resource = BusinessHourResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        if (isset($data['user_id']) && $data['user_id'] === '') {
-            $data['user_id'] = null;
-        }
-
-        return $data;
-    }
 }

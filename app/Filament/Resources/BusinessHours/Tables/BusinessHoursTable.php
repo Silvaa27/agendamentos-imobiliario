@@ -41,30 +41,39 @@ class BusinessHoursTable
                     ->time('H:i')
                     ->sortable(),
 
-                TextColumn::make('Utilizador')
+                TextColumn::make('user.name')
                     ->label('Utilizador')
                     ->state(function ($record) {
                         if ($record->user_id === null) {
-                            return '🌍 Horário Default';
+                            return 'Horário Default';
                         }
 
                         $user = User::find($record->user_id);
                         return $user ? $user->name : 'Utilizador #' . $record->user_id;
                     })
                     ->color(function ($record) {
-                        return $record->user_id === null ? 'success' : 'gray';
+                        if ($record->user_id === null) {
+                            return 'success';
+                        }
+
+                        if ($record->user_id == auth()->id()) {
+                            return 'primary';
+                        }
+
+                        return 'gray';
                     })
                     ->sortable()
                     ->badge()
                     ->searchable(),
             ])
+            
             ->filters([
                 SelectFilter::make('acesso')
                     ->label('Meus Horários')
                     ->options([
-                        'meus' => '👤 Apenas os meus horários',
-                        'meus_default' => '👤 Meus + Horários Default',
-                        'todos' => '🌍 Todos os horários',
+                        'meus' => 'Apenas os meus horários',
+                        'meus_default' => 'Meus + Horários Default',
+                        'todos' => 'Todos os horários',
                     ])
                     ->default(function () use ($user, $hasViewAll, $canCreateDefault) {
                         if ($hasViewAll)
@@ -126,7 +135,7 @@ class BusinessHoursTable
                             ->toArray();
 
                         return [
-                            'null' => '🌍 Horário Default',
+                            'null' => 'Horário Default',
                             ...$users
                         ];
                     })

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Unavailabilities\Tables;
 
+use App\Filament\Resources\Unavailabilities\Schemas\UnavailabilityForm;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,7 +38,6 @@ class UnavailabilitiesTable
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
 
-                // 🔥 COLUNA MELHORADA - MOSTRA UTILIZADORES ESPECÍFICOS
                 TextColumn::make('visibility_type')
                     ->label($hasViewAll ? 'Visibilidade' : 'Tipo')
                     ->state(function ($record) use ($hasViewAll, $user) {
@@ -48,9 +49,9 @@ class UnavailabilitiesTable
                         if ($record->user_id === null) {
                             if ($record->associatedUsers->count() > 0) {
                                 $userNames = $record->associatedUsers->pluck('name')->join(', ');
-                                return '👥 Partilhada com: ' . $userNames;
+                                return $userNames;
                             }
-                            return '🌍 Global (Todos os utilizadores)';
+                            return 'Global (Todos os utilizadores)';
                         }
 
                         if ($hasViewAll) {
@@ -59,22 +60,22 @@ class UnavailabilitiesTable
 
                             if ($sharedCount > 0) {
                                 $userNames = $record->associatedUsers->pluck('name')->join(', ');
-                                return '👤 ' . $owner->name . ' + ' . $userNames;
+                                return $owner->name . ' + ' . $userNames;
                             }
-                            return '👤 ' . $owner->name;
+                            return $owner->name;
                         } else {
                             if ($record->user_id === $user->id) {
                                 $sharedCount = $record->associatedUsers->count();
                                 if ($sharedCount > 0) {
                                     $userNames = $record->associatedUsers->pluck('name')->join(', ');
-                                    return '👥 Minha (Partilhada com: ' . $userNames . ')';
+                                    return 'Minha (Partilhada com: ' . $userNames . ')';
                                 }
-                                return '👤 Minha';
+                                return 'Minha';
                             }
                             if ($record->associatedUsers->contains($user->id)) {
-                                return '👥 Partilhada comigo';
+                                return 'Partilhada comigo';
                             }
-                            return '🔒 Outros';
+                            return 'Outros';
                         }
                     })
                     ->color(function ($record) use ($hasViewAll, $user) {
@@ -94,12 +95,15 @@ class UnavailabilitiesTable
                         return 'gray';
                     })
                     ->badge()
-                    ->wrap(), // 🔥 PERMITE QUEBRAR LINHA SE FOR MUITO LONGO
+                    ->wrap(),
             ])
             ->filters([])
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
+                ReplicateAction::make()
+                    ->schema(fn($schema) => UnavailabilityForm::configure($schema))
+                    ->requiresConfirmation(false),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -110,7 +114,6 @@ class UnavailabilitiesTable
             ->modifyQueryUsing(function (Builder $query) use ($user) {
                 $query->where('end', '>=', now());
 
-                // 🔥 CARREGAMENTO DAS RELAÇÕES
                 $query->with(['user', 'associatedUsers']);
 
                 if ($user->can('view_all_unavailabilities')) {
