@@ -30,8 +30,6 @@ class Advertise extends Model
         return $this->hasMany(AdvertiseAnswer::class);
     }
 
-    // 🔥 ADICIONA ESTAS RELAÇÕES QUE ESTAVAM A FALTAR:
-
     /**
      * Respostas com eager loading das relações necessárias
      */
@@ -99,7 +97,6 @@ class Advertise extends Model
             ->withTimestamps();
     }
 
-    // 🔥 MÉTODOS AUXILIARES PARA A VIEW:
 
     /**
      * Carrega todas as relações necessárias para a view

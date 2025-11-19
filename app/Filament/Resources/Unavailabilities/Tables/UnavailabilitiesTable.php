@@ -45,7 +45,6 @@ class UnavailabilitiesTable
                             $record->load('associatedUsers');
                         }
 
-                        // LÓGICA SIMPLIFICADA
                         if ($record->user_id === null) {
                             if ($record->associatedUsers->count() > 0) {
                                 $userNames = $record->associatedUsers->pluck('name')->join(', ');
@@ -60,7 +59,7 @@ class UnavailabilitiesTable
 
                             if ($sharedCount > 0) {
                                 $userNames = $record->associatedUsers->pluck('name')->join(', ');
-                                return $owner->name . ' + ' . $userNames;
+                                return $userNames;
                             }
                             return $owner->name;
                         } else {

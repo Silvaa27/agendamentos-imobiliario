@@ -1,5 +1,4 @@
 <?php
-// app/Models/AdvertiseField.php
 
 namespace App\Models;
 

@@ -21,9 +21,9 @@ class UnavailabilityForm
             $fields[] = Select::make('unavailability_type')
                 ->label('Tipo de Indisponibilidade')
                 ->options([
-                    'personal' => '👤 Indisponibilidade Pessoal (Apenas para mim)',
-                    'global' => '🌍 Indisponibilidade Global (Para TODOS os utilizadores)',
-                    'shared' => '👥 Indisponibilidade Partilhada (Selecionar utilizadores específicos)',
+                    'personal' => 'Indisponibilidade Pessoal (Apenas para mim)',
+                    'global' => 'Indisponibilidade Global (Para TODOS os utilizadores)',
+                    'other_user' => 'Indisponibilidade para Outro Utilizador',
                 ])
                 ->default('personal')
                 ->reactive()
@@ -32,26 +32,21 @@ class UnavailabilityForm
             $fields[] = Hidden::make('user_id')
                 ->default($user->id);
 
-        }
-        // 🔥 SE O UTILIZADOR TEM PERMISSÃO EDIT_ALL
-        elseif ($user->can('edit_all:unavailabilities')) {
+        } elseif ($user->can('edit_all_unavailabilities')) {
             $fields[] = Select::make('user_id')
                 ->label('Associar a Utilizador')
                 ->options([
-                    null => '🌍 Indisponibilidade Global (Para todos)',
+                    null => 'Indisponibilidade Global (Para todos)',
                     ...User::pluck('name', 'id')
                 ])
                 ->default(null)
                 ->searchable()
                 ->helperText('Selecione um utilizador específico ou "Global" para todos');
-        }
-        // 🔥 UTILIZADORES NORMAIS
-        else {
+        } else {
             $fields[] = Hidden::make('user_id')
                 ->default($user->id);
         }
 
-        // 🔥 CAMPOS COMUNS A TODOS
         $fields = array_merge($fields, [
             TextInput::make('title')
                 ->label('Título')
@@ -72,27 +67,21 @@ class UnavailabilityForm
                 ->after('start'),
         ]);
 
-        // No início do configure method, adiciona:
-        \Log::info('DEBUG FORM - User permissions:', [
-            'can_create_default' => $user->can('create_default_unavailabilities'),
-            'can_edit_all' => $user->can('edit_all:unavailabilities'),
-            'user_id' => $user->id
-        ]);
+        $fields[] = Select::make('other_user_id')
+            ->label('Utilizador')
+            ->options(User::where('id', '!=', $user->id)->pluck('name', 'id'))
+            ->searchable()
+            ->visible(fn($get) => $get('unavailability_type') === 'other_user')
+            ->helperText('Selecione o utilizador para quem está a criar a indisponibilidade')
+            ->required(fn($get) => $get('unavailability_type') === 'other_user');
 
-        // E no campo associatedUsers, adiciona:
         $fields[] = Select::make('associatedUsers')
             ->label('Partilhar com utilizadores')
             ->options(User::pluck('name', 'id'))
             ->multiple()
             ->preload()
             ->searchable()
-            ->visible(fn($get) => $get('unavailability_type') === 'shared')
-            ->helperText('Selecione os utilizadores com quem quer quer partilhar esta indisponibilidade')
-            ->dehydrated(true)  // ← TRUE para enviar dados
-            ->required(fn($get) => $get('unavailability_type') === 'shared')
-            ->afterStateUpdated(function ($state) {
-                \Log::info('DEBUG FORM - associatedUsers selected:', ['users' => $state]);
-            });
+            ->helperText('Selecione os utilizadores com quem quer partilhar esta indisponibilidade (incluindo você se desejar)');
 
         return $schema->schema($fields);
     }

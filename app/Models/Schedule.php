@@ -106,8 +106,6 @@ protected function getEventEnd(): string
         return '#3b82f6'; // Azul forte e profissional
     }
 
-    // ... mantém todos os outros métodos existentes ...
-
     /**
      * Get the advertise answer that owns the schedule.
      */

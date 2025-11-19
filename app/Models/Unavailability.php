@@ -23,26 +23,23 @@ class Unavailability extends Model
         'end' => 'datetime',
     ];
 
-    // 🔥 DONO DA INDISPONIBILIDADE
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // 🔥 UTILIZADORES COM ACESSO/PARTILHA
     public function associatedUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'unavailability_user');
     }
 
-    // 🔥 SCOPE PARA INDISPONIBILIDADES VISÍVEIS PARA UM UTILIZADOR
     public function scopeVisibleTo($query, User $user)
     {
         return $query->where(function ($q) use ($user) {
-            $q->where('user_id', $user->id) // É o dono
-                ->orWhereNull('user_id') // É global
+            $q->where('user_id', $user->id)
+                ->orWhereNull('user_id') 
                 ->orWhereHas('associatedUsers', function ($q) use ($user) {
-                    $q->where('user_id', $user->id); // Está na lista de partilha
+                    $q->where('user_id', $user->id); 
                 });
         });
     }

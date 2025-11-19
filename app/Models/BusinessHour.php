@@ -12,7 +12,7 @@ class BusinessHour extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', // 👈 ADICIONA ESTE CAMPO
+        'user_id',
         'day',
         'start_time',
         'end_time',
@@ -47,10 +47,6 @@ class BusinessHour extends Model
 
     public function setUserIdAttribute($value)
     {
-        \Log::info("🎯 MODEL - Valor recebido para user_id:", [
-            'valor_original' => $value,
-            'valor_final' => $value === '' ? null : $value
-        ]);
 
         $this->attributes['user_id'] = $value === '' ? null : $value;
     }

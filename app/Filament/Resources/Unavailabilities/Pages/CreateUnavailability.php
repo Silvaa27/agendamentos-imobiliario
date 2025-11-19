@@ -13,19 +13,22 @@ class CreateUnavailability extends CreateRecord
     {
         $user = auth()->user();
 
-        \Log::info('DEBUG CREATE - Dados recebidos:', $data);
-
         if (isset($data['unavailability_type'])) {
             switch ($data['unavailability_type']) {
                 case 'global':
                     $data['user_id'] = null;
                     $data['associatedUsers'] = [];
                     break;
+
                 case 'shared':
-                    // 🔥 PARTILHADA: user_id do criador + associatedUsers na pivot table
                     $data['user_id'] = $user->id;
-                    // associatedUsers mantém-se - será sincronizado na pivot table
                     break;
+
+                case 'other_user':
+                    $data['user_id'] = $data['other_user_id'] ?? $user->id;
+                    $data['associatedUsers'] = [];
+                    break;
+
                 case 'personal':
                 default:
                     $data['user_id'] = $user->id;
@@ -33,10 +36,8 @@ class CreateUnavailability extends CreateRecord
                     break;
             }
 
-            unset($data['unavailability_type']);
+            unset($data['unavailability_type'], $data['other_user_id']);
         }
-
-        \Log::info('DEBUG CREATE - Dados processados:', $data);
 
         return $data;
     }
@@ -46,11 +47,6 @@ class CreateUnavailability extends CreateRecord
         $data = $this->form->getState();
         $associatedUsers = $data['associatedUsers'] ?? [];
 
-        \Log::info('DEBUG CREATE - afterCreate - associatedUsers para sincronizar:', $associatedUsers);
-
-        // 🔥 SINCRONIZA OS UTILIZADORES ASSOCIADOS APÓS A CRIAÇÃO
         $this->record->associatedUsers()->sync($associatedUsers);
-
-        \Log::info('DEBUG CREATE - Utilizadores sincronizados na criação com sucesso!');
     }
 }
