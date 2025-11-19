@@ -71,16 +71,23 @@ class ViewSchedule extends ViewRecord
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextEntry::make('advertiseAnswer.advertise.description')
-                                    ->label('Descrição do Anúncio')
-                                    ->formatStateUsing(fn($state) => $state ?? 'Sem descrição')
-                                    ->columnSpanFull()
-                                    ->html()
-                                    ->extraAttributes(['class' => 'max-w-prose']),
-
                                 TextEntry::make('advertiseAnswer.advertise.user.name')
                                     ->label('Proprietário do Anúncio')
                                     ->formatStateUsing(fn($state) => $state ?? 'N/A'),
+                                TextEntry::make('advertiseAnswer.advertise.url')
+                                    ->label('URL')
+                                    ->getStateUsing(function ($record) {
+                                        $url = $record->advertiseAnswer?->advertise?->url;
+
+                                        if (filled($url)) {
+                                            return '🔗 Abrir URL';
+                                        }
+
+                                        return 'N/A';
+                                    })
+                                    ->url(fn($record) => $record->advertiseAnswer?->advertise?->url)
+                                    ->openUrlInNewTab()
+                                    ->color('primary'),
 
                                 TextEntry::make('advertiseAnswer.advertise.created_at')
                                     ->label('Anúncio Criado em')

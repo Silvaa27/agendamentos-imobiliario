@@ -16,36 +16,7 @@ class UnavailabilityForm
     {
         $user = Auth::user();
         $fields = [];
-
-        if ($user->can('create_default_unavailabilities')) {
-            $fields[] = Select::make('unavailability_type')
-                ->label('Tipo de Indisponibilidade')
-                ->options([
-                    'personal' => 'Indisponibilidade Pessoal (Apenas para mim)',
-                    'global' => 'Indisponibilidade Global (Para TODOS os utilizadores)',
-                    'other_user' => 'Indisponibilidade para Outro Utilizador',
-                ])
-                ->default('personal')
-                ->reactive()
-                ->helperText('Escolha o tipo de indisponibilidade');
-
-            $fields[] = Hidden::make('user_id')
-                ->default($user->id);
-
-        } elseif ($user->can('edit_all_unavailabilities')) {
-            $fields[] = Select::make('user_id')
-                ->label('Associar a Utilizador')
-                ->options([
-                    null => 'Indisponibilidade Global (Para todos)',
-                    ...User::pluck('name', 'id')
-                ])
-                ->default(null)
-                ->searchable()
-                ->helperText('Selecione um utilizador específico ou "Global" para todos');
-        } else {
-            $fields[] = Hidden::make('user_id')
-                ->default($user->id);
-        }
+        $cancreateUnavailabilites = $user->can('create_default_unavailabilities');
 
         $fields = array_merge($fields, [
             TextInput::make('title')
@@ -67,22 +38,36 @@ class UnavailabilityForm
                 ->after('start'),
         ]);
 
-        $fields[] = Select::make('other_user_id')
-            ->label('Utilizador')
-            ->options(User::where('id', '!=', $user->id)->pluck('name', 'id'))
-            ->searchable()
-            ->visible(fn($get) => $get('unavailability_type') === 'other_user')
-            ->helperText('Selecione o utilizador para quem está a criar a indisponibilidade')
-            ->required(fn($get) => $get('unavailability_type') === 'other_user');
+        if ($cancreateUnavailabilites) {
+            $otherUsers = User::where('id', '!=', $user->id)
+                ->whereNotNull('email')
+                ->pluck('name', 'id')
+                ->filter()
+                ->toArray();
 
-        $fields[] = Select::make('associatedUsers')
-            ->label('Partilhar com utilizadores')
-            ->options(User::pluck('name', 'id'))
-            ->multiple()
-            ->preload()
-            ->searchable()
-            ->helperText('Selecione os utilizadores com quem quer partilhar esta indisponibilidade (incluindo você se desejar)');
+            $options = [
+                null => 'Indisponibilidade Default',
+                $user->id => 'Indisponibilidade Pessoal',
+            ];
 
+            foreach ($otherUsers as $id => $name) {
+                $options[$id] = $name;
+            }
+
+            $fields[] = Select::make('user_id')
+                ->label('Tipo de Indisponibilidade')
+                ->options($options)
+                ->default($user->id)
+                ->searchable()
+                ->helperText('Escolha o tipo de indisponiblidade a criar')
+                ->dehydrated(true)
+                ->nullable();
+
+        } else {
+            $fields[] = Hidden::make('user_id')
+                ->default($user->id)
+                ->dehydrated(true);
+        }
         return $schema->schema($fields);
     }
 }

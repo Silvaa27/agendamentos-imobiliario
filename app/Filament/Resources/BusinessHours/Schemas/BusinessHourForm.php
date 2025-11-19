@@ -42,7 +42,6 @@ class BusinessHourForm
                 ->filter()
                 ->toArray();
 
-            // CORREÇÃO: Usar array_merge em vez de spread operator
             $options = [
                 null => 'Horário Default (user_id = NULL)',
                 $user->id => 'Horário Pessoal (apenas para mim)',
