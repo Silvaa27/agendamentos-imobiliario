@@ -21,26 +21,32 @@ class EditUnavailability extends EditRecord
     {
         $user = auth()->user();
 
-        // 🔥 CARREGA OS UTILIZADORES ASSOCIADOS
         $this->record->load('associatedUsers');
         $associatedUsers = $this->record->associatedUsers->pluck('id')->toArray();
 
         $data['associatedUsers'] = $associatedUsers;
 
-        // 🔥 LÓGICA CORRIGIDA PARA DETERMINAR O TIPO
-        if ($this->record->user_id === null && count($associatedUsers) > 0) {
-            $data['unavailability_type'] = 'shared';
-        } elseif ($this->record->user_id === null) {
+        // 🔥 LÓGICA CORRIGIDA - ORDEM IMPORTANTE!
+        if ($this->record->user_id === null) {
+            // user_id = null → GLOBAL (independentemente de ter associatedUsers)
             $data['unavailability_type'] = 'global';
+        } elseif (count($associatedUsers) > 0) {
+            // user_id NÃO é null E tem associatedUsers → PARTILHADA
+            $data['unavailability_type'] = 'shared';
         } else {
+            // user_id NÃO é null E NÃO tem associatedUsers → PESSOAL
             $data['unavailability_type'] = 'personal';
         }
 
-        \Log::info('DEBUG - mutateFormDataBeforeFill:', [
+        \Log::info('DEBUG - mutateFormDataBeforeFill - TIPO DETETADO:', [
             'record_id' => $this->record->id,
             'user_id' => $this->record->user_id,
+            'associatedUsers_count' => count($associatedUsers),
             'associatedUsers' => $associatedUsers,
-            'unavailability_type' => $data['unavailability_type']
+            'unavailability_type' => $data['unavailability_type'],
+            'is_global' => $this->record->user_id === null,
+            'is_shared' => $this->record->user_id !== null && count($associatedUsers) > 0,
+            'is_personal' => $this->record->user_id !== null && count($associatedUsers) === 0,
         ]);
 
         return $data;
@@ -59,8 +65,9 @@ class EditUnavailability extends EditRecord
                     $data['associatedUsers'] = [];
                     break;
                 case 'shared':
-                    $data['user_id'] = null; // 🔥 PARTILHADA TEM user_id = null
-                    // associatedUsers mantém-se como está
+                    // 🔥 PARTILHADA: user_id do criador + associatedUsers na pivot table
+                    $data['user_id'] = $user->id;
+                    // associatedUsers mantém-se - será sincronizado na pivot table
                     break;
                 case 'personal':
                 default:

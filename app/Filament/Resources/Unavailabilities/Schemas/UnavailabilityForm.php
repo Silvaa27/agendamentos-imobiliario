@@ -72,18 +72,27 @@ class UnavailabilityForm
                 ->after('start'),
         ]);
 
-        // 🔥 CAMPO PARA SELECIONAR UTILIZADORES - APENAS PARA TIPO "SHARED"
-        if ($user->can('create_default_unavailabilities')) {
-            $fields[] = Select::make('associatedUsers')
-                ->label('Partilhar com utilizadores')
-                ->options(User::pluck('name', 'id'))
-                ->multiple()
-                ->preload()
-                ->searchable()
-                ->visible(fn($get) => $get('unavailability_type') === 'shared')
-                ->helperText('Selecione os utilizadores com quem quer partilhar esta indisponibilidade')
-                ->dehydrated(false); // ← MUDAR PARA false para não salvar automaticamente
-        }
+        // No início do configure method, adiciona:
+        \Log::info('DEBUG FORM - User permissions:', [
+            'can_create_default' => $user->can('create_default_unavailabilities'),
+            'can_edit_all' => $user->can('edit_all:unavailabilities'),
+            'user_id' => $user->id
+        ]);
+
+        // E no campo associatedUsers, adiciona:
+        $fields[] = Select::make('associatedUsers')
+            ->label('Partilhar com utilizadores')
+            ->options(User::pluck('name', 'id'))
+            ->multiple()
+            ->preload()
+            ->searchable()
+            ->visible(fn($get) => $get('unavailability_type') === 'shared')
+            ->helperText('Selecione os utilizadores com quem quer quer partilhar esta indisponibilidade')
+            ->dehydrated(true)  // ← TRUE para enviar dados
+            ->required(fn($get) => $get('unavailability_type') === 'shared')
+            ->afterStateUpdated(function ($state) {
+                \Log::info('DEBUG FORM - associatedUsers selected:', ['users' => $state]);
+            });
 
         return $schema->schema($fields);
     }

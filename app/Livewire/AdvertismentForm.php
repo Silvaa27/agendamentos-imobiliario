@@ -51,11 +51,11 @@ class AdvertismentForm extends Component implements HasForms
     public bool $showConfirmation = false;
     public ?array $pendingContactUpdate = null;
 
-    // CORREÇÃO: Adicionar propriedades faltantes
+    // Propriedades para controle de disponibilidade do formulário
     public bool $formAvailable = true;
     public string $unavailableMessage = '';
 
-    // ADICIONAR: Estado de sucesso
+    // Estado de sucesso após envio
     public bool $formSubmitted = false;
     public string $successMessage = '';
 
@@ -65,6 +65,7 @@ class AdvertismentForm extends Component implements HasForms
         'start' => null,
         'end' => null,
     ];
+
     public function closePage(): void
     {
         $this->dispatch('close-page-execute');
@@ -74,7 +75,8 @@ class AdvertismentForm extends Component implements HasForms
 
     public function mount($id = null): void
     {
-        $this->advertise = Advertise::with('advertise_fields')->where('uuid', $id)->first();
+        $this->advertise = Advertise::with(['advertise_fields', 'user'])
+            ->where('uuid', $id)->first();
 
         if (!$this->advertise) {
             $this->redirectToAdvertismentList();
@@ -191,7 +193,6 @@ class AdvertismentForm extends Component implements HasForms
     public function getAvailableTimes(): array
     {
         return $this->availableTimes;
-
     }
 
     public function generateBlocks($get)
@@ -210,12 +211,51 @@ class AdvertismentForm extends Component implements HasForms
 
             $this->availableTimes[0] = [];
 
-            $schedules = BusinessHour::where('advertise_id', $this->formId)
-                ->where('day', $dayOfWeek)->get();
+            $schedules = BusinessHour::where(function ($query) {
+                $query->where('advertise_id', $this->formId)
+                    ->orWhere(function ($q) {
+                        $q->whereNull('advertise_id')
+                            ->where('user_id', $this->advertise->user_id);
+                    });
+            })
+                ->where('day', $dayOfWeek)
+                ->get();
+
             $unavailabilities = Unavailability::whereDate('start', '<=', $date)
                 ->whereDate('end', '>=', $date)
+                ->where(function ($query) {
+                    $query->whereNull('user_id')
+                        ->orWhere('user_id', $this->advertise->user_id);
+                })
                 ->get();
+
             $reservas = Schedule::whereDate('date', $date)->get();
+
+            // Log de debug para data específica
+            if ($date->format('Y-m-d') === '2025-11-19') {
+                \Log::info('Debug 2025-11-19 - Todas as indisponibilidades:', [
+                    'todas_indisponibilidades' => Unavailability::whereDate('start', '<=', $date)
+                        ->whereDate('end', '>=', $date)
+                        ->get()
+                        ->map(function ($u) {
+                            return [
+                                'id' => $u->id,
+                                'title' => $u->title,
+                                'user_id' => $u->user_id,
+                                'start' => $u->start,
+                                'end' => $u->end,
+                                'associated_users' => $u->associatedUsers->pluck('id')->toArray(),
+                            ];
+                        })->toArray(),
+                    'filtradas' => $unavailabilities->map(function ($u) {
+                        return [
+                            'id' => $u->id,
+                            'title' => $u->title,
+                            'user_id' => $u->user_id,
+                        ];
+                    })->toArray(),
+                ]);
+            }
 
             foreach ($schedules as $schedule) {
                 $start = Carbon::createFromTimeString($schedule->start_time);
@@ -243,6 +283,7 @@ class AdvertismentForm extends Component implements HasForms
                     $start->addMinutes($blockDuration);
                 }
             }
+
         } catch (\Exception $e) {
             \Log::error('Erro no generateBlocks: ' . $e->getMessage());
             \Log::error('State data:', $state);
@@ -261,7 +302,6 @@ class AdvertismentForm extends Component implements HasForms
         try {
             $state = $this->form->getState();
 
-            // CORREÇÃO: Verificar se formAvailable ainda é true
             if (!$this->formAvailable) {
                 $this->isSubmitting = false;
                 return;
@@ -343,7 +383,7 @@ class AdvertismentForm extends Component implements HasForms
             $this->saveSelectedTimeSlots($advertiseAnswer->id, $state);
             $this->sendConfirmationEmail($contactId, $advertiseAnswer);
 
-            // ADICIONAR: Definir estado de sucesso
+            // Definir estado de sucesso
             $this->formSubmitted = true;
             $this->successMessage = 'Formulário submetido com sucesso! Obrigado pela sua participação.';
 
@@ -358,40 +398,37 @@ class AdvertismentForm extends Component implements HasForms
         }
     }
 
-    /**
-     * Envia email de confirmação usando Mailtrap
-     */
     private function sendConfirmationEmail(int $contactId, AdvertiseAnswer $advertiseAnswer): void
     {
         try {
-            \Log::info("🔍 INICIANDO ENVIO DE EMAIL");
+            \Log::info("Iniciando envio de email");
             \Log::info("Contact ID: " . $contactId);
             \Log::info("AdvertiseAnswer ID: " . $advertiseAnswer->id);
 
             $contact = Contact::find($contactId);
 
             if (!$contact) {
-                \Log::warning('❌ Contacto não encontrado');
+                \Log::warning('Contacto não encontrado');
                 return;
             }
 
             // Verificar se existe agendamento para esta resposta
             $schedule = Schedule::where('advertise_answer_id', $advertiseAnswer->id)->first();
-            \Log::info("📅 Agendamento encontrado no componente: " . ($schedule ? 'SIM' : 'NÃO'));
+            \Log::info("Agendamento encontrado no componente: " . ($schedule ? 'SIM' : 'NÃO'));
             if ($schedule) {
-                \Log::info("📅 Data: " . $schedule->date);
-                \Log::info("📅 Start: " . $schedule->start_time);
-                \Log::info("📅 End: " . $schedule->end_time);
+                \Log::info("Data: " . $schedule->date);
+                \Log::info("Start: " . $schedule->start_time);
+                \Log::info("End: " . $schedule->end_time);
             }
 
-            \Log::info("📧 Enviando email para: " . $contact->email);
+            \Log::info("Enviando email para: " . $contact->email);
 
             Mail::to($contact->email)->send(new FormSubmissionConfirmation($advertiseAnswer, $contact));
 
-            \Log::info('✅ Email enviado com sucesso');
+            \Log::info('Email enviado com sucesso');
 
         } catch (\Exception $e) {
-            \Log::error('❌ Erro ao enviar email: ' . $e->getMessage());
+            \Log::error('Erro ao enviar email: ' . $e->getMessage());
             \Log::error('Stack trace: ' . $e->getTraceAsString());
         }
     }
@@ -443,9 +480,9 @@ class AdvertismentForm extends Component implements HasForms
         $this->formAvailable = false;
     }
 
-
-
-    // CORREÇÃO: Adicionar método faltante
+    /**
+     * Valida a submissão do formulário
+     */
     private function validateSubmission(array $state): array
     {
         $errors = [];
@@ -625,14 +662,14 @@ class AdvertismentForm extends Component implements HasForms
                     $errors[] = match ($ruleType) {
                         'min' => $this->getMinErrorMessage($value, $ruleValue, $field),
                         'max' => $this->getMaxErrorMessage($value, $ruleValue, $field),
-                        'min_length' => "📏 O campo '{$field->answer}' deve ter pelo menos {$ruleValue} caracteres (atual: " . strlen((string) $value) . ")",
-                        'max_length' => "📏 O campo '{$field->answer}' deve ter no máximo {$ruleValue} caracteres (atual: " . strlen((string) $value) . ")",
-                        'email' => "📧 O campo '{$field->answer}' deve conter um endereço de email válido",
-                        'url' => "🌐 O campo '{$field->answer}' deve conter uma URL válida",
-                        'regex' => "🔍 O campo '{$field->answer}' não corresponde ao formato esperado",
+                        'min_length' => "O campo '{$field->answer}' deve ter pelo menos {$ruleValue} caracteres (atual: " . strlen((string) $value) . ")",
+                        'max_length' => "O campo '{$field->answer}' deve ter no máximo {$ruleValue} caracteres (atual: " . strlen((string) $value) . ")",
+                        'email' => "O campo '{$field->answer}' deve conter um endereço de email válido",
+                        'url' => "O campo '{$field->answer}' deve conter uma URL válida",
+                        'regex' => "O campo '{$field->answer}' não corresponde ao formato esperado",
                         'in' => $this->getInErrorMessage($ruleValue, $field),
                         'not_in' => $this->getNotInErrorMessage($ruleValue, $field),
-                        default => "❌ O campo '{$field->answer}' contém um valor inválido"
+                        default => "O campo '{$field->answer}' contém um valor inválido"
                     };
                 } else {
                     // Mensagem genérica para produção
@@ -660,7 +697,7 @@ class AdvertismentForm extends Component implements HasForms
             default => 'comprimento'
         };
 
-        return "📊 O campo '{$field->answer}' deve ter um {$valueType} mínimo de {$ruleValue} (atual: {$currentValue})";
+        return "O campo '{$field->answer}' deve ter um {$valueType} mínimo de {$ruleValue} (atual: {$currentValue})";
     }
 
     private function getMaxErrorMessage($value, $ruleValue, $field): string
@@ -678,7 +715,7 @@ class AdvertismentForm extends Component implements HasForms
             default => 'comprimento'
         };
 
-        return "📊 O campo '{$field->answer}' deve ter um {$valueType} máximo de {$ruleValue} (atual: {$currentValue})";
+        return "O campo '{$field->answer}' deve ter um {$valueType} máximo de {$ruleValue} (atual: {$currentValue})";
     }
 
     private function getInErrorMessage($ruleValue, $field): string
@@ -702,7 +739,7 @@ class AdvertismentForm extends Component implements HasForms
             default => 'Valores permitidos'
         };
 
-        return "✅ {$valueType}: {$formattedValues}";
+        return "{$valueType}: {$formattedValues}";
     }
 
     /**
@@ -729,12 +766,9 @@ class AdvertismentForm extends Component implements HasForms
             default => 'Valores proibidos'
         };
 
-        return "🚫 {$valueType}: {$formattedValues}";
+        return "{$valueType}: {$formattedValues}";
     }
 
-    /**
-     * Mostra erros de validação detalhados
-     */
     /**
      * Mostra erros de validação detalhados
      */
@@ -750,13 +784,13 @@ class AdvertismentForm extends Component implements HasForms
 
         // Usar HTML para formatação
         $errorMessage = "<div style='text-align: left;'>";
-        $errorMessage .= "<strong>🔍 Detalhes dos erros:</strong><br><br>";
+        $errorMessage .= "<strong>Detalhes dos erros:</strong><br><br>";
 
         foreach ($errors as $index => $error) {
             $errorMessage .= "<strong>" . ($index + 1) . ".</strong> " . $error . "<br><br>";
         }
 
-        $errorMessage .= "<strong>💡 Sugestão:</strong> Verifique os campos destacados e corrija os valores conforme as regras de validação.";
+        $errorMessage .= "<strong>Sugestão:</strong> Verifique os campos destacados e corrija os valores conforme as regras de validação.";
         $errorMessage .= "</div>";
 
         Notification::make()
@@ -1206,7 +1240,7 @@ class AdvertismentForm extends Component implements HasForms
                 ->minValue($field->min_value ?? 0)
                 ->maxValue($field->max_value ?? 100)
                 ->step($field->step ?? 1)
-                ->tooltips($field->show_tooltip ? true : false) // MOSTRA TOOLTIP APENAS SE show_tooltip = 1
+                ->tooltips($field->show_tooltip ? true : false)
                 ->required($required)
                 ->columnSpan('full'),
 
@@ -1271,6 +1305,7 @@ class AdvertismentForm extends Component implements HasForms
             ]);
         }
     }
+
     public function render()
     {
         return view('livewire.advertisment-form', [

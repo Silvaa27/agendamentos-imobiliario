@@ -22,8 +22,9 @@ class CreateUnavailability extends CreateRecord
                     $data['associatedUsers'] = [];
                     break;
                 case 'shared':
-                    $data['user_id'] = null;
-                    // associatedUsers mantém-se como está
+                    // 🔥 PARTILHADA: user_id do criador + associatedUsers na pivot table
+                    $data['user_id'] = $user->id;
+                    // associatedUsers mantém-se - será sincronizado na pivot table
                     break;
                 case 'personal':
                 default:
