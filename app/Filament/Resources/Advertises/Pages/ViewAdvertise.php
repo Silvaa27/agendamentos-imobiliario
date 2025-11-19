@@ -20,7 +20,6 @@ class ViewAdvertise extends ViewRecord
     {
         parent::mount($record);
 
-        // 🔥 CARREGA AS RELAÇÕES NECESSÁRIAS
         $this->record->loadForView();
     }
 
@@ -29,8 +28,7 @@ class ViewAdvertise extends ViewRecord
     {
         return $infolist
             ->schema([
-                // 📝 Respostas Recebidas
-                Section::make('📝 Respostas Recebidas')
+                Section::make('Respostas Recebidas')
                     ->description(function () {
                         $answersCount = $this->record->advertise_answers->count();
                         return "Total: {$answersCount} respostas";
@@ -42,21 +40,21 @@ class ViewAdvertise extends ViewRecord
                                 Section::make(function ($record) {
                                     $name = $record->contact->name ?? 'N/A';
 
-                                    $reservationInfo = '📅 Sem reserva marcada';
+                                    $reservationInfo = 'Sem reserva marcada';
                                     if ($record->schedules && $record->schedules->count() > 0) {
                                         $firstSchedule = $record->schedules->first();
                                         $startTime = $firstSchedule->start_time->format('H:i');
                                         $endTime = $firstSchedule->end_time->format('H:i');
-                                        $dayName = $firstSchedule->date->translatedFormat('l'); // Ex: "Segunda-feira"
+                                        $dayName = $firstSchedule->date->translatedFormat('l');
                                         $date = $firstSchedule->date->format('d/m/Y');
 
                                         $reservationInfo = "{$dayName}, {$date} | {$startTime} - {$endTime}";
                                     }
 
-                                    return "🗓️ {$name} | {$reservationInfo}";
+                                    return " {$name} | {$reservationInfo}";
                                 })
                                     ->schema([
-                                        Section::make('👤 Informações do Contacto')
+                                        Section::make('Informações do Contacto')
                                             ->schema([
                                                 TextEntry::make('contact.name')
                                                     ->label('Nome')
@@ -83,15 +81,13 @@ class ViewAdvertise extends ViewRecord
                                             ->collapsible()
                                             ->collapsed(false),
 
-                                        // 📝 Respostas do Formulário
-                                        Section::make('📝 Respostas do Formulário')
+                                        Section::make('Respostas do Formulário')
                                             ->schema([
                                                 RepeatableEntry::make('fieldAnswers')
                                                     ->label('')
                                                     ->schema([
                                                         Section::make('')
                                                             ->schema([
-                                                                // Cabeçalho com nome do campo
                                                                 TextEntry::make('advertise_field.answer')
                                                                     ->label('')
                                                                     ->weight('bold')
@@ -102,7 +98,6 @@ class ViewAdvertise extends ViewRecord
                                                                     ->default('Campo')
                                                                     ->columnSpanFull(),
 
-                                                                // Tipo do campo e resposta lado a lado
                                                                 TextEntry::make('advertise_field.field_type')
                                                                     ->label('Tipo de Campo')
                                                                     ->formatStateUsing(function ($state) {
@@ -110,17 +105,17 @@ class ViewAdvertise extends ViewRecord
                                                                             return 'Tipo não definido';
 
                                                                         return match ($state) {
-                                                                            'TextInput' => '📝 Texto',
-                                                                            'NumberInput' => '🔢 Número',
-                                                                            'Select' => '📋 Lista Suspensa',
-                                                                            'Radio' => '🔘 Opção Única',
-                                                                            'Checkbox' => '☑️ Checkbox',
-                                                                            'Toggle' => '⚡ Toggle',
-                                                                            'CheckboxList' => '✅ Múltipla Escolha',
-                                                                            'DatePicker' => '📅 Data',
-                                                                            'TimePicker' => '⏰ Hora',
-                                                                            'Slider' => '🎚️ Slider',
-                                                                            'Textarea' => '📄 Área de Texto',
+                                                                            'TextInput' => 'Texto',
+                                                                            'NumberInput' => 'Número',
+                                                                            'Select' => 'Lista Suspensa',
+                                                                            'Radio' => 'Opção Única',
+                                                                            'Checkbox' => 'Checkbox',
+                                                                            'Toggle' => 'Toggle',
+                                                                            'CheckboxList' => 'Múltipla Escolha',
+                                                                            'DatePicker' => 'Data',
+                                                                            'TimePicker' => 'Hora',
+                                                                            'Slider' => 'Slider',
+                                                                            'Textarea' => 'Área de Texto',
                                                                             default => $state,
                                                                         };
                                                                     })
@@ -136,7 +131,7 @@ class ViewAdvertise extends ViewRecord
                                                                     ->icon('heroicon-o-check-circle')
                                                                     ->formatStateUsing(function ($state) {
                                                                         if (empty($state)) {
-                                                                            return '❌ Sem resposta';
+                                                                            return 'Sem resposta';
                                                                         }
 
                                                                         if (is_string($state) && str_starts_with($state, '{"type"')) {
@@ -164,8 +159,7 @@ class ViewAdvertise extends ViewRecord
                                             ->collapsed(false)
                                             ->columnSpanFull(),
 
-                                        // 🕐 Horários Reservados
-                                        Section::make('🕐 Horários Reservados')
+                                        Section::make('Horários Reservados')
                                             ->schema([
                                                 RepeatableEntry::make('schedules')
                                                     ->label('')
@@ -216,8 +210,7 @@ class ViewAdvertise extends ViewRecord
                     ->collapsible()
                     ->columnSpanFull(),
 
-                // Mensagem quando não há respostas
-                Section::make('📝 Respostas Recebidas')
+                Section::make('Respostas Recebidas')
                     ->schema([
                         TextEntry::make('no_responses')
                             ->label('')

@@ -11,12 +11,9 @@ class CreateBusinessHour extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // 🔥 CONVERTE STRING VAZIA PARA NULL (HORÁRIO DEFAULT)
         if (isset($data['user_id']) && $data['user_id'] === '') {
             $data['user_id'] = null;
         }
-
-        \Log::info('DEBUG - Dados antes de criar BusinessHour:', $data);
 
         return $data;
     }

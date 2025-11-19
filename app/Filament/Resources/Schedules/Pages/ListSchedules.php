@@ -13,7 +13,6 @@ class ListSchedules extends ListRecords
 
     public function mount(): void
     {
-        // Redireciona automaticamente para o calendário
         redirect()->route('filament.admin.resources.schedules.calendar');
     }
 }

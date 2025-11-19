@@ -10,9 +10,6 @@ class CalendarPage extends Page
 {
     protected static string $resource = ScheduleResource::class;
 
-    // REMOVA COMPLETAMENTE a declaração de $view
-    // NÃO declare $view aqui - o Filament usa automático
-
     protected function getHeaderWidgets(): array
     {
         return [

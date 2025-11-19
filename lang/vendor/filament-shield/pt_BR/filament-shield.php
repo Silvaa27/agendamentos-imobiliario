@@ -84,5 +84,6 @@ return [
         'view_all_unavailabilities' => 'Ver Todas as Indisponibilidades',
         'create_default_unavailabilities' => 'Criar Eventos Padrão',
         'view_shared_advertises_bookings' => 'Ver Marcações de Formulários Partilhados',
+        'view_all_schedules' => 'Ver todas as marcações'
     ],
 ];

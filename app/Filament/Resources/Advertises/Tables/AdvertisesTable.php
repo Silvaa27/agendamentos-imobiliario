@@ -50,7 +50,7 @@ class AdvertisesTable
 
                 TextColumn::make('uuid')
                     ->label('Link do Formulário')
-                    ->formatStateUsing(fn() => 'Abrir Formulário') // Texto fixo
+                    ->formatStateUsing(fn() => 'Abrir Formulário')
                     ->url(fn(Advertise $record): string => route('advertisement.respond', ['id' => $record->uuid]))
                     ->openUrlInNewTab()
                     ->badge()

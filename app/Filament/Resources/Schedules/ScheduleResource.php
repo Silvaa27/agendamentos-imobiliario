@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ScheduleResource extends Resource
 {
@@ -48,19 +49,27 @@ class ScheduleResource extends Resource
             'index' => Pages\ListSchedules::route('/'),
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
-            'calendar' => Pages\CalendarPage::route('/calendar'), // ← Note o "Pages\"
+            'view' => Pages\ViewSchedule::route('/{record}/view'),
+            'calendar' => Pages\CalendarPage::route('/calendar'),
         ];
     }
 
-    public static function canAccess(): bool
+    public static function getEloquentQuery(): Builder
     {
-        return auth()->user()->hasRole('super_admin') ||
-            auth()->user()->can('view_shared_advertises_bookings') ||
-            Schedule::whereHas('advertiseAnswer.advertise', function ($q) {
-                $q->where('user_id', auth()->id())
-                    ->orWhereHas('associatedUsers', function ($q) {
-                        $q->where('users.id', auth()->id());
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (!$user->can('view_all_schedules')) {
+            $query->where(function ($q) use ($user) {
+                $q->whereHas('advertiseAnswer.advertise', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                })
+                    ->orWhereHas('advertiseAnswer.advertise.associatedUsers', function ($subQuery) use ($user) {
+                        $subQuery->where('users.id', $user->id);
                     });
-            })->exists();
+            });
+        }
+
+        return $query;
     }
 }

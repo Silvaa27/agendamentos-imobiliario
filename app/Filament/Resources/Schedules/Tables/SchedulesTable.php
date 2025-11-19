@@ -54,7 +54,6 @@ class SchedulesTable
                     ->label('Período'),
             ])
             ->filters([
-                // 🔥 FILTROS SIMPLES SEM CalendarFilter
                 Tables\Filters\SelectFilter::make('advertise')
                     ->label('Anúncio')
                     ->relationship('advertiseAnswer.advertise', 'title')

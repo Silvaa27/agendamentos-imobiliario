@@ -6,6 +6,7 @@ use App\Models\Schedule;
 use Carbon\WeekDay;
 use Guava\Calendar\Filament\CalendarWidget;
 use Guava\Calendar\Filament\Actions\CreateAction;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 use Guava\Calendar\ValueObjects\FetchInfo;
 use Guava\Calendar\Enums\CalendarViewType;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,24 +19,10 @@ class ScheduleCalendarWidget extends CalendarWidget
     protected bool $eventDragEnabled = true;
 
     protected ?string $defaultEventClickAction = 'edit';
+    protected CalendarViewType $calendarView = CalendarViewType::ListWeek;
 
-    protected CalendarViewType $calendarView = CalendarViewType::ListWeek; // Diário
-
-    /**
-     * MÉTODO OTIMIZADO
-     */
-
-    public function mount() {
-        $this->setOption('slotMinTime', '08:00:00');
-        $this->setOption('slotMaxTime', '10:00:00');
-    }
     public function getEvents(FetchInfo $info): Collection|Builder|array
     {
-        \Log::info('🎯 CALENDARIO - Buscando eventos', [
-            'user_id' => auth()->id(),
-            'periodo' => $info->start->toDateString() . ' a ' . $info->end->toDateString()
-        ]);
-
         return $this->getQuery()
             ->with(['advertiseAnswer.advertise', 'advertiseAnswer.contact'])
             ->whereBetween('date', [
@@ -44,70 +31,40 @@ class ScheduleCalendarWidget extends CalendarWidget
             ]);
     }
 
-    public function getModel(): string
+    public function getHeading(): string
     {
-        return Schedule::class;
+        return 'Calendário de Agendamentos';
+    }
+
+    public function getSubheading(): ?string
+    {
+        return 'Gerencie seus agendamentos';
+    }
+    public function configureEvent(CalendarEvent $event, mixed $record): CalendarEvent
+    {
+        $title = $record->advertiseAnswer->advertise->title ?? 'Agendamento';
+        $contact = $record->advertiseAnswer->contact->name ?? 'Sem contacto';
+
+        return $event->title("{$title} - {$contact}");
     }
 
     public function getQuery(): Builder
     {
         $query = Schedule::query();
+        $user = auth()->user();
 
-        if (
-            auth()->user()->hasRole('super_admin') ||
-            auth()->user()->can('view_shared_advertises_bookings')
-        ) {
-            return $query;
+        if (!$user->can('view_all_schedules')) {
+            $query->where(function ($q) use ($user) {
+                $q->whereHas('advertiseAnswer.advertise', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                })
+                    ->orWhereHas('advertiseAnswer.advertise.associatedUsers', function ($subQuery) use ($user) {
+                        $subQuery->where('users.id', $user->id);
+                    });
+            });
         }
 
-        return $query->where(function ($query) {
-            $query->whereHas('advertiseAnswer.advertise', function ($q) {
-                $q->where('user_id', auth()->id());
-            })->orWhereHas('advertiseAnswer.advertise', function ($q) {
-                $q->whereHas('associatedUsers', function ($q) {
-                    $q->where('users.id', auth()->id());
-                });
-            });
-        });
-    }
-
-    /**
-     * CONFIGURAÇÕES MELHORADAS PARA EVENTOS CURTOS
-     */
-    public function getFirstDay(): WeekDay
-    {
-        return WeekDay::Monday;
-    }
-
-
-    public function getAllDaySlot(): bool
-    {
-        return false; // Não mostrar slot "all day"
-    }
-
-    public function getNowIndicator(): bool
-    {
-        return true; // Mostrar indicador de hora atual
-    }
-
-    public function getScrollTime(): string
-    {
-        return '07:00:00'; // Começar scroll às 7h
-    }
-
-    public function getLocale(): string
-    {
-        return 'pt';
-    }
-
-    /**
-     * AÇÕES DO CALENDÁRIO
-     */
-    public function getDateClickContextMenuActions(): array
-    {
-        return [
-            $this->createScheduleAction(),
-        ];
+        return $query;
     }
 
     public function getEventClickContextMenuActions(): array
@@ -119,9 +76,10 @@ class ScheduleCalendarWidget extends CalendarWidget
         ];
     }
 
-    public function createScheduleAction(): CreateAction
+    public function viewAction(): \Guava\Calendar\Filament\Actions\ViewAction
     {
-        return $this->createAction(Schedule::class)
-            ->authorize('create', Schedule::class);
+        return parent::viewAction()
+            ->url(fn($record) => \App\Filament\Resources\Schedules\ScheduleResource::getUrl('view', ['record' => $record]))
+            ->authorize('view');
     }
 }

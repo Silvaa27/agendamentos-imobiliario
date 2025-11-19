@@ -7,6 +7,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class ScheduleForm
@@ -15,17 +17,19 @@ class ScheduleForm
     {
         return $schema
             ->schema([
-                Select::make('advertise_answer_id')
-                    ->label('Resposta do Anúncio')
-                    ->relationship('advertiseAnswer', 'id')
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) =>
-                        "{$record->advertise->title} - {$record->contact->name}"
-                    )
-                    ->searchable(['advertise.title', 'contact.name'])
-                    ->preload()
-                    ->required()
-                    ->columnSpanFull(),
+                Grid::make(2)
+                    ->schema([
+                        TextEntry::make('advertiseAnswer.advertise.title')
+                            ->label('Anúncio')
+                            ->formatStateUsing(fn($state) => $state ?? 'N/A')
+                            ->weight('font-medium')
+                            ->color('primary'),
+
+                        TextEntry::make('advertiseAnswer.contact.name')
+                            ->label('Cliente')
+                            ->formatStateUsing(fn($state) => $state ?? 'N/A')
+                            ->weight('font-medium'),
+                    ]),
 
                 DatePicker::make('date')
                     ->label('Data')

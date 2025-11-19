@@ -249,7 +249,7 @@ return [
         'create_default_businesshours',
         'view_all_unavailabilities',
         'create_default_unavailabilities',
-        'view_shared_advertises_bookings',
+        'view_all_schedules'
     ],
 
     /*

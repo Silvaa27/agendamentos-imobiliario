@@ -27,11 +27,9 @@ class AdvertiseForm
     {
         return $schema
             ->schema([
-                // Campo para associar o utilizador criador (apenas visível para super_admin)
                 Hidden::make('user_id')
                     ->default(auth()->id()),
 
-                // Campo para adicionar outros utilizadores com acesso total a ESTE anúncio
                 Select::make('associatedUsers')
                     ->label('Adicionar utilizadores com acesso total')
                     ->relationship('associatedUsers', 'name')
@@ -40,7 +38,6 @@ class AdvertiseForm
                     ->searchable()
                     ->visible(
                         fn($record): bool =>
-                        // Apenas o criador ou super_admin podem adicionar utilizadores
                         !$record ||
                         $record->user_id === auth()->id() ||
                         auth()->user()->hasRole('super_admin')
@@ -81,16 +78,13 @@ class AdvertiseForm
                             ->relationship('businessHours')
                             ->schema(BusinessHourForm::forAdvertiseRepeater())
                             ->default(function ($state, $operation) {
-                                // 🔥 PREENCHE COM OS BUSINESS HOURS DO UTILIZADOR
                                 if ($operation === 'create' && empty($state)) {
                                     $user = auth()->user();
 
-                                    // 🔥 PRIMEIRO: Tenta buscar horários pessoais do utilizador
                                     $personalBusinessHours = BusinessHour::where('user_id', $user->id)
                                         ->whereNull('advertise_id')
                                         ->get();
 
-                                    // 🔥 SE O UTILIZADOR TEM HORÁRIOS PESSOAIS, USA ESSES
                                     if ($personalBusinessHours->count() > 0) {
                                         return $personalBusinessHours->map(function ($hour) {
                                             return [
@@ -102,7 +96,6 @@ class AdvertiseForm
                                         })->toArray();
                                     }
 
-                                    // 🔥 SE NÃO TEM HORÁRIOS PESSOAIS, USA OS HORÁRIOS DEFAULT (user_id = null)
                                     $defaultBusinessHours = BusinessHour::whereNull('user_id')
                                         ->whereNull('advertise_id')
                                         ->get();
@@ -166,16 +159,13 @@ class AdvertiseForm
                             ])
                             ->live()
                             ->afterStateUpdated(function ($state, callable $set) {
-                                // Limpar configurações específicas quando o tipo muda
                                 $set('options', []);
                                 $set('min_value', null);
                                 $set('max_value', null);
                                 $set('step', null);
 
-                                // Limpar regras de validação quando o tipo muda
                                 $set('validation_rules', []);
 
-                                // Para Slider e NumberInput, manter min/max, para outros limpar
                                 if (!in_array($state, ['Slider', 'NumberInput'])) {
                                     $set('min_value', null);
                                     $set('max_value', null);
@@ -204,12 +194,10 @@ class AdvertiseForm
                         $fieldType = $get('field_type');
                         $schema = [];
 
-                        // Verificar se fieldType não é nulo
                         if (!$fieldType) {
                             return $schema;
                         }
 
-                        // Opções para campos de seleção
                         if (in_array($fieldType, ['Select', 'Radio', 'CheckboxList'])) {
                             $schema[] = Repeater::make('options')
                                 ->label('Opções Disponíveis')
@@ -228,7 +216,6 @@ class AdvertiseForm
                                 ->columnSpanFull();
                         }
 
-                        // Configurações numéricas para Slider e NumberInput
                         if (in_array($fieldType, ['Slider', 'NumberInput'])) {
                             $schema[] = Grid::make(1)
                                 ->schema([
@@ -258,7 +245,6 @@ class AdvertiseForm
                                 ]);
                         }
 
-                        // Regras de Validação baseadas no tipo de campo
                         $validationRules = self::getValidationRulesForFieldType($fieldType);
 
                         if (!empty($validationRules)) {
@@ -325,19 +311,13 @@ class AdvertiseForm
             ->collapsible();
     }
 
-    /**
-     * Define regras de validação específicas para cada tipo de campo
-     * baseado na lógica do Livewire AdvertismentForm
-     */
     private static function getValidationRulesForFieldType(?string $fieldType): array
     {
-        // Se fieldType for nulo, retornar array vazio
         if (!$fieldType) {
             return [];
         }
 
         return match ($fieldType) {
-            // Campos de texto
             'TextInput', 'Textarea' => [
                 'min_length' => 'Comprimento Mínimo',
                 'max_length' => 'Comprimento Máximo',
@@ -346,19 +326,16 @@ class AdvertiseForm
                 'regex' => 'Expressão Regular',
             ],
 
-            // Campos numéricos (Slider e NumberInput)
             'Slider', 'NumberInput' => [
                 'min' => 'Valor Mínimo',
                 'max' => 'Valor Máximo',
             ],
 
-            // Campos de seleção
             'Select', 'Radio', 'CheckboxList' => [
                 'in' => 'Valor Permitido',
                 'not_in' => 'Valor Proibido',
             ],
 
-            // Campos de data/hora
             'DatePicker' => [
                 'min' => 'Data Mínima',
                 'max' => 'Data Máxima',
@@ -369,7 +346,6 @@ class AdvertiseForm
                 'max' => 'Hora Máxima',
             ],
 
-            // Campos booleanos
             'Toggle', 'Checkbox' => [
                 'in' => 'Valores Permitidos',
                 'not_in' => 'Valores Proibidos',
@@ -378,10 +354,6 @@ class AdvertiseForm
             default => [],
         };
     }
-
-    /**
-     * Helper text específico para regras min/max baseado no tipo de campo
-     */
     private static function getMinMaxHelperText(string $fieldType): string
     {
         return match ($fieldType) {
