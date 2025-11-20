@@ -37,6 +37,16 @@ return [
     'resource.label.role' => 'Cargo',
     'resource.label.roles' => 'Cargos',
 
+    'calendar' => [
+        'today' => 'Hoje',
+        'back_to_today' => 'Voltar para hoje',
+        'month' => 'Mês',
+        'week' => 'Semana',
+        'day' => 'Dia',
+        'list' => 'Lista',
+    ],
+
+
     /*
     |--------------------------------------------------------------------------
     | Section & Tabs

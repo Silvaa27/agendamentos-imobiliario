@@ -10,6 +10,11 @@ class CalendarPage extends Page
 {
     protected static string $resource = ScheduleResource::class;
 
+    public function getTitle(): string
+    {
+        return __('Agenda');
+    }
+
     protected function getHeaderWidgets(): array
     {
         return [

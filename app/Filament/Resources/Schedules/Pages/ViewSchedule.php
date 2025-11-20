@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Schedules\Pages;
 
+use App\Filament\Resources\Advertises\Pages\ViewAdvertise;
 use App\Filament\Resources\Schedules\ScheduleResource;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
@@ -150,6 +151,10 @@ class ViewSchedule extends ViewRecord
                     ])
                     ->collapsible()
                     ->collapsed(),
+                Section::make('aawdad')
+                ->relationship('advertiseAnswer')
+                ->columnSpanFull()
+                ->schema(fn($livewire)=> (new ViewAdvertise())->fieldAnswerInfolist(new Schema($livewire))),
             ]);
     }
 

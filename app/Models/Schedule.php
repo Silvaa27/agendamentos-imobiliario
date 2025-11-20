@@ -87,7 +87,7 @@ class Schedule extends Model implements Eventable
 
     protected function getEventColor(): string
     {
-        return '#3b82f6';
+        return '#f59e0bff';
     }
 
     public function advertiseAnswer(): BelongsTo
@@ -214,7 +214,7 @@ class Schedule extends Model implements Eventable
             $this->attributes['start_time'] = $value;
         }
     }
-    
+
     public function setEndTimeAttribute($value)
     {
         if (is_string($value) && preg_match('/^\d{2}:\d{2}$/', $value)) {

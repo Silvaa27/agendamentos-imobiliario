@@ -9,6 +9,14 @@ return [
     'schedule' => 'Agendamento',
     'advertises' => 'Anúncios',
     'business_hours' => 'Horários',
+    'schedules' => 'Horários',
     'unavailabilities' => 'Indisponibilidades',
     'user_bookings' => 'Marcações',
+
+    // Adicione estas traduções para o calendário
+    'calendar' => 'Calendário',
+    'agenda' => 'Agenda',
+    'calendar_page' => 'Página do Calendário',
+
+    'today' => 'Hoje',
 ];

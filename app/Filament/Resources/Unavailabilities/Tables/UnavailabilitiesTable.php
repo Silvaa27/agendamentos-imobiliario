@@ -50,29 +50,24 @@ class UnavailabilitiesTable
                                 $userNames = $record->associatedUsers->pluck('name')->join(', ');
                                 return $userNames;
                             }
-                            return 'Global (Todos os utilizadores)';
+                            return 'Global';
                         }
 
                         if ($hasViewAll) {
                             $owner = User::find($record->user_id);
+                            $owner_name = $owner->name;
                             $sharedCount = $record->associatedUsers->count();
 
                             if ($sharedCount > 0) {
                                 $userNames = $record->associatedUsers->pluck('name')->join(', ');
                                 return $userNames;
                             }
-                            return $owner->name;
+                            return $owner_name;
                         } else {
                             if ($record->user_id === $user->id) {
+                                $owner_name = $user->name;
                                 $sharedCount = $record->associatedUsers->count();
-                                if ($sharedCount > 0) {
-                                    $userNames = $record->associatedUsers->pluck('name')->join(', ');
-                                    return 'Minha (Partilhada com: ' . $userNames . ')';
-                                }
-                                return 'Minha';
-                            }
-                            if ($record->associatedUsers->contains($user->id)) {
-                                return 'Partilhada comigo';
+                                return $owner_name;
                             }
                             return 'Outros';
                         }
