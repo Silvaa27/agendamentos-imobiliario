@@ -59,12 +59,9 @@ class Schedule extends Model implements Eventable
     {
         $title = $this->advertiseAnswer->advertise->title ?? 'Agendamento';
         $contact = $this->advertiseAnswer->contact->name ?? 'Contacto';
+        $mobile = $this->advertiseAnswer->contact->phone_number ?? 'Mobile';
 
-        $grupo = $title . ' (' . $contact . ')';
-
-        if (strlen($grupo) > 20) {
-            return substr($grupo, 0, 17) . '...';
-        }
+        $grupo = $title . ' (' . $contact . ' - '. $mobile .')';
 
         return $grupo;
     }

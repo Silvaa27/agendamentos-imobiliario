@@ -107,10 +107,6 @@ class AdvertisesTable
                         }),
                 ]),
             ])
-            ->emptyStateActions([
-                CreateAction::make()
-                    ->icon('heroicon-o-plus'),
-            ])
             ->defaultSort('created_at', 'desc');
     }
 }

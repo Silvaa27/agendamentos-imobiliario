@@ -43,8 +43,8 @@ class BusinessHourForm
                 ->toArray();
 
             $options = [
-                null => 'Horário Default (user_id = NULL)',
-                $user->id => 'Horário Pessoal (apenas para mim)',
+                null => 'Horário Default',
+                $user->id => 'Horário Pessoal',
             ];
 
             foreach ($otherUsers as $id => $name) {
@@ -56,7 +56,7 @@ class BusinessHourForm
                 ->options($options)
                 ->default($user->id)
                 ->searchable()
-                ->helperText('Escolha o tipo de horário a criar')
+                ->helperText('Escolha a quem este horário se aplica.')
                 ->dehydrated(true)
                 ->nullable();
 

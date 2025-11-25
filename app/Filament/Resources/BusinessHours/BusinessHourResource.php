@@ -19,7 +19,6 @@ class BusinessHourResource extends Resource
 {
     protected static ?string $model = BusinessHour::class;
     protected static ?string $modelLabel = 'Horário';
-    protected static bool $shouldRegisterNavigation = false;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClock;
     public static function form(Schema $schema): Schema
     {

@@ -71,7 +71,7 @@ class AdvertismentForm extends Component implements HasForms
         $this->dispatch('close-page-execute');
     }
 
-    public bool $showDetailedErrors = false;
+    public bool $showDetailedErrors = true;
 
     public function mount($id = null): void
     {
