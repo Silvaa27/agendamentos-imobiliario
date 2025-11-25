@@ -106,7 +106,7 @@ class AdvertiseForm
                                                 'day' => $hour->day,
                                                 'start_time' => $hour->start_time,
                                                 'end_time' => $hour->end_time,
-                                                'user_id' => $hour->user_id, // Será null
+                                                'user_id' => $hour->user_id,
                                             ];
                                         })->toArray();
                                     }
@@ -145,17 +145,17 @@ class AdvertiseForm
                             ->label('Tipo de Campo')
                             ->required()
                             ->options([
-                                'TextInput' => 'Texto Simples',
-                                'NumberInput' => 'Campo Numérico',
-                                'Select' => 'Lista Suspensa',
+                                'TextInput' => 'Text',
+                                'NumberInput' => 'Number',
+                                'Select' => 'Select',
+                                'Radio' => 'Single Option',
                                 'Checkbox' => 'Checkbox',
-                                'Toggle' => 'Toggle (Ligado/Desligado)',
-                                'CheckboxList' => 'Lista de Checkboxes',
-                                'Radio' => 'Botões de Rádio',
-                                'DatePicker' => 'Selecionador de Data',
-                                'TimePicker' => 'Selecionador de Hora',
-                                'Slider' => 'Slider Numérico',
-                                'Textarea' => 'Área de Texto',
+                                'Toggle' => 'Toggle',
+                                'CheckboxList' => 'Multiple Choice',
+                                'DatePicker' => 'Date',
+                                'TimePicker' => 'Time',
+                                'Slider' => 'Slider',
+                                'Textarea' => 'Text Area',
                             ])
                             ->live()
                             ->afterStateUpdated(function ($state, callable $set) {

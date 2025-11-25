@@ -110,7 +110,7 @@ class ViewSchedule extends ViewRecord
                                     ->formatStateUsing(fn($state) => $state ?? 'N/A')
                                     ->icon('heroicon-o-envelope'),
 
-                                TextEntry::make('advertiseAnswer.contact.phone')
+                                TextEntry::make('advertiseAnswer.contact.phone_number')
                                     ->label('Telefone')
                                     ->formatStateUsing(fn($state) => $state ?? 'N/A')
                                     ->icon('heroicon-o-phone'),

@@ -42,7 +42,7 @@
                 <p class="text-danger-700 text-lg mb-6">
                     {{ $unavailableMessage ?? 'Não é possível aceder a este formulário no momento.' }}</p>
                 <div class="bg-danger-100 border border-danger-300 rounded-lg p-4 inline-block">
-                    <p class="text-danger-800 font-medium">❌ Não é possível aceder a este formulário no momento</p>
+                    <p class="text-danger-800 font-medium">❌ Não preenche os requisitos para a marcação da visita.</p>
                 </div>
                 <div class="mt-6">
                     <button wire:click="closePage" type="button"
