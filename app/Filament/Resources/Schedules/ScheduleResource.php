@@ -19,7 +19,6 @@ class ScheduleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
     protected static ?string $modelLabel = 'Agenda';
-    protected static string|UnitEnum|null $navigationGroup = 'Conteúdo';
     protected static ?string $pluralModelLabel = 'Agenda';
     public static function form(Schema $schema): Schema
     {
@@ -51,7 +50,6 @@ class ScheduleResource extends Resource
         return [
             'index' => Pages\ListSchedules::route('/'),
             'create' => Pages\CreateSchedule::route('/create'),
-            'edit' => Pages\EditSchedule::route('/{record}/edit'),
             'view' => Pages\ViewSchedule::route('/{record}/view'),
             'calendar' => Pages\CalendarPage::route('/calendar'),
         ];

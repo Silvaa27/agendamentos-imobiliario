@@ -13,11 +13,6 @@ return new class extends Migration {
         Schema::table('unavailabilities', function (Blueprint $table) {
             $table->string('title')->after('id');
             $table->foreignId('user_id')->nullable()->after('title')->constrained()->onDelete('cascade');
-
-            // Se quiseres índices para melhor performance
-            $table->index('user_id');
-            $table->index('start');
-            $table->index('end');
         });
     }
 

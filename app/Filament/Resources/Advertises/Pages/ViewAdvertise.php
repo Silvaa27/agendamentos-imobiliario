@@ -114,9 +114,6 @@ class ViewAdvertise extends ViewRecord
                                                                     ->default('N/A'),
                                                             ])
                                                             ->columns(3)
-                                                            ->extraAttributes([
-                                                                'class' => 'border border-gray-200 rounded-lg p-4 bg-white shadow-sm'
-                                                            ])
                                                     ])
                                                     ->grid(1)
                                                     ->extraAttributes(['class' => 'space-y-3 w-full']),
@@ -127,10 +124,7 @@ class ViewAdvertise extends ViewRecord
                                             ->columnSpanFull(),
                                     ])
                                     ->collapsible()
-                                    ->collapsed(true)
-                                    ->extraAttributes([
-                                        'class' => 'border-2 border-gray-300 rounded-xl bg-gray-50 mb-6'
-                                    ]),
+                                    ->collapsed(true),
                             ])
                             ->grid(1)
                             ->columnSpanFull(),
@@ -180,17 +174,17 @@ class ViewAdvertise extends ViewRecord
                                             return 'Tipo não definido';
 
                                         return match ($state) {
-                                            'TextInput' => 'Texto',
-                                            'NumberInput' => 'Número',
-                                            'Select' => 'Lista Suspensa',
-                                            'Radio' => 'Opção Única',
+                                            'TextInput' => 'Text',
+                                            'NumberInput' => 'Number',
+                                            'Select' => 'Select',
+                                            'Radio' => 'Single Option',
                                             'Checkbox' => 'Checkbox',
                                             'Toggle' => 'Toggle',
-                                            'CheckboxList' => 'Múltipla Escolha',
-                                            'DatePicker' => 'Data',
-                                            'TimePicker' => 'Hora',
+                                            'CheckboxList' => 'Multiple Choice',
+                                            'DatePicker' => 'Date',
+                                            'TimePicker' => 'Time',
                                             'Slider' => 'Slider',
-                                            'Textarea' => 'Área de Texto',
+                                            'Textarea' => 'Text Area',
                                             default => $state,
                                         };
                                     })
@@ -222,9 +216,6 @@ class ViewAdvertise extends ViewRecord
                                     ->default('N/A'),
                             ])
                             ->columns(2)
-                            ->extraAttributes([
-                                'class' => 'border border-gray-200 rounded-lg p-6 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 w-full'
-                            ])
                     ])
                     ->grid(1)
                     ->extraAttributes(['class' => 'space-y-4 w-full']),

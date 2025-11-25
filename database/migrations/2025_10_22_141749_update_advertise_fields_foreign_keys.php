@@ -8,9 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        // Remover as constraints existentes
         Schema::table('advertise_field_answers', function (Blueprint $table) {
-            // Remover a foreign key antiga
             $table->dropForeign(['advertise_field_id']);
         });
 
@@ -19,10 +17,8 @@ return new class extends Migration
             $table->foreign('advertise_field_id')
                   ->references('id')
                   ->on('advertise_fields')
-                  ->onDelete('cascade'); // Isto permite eliminar campos com respostas
+                  ->onDelete('cascade');
         });
-
-        // Fazer o mesmo para advertise_answer_id se necessário
         Schema::table('advertise_field_answers', function (Blueprint $table) {
             $table->dropForeign(['advertise_answer_id']);
         });
@@ -37,7 +33,6 @@ return new class extends Migration
 
     public function down()
     {
-        // Reverter para as constraints originais (sem cascade)
         Schema::table('advertise_field_answers', function (Blueprint $table) {
             $table->dropForeign(['advertise_field_id']);
             $table->foreign('advertise_field_id')

@@ -21,7 +21,6 @@ class AdvertiseResource extends Resource
 {
     protected static ?string $model = Advertise::class;
     protected static ?string $permissionPrefix = 'Advertise';
-    protected static string|\UnitEnum|null $navigationGroup = 'Conteúdo';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
     protected static ?string $modelLabel = 'Anúncio';
 

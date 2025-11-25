@@ -47,14 +47,13 @@ class BusinessHourForm
                 $user->id => 'Horário Pessoal (apenas para mim)',
             ];
 
-            // Merge manual para preservar as chaves corretas
             foreach ($otherUsers as $id => $name) {
                 $options[$id] = $name;
             }
 
             $fields[] = Select::make('user_id')
                 ->label('Tipo de Horário')
-                ->options($options) // ← Array corrigido
+                ->options($options)
                 ->default($user->id)
                 ->searchable()
                 ->helperText('Escolha o tipo de horário a criar')

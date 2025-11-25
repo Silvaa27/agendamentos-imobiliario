@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('advertise_fields', function (Blueprint $table) {
-            // Adiciona colunas se ainda não existirem
             if (!Schema::hasColumn('advertise_fields', 'min_value')) {
                 $table->integer('min_value')->nullable()->after('answer');
             }

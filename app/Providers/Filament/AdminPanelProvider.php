@@ -3,7 +3,11 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Advertises\AdvertiseResource;
+use App\Filament\Resources\BusinessHours\BusinessHourResource;
+use App\Filament\Resources\Schedules\ScheduleResource;
 use App\Livewire\CalendarWidget;
+use App\Models\BusinessHour;
+use App\Models\Schedule;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -44,10 +48,9 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->userMenuItems([
-                Action::make('settings')
-                    ->url(fn(): string => AdvertiseResource::getUrl())
-                    ->icon('heroicon-o-cog-6-tooth'),
-                // ...
+                Action::make('Horários')
+                    ->url(fn(): string => BusinessHourResource::getUrl())
+                    ->icon('heroicon-o-clock'),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

@@ -19,7 +19,7 @@ class FormSubmissionConfirmation extends Mailable
 
     public $advertiseAnswer;
     public $contact;
-    public $scheduleInfo; // MUDANÇA: Agora é scheduleInfo
+    public $scheduleInfo;
 
     public function __construct(AdvertiseAnswer $advertiseAnswer, Contact $contact)
     {
@@ -28,7 +28,6 @@ class FormSubmissionConfirmation extends Mailable
 
         $schedule = Schedule::where('advertise_answer_id', $advertiseAnswer->id)->first();
 
-        // FORMATAR os dados aqui mesmo
         if ($schedule) {
             $this->scheduleInfo = [
                 'data' => Carbon::parse($schedule->date)->format('d/m/Y'),
@@ -57,7 +56,7 @@ class FormSubmissionConfirmation extends Mailable
                 'contactName' => $this->contact->name,
                 'advertiseTitle' => $this->advertiseAnswer->advertise->title ?? 'Formulário',
                 'submissionDate' => $this->advertiseAnswer->created_at->format('d/m/Y H:i'),
-                'schedule' => $this->scheduleInfo, // AGORA é o array formatado
+                'schedule' => $this->scheduleInfo,
             ],
         );
     }

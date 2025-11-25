@@ -19,7 +19,6 @@ class AdvertiseAnswer extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    // Relação com as respostas dos campos do formulário
     public function fieldAnswers(): HasMany
     {
         return $this->hasMany(AdvertiseFieldAnswer::class, 'advertise_answer_id', 'id');

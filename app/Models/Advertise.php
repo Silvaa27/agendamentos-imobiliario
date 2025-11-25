@@ -43,7 +43,7 @@ class Advertise extends Model
 
     public function allFieldAnswers()
     {
-        return $this->hasManyThrough(FieldAnswer::class, AdvertiseAnswer::class, 'advertise_id', 'advertise_answer_id');
+        return $this->hasManyThrough(AdvertiseFieldAnswer::class, AdvertiseAnswer::class, 'advertise_id', 'advertise_answer_id');
     }
 
     public function allSchedules()

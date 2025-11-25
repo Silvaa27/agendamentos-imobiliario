@@ -24,7 +24,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #3b82f6, #3b82f6); /* Primary-500 */
+            background: linear-gradient(135deg, #3b82f6, #3b82f6);
             color: white;
             padding: 32px;
             text-align: center;
@@ -48,15 +48,15 @@
 
         .highlight {
             background: #f8fafc;
-            border-left: 4px solid #3b82f6; /* Primary-500 */
+            border-left: 4px solid #3b82f6;
             padding: 24px;
             margin: 24px 0;
             border-radius: 0 8px 8px 0;
         }
 
         .schedule-box {
-            background: #eff6ff; /* Primary-50 */
-            border: 2px solid #3b82f6; /* Primary-500 */
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
             border-radius: 12px;
             padding: 24px;
             margin: 24px 0;
@@ -105,18 +105,18 @@
         }
 
         .no-schedule {
-            background: #fef3c7; /* Warning-100 */
-            border: 1px solid #f59e0b; /* Warning-500 */
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
             padding: 20px;
             border-radius: 8px;
             text-align: center;
-            color: #92400e; /* Warning-800 */
+            color: #92400e;
             margin: 24px 0;
         }
 
         .btn {
             display: inline-block;
-            background: #3b82f6; /* Primary-500 */
+            background: #3b82f6;
             color: white;
             padding: 12px 24px;
             text-decoration: none;
@@ -145,8 +145,7 @@
                     <span class="info-label">Data de submissão:</span> {{ $submissionDate }}
                 </div>
             </div>
-
-            <!-- Secção da Marcação -->
+            
             @if ($schedule && is_array($schedule) && !empty($schedule['data']))
                 <div class="schedule-box">
                     <h3 style="margin: 0 0 20px 0; color: #3b82f6; text-align: center; font-size: 20px;">
