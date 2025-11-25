@@ -19,7 +19,6 @@ class UnavailabilityResource extends Resource
 {
     protected static ?string $model = Unavailability::class;
     protected static ?string $modelLabel = 'Indisponibilidade';
-    protected static string|UnitEnum|null $navigationGroup = 'Conteúdo';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNoSymbol;
 
     public static function form(Schema $schema): Schema
