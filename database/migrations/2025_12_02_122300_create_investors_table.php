@@ -9,16 +9,13 @@ return new class extends Migration {
     {
         Schema::create('investors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->nullable()
-                ->constrained()
-                ->onDelete('cascade')
-                ->index('idx_inv_user');
             $table->string('name');
-            $table->string('nif')->unique();
-            $table->string('phone');
-            $table->string('email')->unique();
+            $table->string('nif')->unique(); // NIF único
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

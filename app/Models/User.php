@@ -31,10 +31,6 @@ class User extends Authenticatable
     }
 
     // Relacionamento com Investor
-    public function investorProfile()
-    {
-        return $this->hasOne(Investor::class, 'user_id');
-    }
 
     public function isInvestor(): bool
     {
