@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -35,5 +36,17 @@ class User extends Authenticatable
     public function isInvestor(): bool
     {
         return $this->hasRole('investidor');
+    }
+
+    // Relação com oportunidades (como responsável)
+    public function opportunities(): HasMany
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
+    // Relação com atualizações de obra
+    public function constructionUpdates(): HasMany
+    {
+        return $this->hasMany(ConstructionUpdate::class);
     }
 }
