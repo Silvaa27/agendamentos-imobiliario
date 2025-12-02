@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
@@ -14,42 +16,49 @@ class UserForm
     {
         return $schema
             ->components([
-                Section::make('Informação do Utilizador')
+                Section::make('Informações da Conta')
                     ->schema([
                         TextInput::make('name')
                             ->label('Nome')
                             ->required()
                             ->maxLength(255),
+                        
                         TextInput::make('email')
-                            ->label('E-mail')
+                            ->label('Email')
                             ->email()
                             ->required()
-                            ->maxLength(255)
                             ->unique(ignoreRecord: true),
-                        Select::make('roles')
-                            ->label('Funções')
-                            ->relationship('roles', 'name')
-                            ->multiple()
-                            ->preload()
-                            ->searchable(),
-                    ])->columns(1),
-
-                Section::make('Segurança')
-                    ->schema([
+                        
                         TextInput::make('password')
-                            ->label('Palavra-passe')
+                            ->label('Senha')
                             ->password()
-                            ->dehydrated(fn($state) => filled($state))
-                            ->required(fn(string $context): bool => $context === 'create')
-                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                            ->revealable(),
-                        TextInput::make('password_confirmation')
-                            ->label('Confirmar palavra-passe')
-                            ->password()
-                            ->same('password')
-                            ->requiredWith('password')
-                            ->revealable(),
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                            ->required(fn (string $context): bool => $context === 'create')
+                            ->hidden(fn (string $context): bool => $context === 'edit'),
                     ])->columns(2),
+                
+                Section::make('Permissões')
+                    ->schema([
+                        CheckboxList::make('roles')
+                            ->label('Cargos')
+                            ->relationship('roles', 'name')
+                            ->searchable()
+                            ->columns(2)
+                            ->afterStateUpdated(function ($state, $set, $record) {
+                                // Se adicionou role de investidor, verificar perfil
+                                if (in_array('investidor', $state)) {
+                                    if (!$record || !$record->investorProfile) {
+                                        Notification::make()
+                                            ->title('Atenção: Perfil de Investidor Necessário')
+                                            ->body('Este usuário foi atribuído como investidor. Complete o perfil com NIF e telefone no menu "Investidores".')
+                                            ->warning()
+                                            ->persistent()
+                                            ->send();
+                                    }
+                                }
+                            }),
+                    ]),
             ]);
     }
 }

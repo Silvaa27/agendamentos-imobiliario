@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Resources\Investors\InvestorResource;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -16,54 +18,68 @@ class UsersTable
     {
         return $table
             ->columns([
-               TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('email')
-                    ->label('E-mail')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Email')
+                    ->searchable(),
+
                 TextColumn::make('roles.name')
-                    ->label('Funções')
+                    ->label('Cargos')
                     ->badge()
-                    ->color('primary'),
-                TextColumn::make('email_verified_at')
-                    ->label('Verificado em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->label('Criado em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->colors([
+                        'primary' => 'investidor',
+                        'success' => 'admin',
+                        'warning' => 'super_admin',
+                    ]),
+
+                TextColumn::make('investor_complete')
+                    ->label('Perfil Investidor')
+                    ->getStateUsing(function ($record) {
+                        if ($record->hasRole('investidor')) {
+                            return $record->investorProfile &&
+                                !empty($record->investorProfile->nif) &&
+                                !empty($record->investorProfile->phone)
+                                ? '✅ Completo'
+                                : '⚠️ Incompleto';
+                        }
+                        return 'N/A';
+                    })
+                    ->badge()
+                    ->color(
+                        fn($state) =>
+                        str_contains($state, '✅') ? 'success' :
+                        (str_contains($state, '⚠️') ? 'warning' : 'gray')
+                    ),
             ])
             ->filters([
-                SelectFilter::make('roles')
-                    ->label('Função')
-                    ->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload(),
+                // Filtros
             ])
             ->actions([
                 EditAction::make(),
-                DeleteAction::make(),
+                Action::make('completeInvestorProfile')
+                    ->label('Completar Perfil')
+                    ->icon('heroicon-o-document-plus')
+                    ->color('warning')
+                    ->url(
+                        fn($record) =>
+                        $record->hasRole('investidor')
+                        ? InvestorResource::getUrl('edit', ['record' => $record->id])
+                        : null
+                    )
+                    ->visible(
+                        fn($record) =>
+                        $record->hasRole('investidor') &&
+                        (!$record->investorProfile ||
+                            empty($record->investorProfile->nif) ||
+                            empty($record->investorProfile->phone))
+                    ),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                DeleteBulkAction::make(),
             ]);
     }
 }
