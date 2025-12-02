@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\OpportunityResource\Pages;
+namespace App\Filament\Resources\Opportunities\Pages;
 
-use App\Filament\Resources\OpportunityResource;
-use Filament\Actions;
+use App\Filament\Resources\Opportunities\OpportunityResource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditOpportunity extends EditRecord
@@ -13,10 +15,9 @@ class EditOpportunity extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make(),
-            Actions\RestoreAction::make(),
+            DeleteAction::make(),
+            ForceDeleteAction::make(),
+            RestoreAction::make(),
         ];
     }
 }

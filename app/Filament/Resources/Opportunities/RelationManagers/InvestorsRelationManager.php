@@ -25,38 +25,7 @@ class InvestorsRelationManager extends RelationManager
 {
     protected static string $relationship = 'investors';
 
-    public function configure(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                Select::make('investor_id')
-                    ->label('Investidor')
-                    ->relationship('investors', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                TextInput::make('pivot.investment_amount')
-                    ->label('Valor Investido (€)')
-                    ->numeric()
-                    ->prefix('€'),
-
-                TextInput::make('pivot.percentage')
-                    ->label('Percentagem (%)')
-                    ->numeric()
-                    ->suffix('%')
-                    ->minValue(0)
-                    ->maxValue(100),
-
-                Toggle::make('pivot.has_access')
-                    ->label('Tem Acesso ao Programa')
-                    ->inline(false),
-
-                DateTimePicker::make('pivot.access_granted_at')
-                    ->label('Acesso Concedido em')
-                    ->visible(fn($get) => $get('pivot.has_access')),
-            ]);
-    }
+    protected static ?string $title = 'Investors';
 
     public function table(Table $table): Table
     {

@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Invoice extends Model
+class Invoice extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'opportunity_id',
         'invoice_number',
@@ -81,5 +85,11 @@ class Invoice extends Model
     public function getFormattedDueDateAttribute(): ?string
     {
         return $this->due_date ? $this->due_date->format('d/m/Y') : null;
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('photos')
+            ->useDisk('public');
     }
 }

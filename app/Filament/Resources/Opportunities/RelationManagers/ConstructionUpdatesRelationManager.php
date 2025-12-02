@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -21,9 +22,9 @@ class ConstructionUpdatesRelationManager extends RelationManager
 {
     protected static string $relationship = 'constructionUpdates';
 
-    protected static ?string $relatedResource = OpportunityResource::class;
+    protected static ?string $title = 'Construction Updates';
 
-    public function configure(Schema $schema): Schema
+    public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
@@ -49,12 +50,11 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->maxValue(100)
                     ->suffix('%'),
 
-                FileUpload::make('construction_photos')
-                    ->label('Fotos da Obra')
+                SpatieMediaLibraryFileUpload::make('construction_photos')
+                    ->label('Galeria de Fotos')
+                    ->collection('photos')
                     ->multiple()
-                    ->image()
-                    ->directory('construction-updates')
-                    ->maxFiles(10)
+                    ->maxFiles(20)
                     ->columnSpanFull(),
             ]);
     }
@@ -62,7 +62,6 @@ class ConstructionUpdatesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
             ->columns([
                 TextColumn::make('date')
                     ->label('Data')
@@ -85,7 +84,8 @@ class ConstructionUpdatesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->label('Nova Atualização'), // Personaliza o botão
             ])
             ->actions([
                 EditAction::make(),

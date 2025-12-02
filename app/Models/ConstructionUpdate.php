@@ -28,9 +28,8 @@ class ConstructionUpdate extends Model implements HasMedia
     // Relação com a oportunidade
     public function opportunity(): BelongsTo
     {
-        return $this->belongsTo(Opportunity::class);
+        return $this->belongsTo(\App\Models\Opportunity::class, 'opportunity_id');
     }
-
     // Relação com o utilizador (responsável)
     public function user(): BelongsTo
     {
@@ -41,8 +40,7 @@ class ConstructionUpdate extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('construction_photos')
-            ->useDisk('public')
-            ->singleFile(); // altera para false para múltiplas fotos
+            ->useDisk('public');
     }
 
     // Formatação da data

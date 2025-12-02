@@ -6,6 +6,7 @@ use App\Models\Opportunity;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -67,11 +68,10 @@ class OpportunityForm
 
                                 Section::make('Fotos')
                                     ->schema([
-                                        FileUpload::make('photos')
+                                        SpatieMediaLibraryFileUpload::make('photos')
                                             ->label('Galeria de Fotos')
+                                            ->collection('photos')
                                             ->multiple()
-                                            ->image()
-                                            ->directory('opportunities')
                                             ->maxFiles(20)
                                             ->columnSpanFull(),
                                     ]),

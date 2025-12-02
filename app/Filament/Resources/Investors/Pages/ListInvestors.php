@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\InvestorResource\Pages;
+namespace App\Filament\Resources\Investors\Pages;
 
-use App\Filament\Resources\InvestorResource;
-use Filament\Actions;
+use App\Filament\Resources\Investors\InvestorResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListInvestors extends ListRecords
@@ -13,8 +13,7 @@ class ListInvestors extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Novo Investidor'),
+            CreateAction::make(),
         ];
     }
 }

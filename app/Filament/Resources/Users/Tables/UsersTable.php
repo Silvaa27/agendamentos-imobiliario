@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use App\Filament\Resources\Investors\InvestorResource;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -18,68 +16,54 @@ class UsersTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+               TextColumn::make('name')
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
-
                 TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable(),
-
+                    ->label('E-mail')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('roles.name')
-                    ->label('Cargos')
+                    ->label('Funções')
                     ->badge()
-                    ->colors([
-                        'primary' => 'investidor',
-                        'success' => 'admin',
-                        'warning' => 'super_admin',
-                    ]),
-
-                TextColumn::make('investor_complete')
-                    ->label('Perfil Investidor')
-                    ->getStateUsing(function ($record) {
-                        if ($record->hasRole('investidor')) {
-                            return $record->investorProfile &&
-                                !empty($record->investorProfile->nif) &&
-                                !empty($record->investorProfile->phone)
-                                ? '✅ Completo'
-                                : '⚠️ Incompleto';
-                        }
-                        return 'N/A';
-                    })
-                    ->badge()
-                    ->color(
-                        fn($state) =>
-                        str_contains($state, '✅') ? 'success' :
-                        (str_contains($state, '⚠️') ? 'warning' : 'gray')
-                    ),
+                    ->color('primary'),
+                TextColumn::make('email_verified_at')
+                    ->label('Verificado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Filtros
+                SelectFilter::make('roles')
+                    ->label('Função')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
             ])
             ->actions([
                 EditAction::make(),
-                Action::make('completeInvestorProfile')
-                    ->label('Completar Perfil')
-                    ->icon('heroicon-o-document-plus')
-                    ->color('warning')
-                    ->url(
-                        fn($record) =>
-                        $record->hasRole('investidor')
-                        ? InvestorResource::getUrl('edit', ['record' => $record->id])
-                        : null
-                    )
-                    ->visible(
-                        fn($record) =>
-                        $record->hasRole('investidor') &&
-                        (!$record->investorProfile ||
-                            empty($record->investorProfile->nif) ||
-                            empty($record->investorProfile->phone))
-                    ),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }

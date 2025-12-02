@@ -72,14 +72,13 @@ class Opportunity extends Model implements HasMedia
             ->withTimestamps();
     }
 
+
     // Relação com atualizações de obra
     public function constructionUpdates(): HasMany
     {
-        return $this->hasMany(ConstructionUpdate::class);
+        return $this->hasMany(\App\Models\ConstructionUpdate::class, 'opportunity_id');
     }
-
-    // Relação com faturas
-    public function invoices(): HasMany
+    public function invoice(): HasMany
     {
         return $this->hasMany(Invoice::class);
     }
@@ -90,12 +89,13 @@ class Opportunity extends Model implements HasMedia
         return self::STATUSES[$this->status] ?? $this->status;
     }
 
+
     // Cálculo do preço total (compra + obras + outros custos + impostos)
     public function getTotalCostAttribute(): float
     {
-        return (float) $this->purchase_price 
-            + (float) $this->actual_work_value 
-            + (float) $this->other_costs 
+        return (float) $this->purchase_price
+            + (float) $this->actual_work_value
+            + (float) $this->other_costs
             + (float) $this->tax_costs;
     }
 
@@ -118,8 +118,7 @@ class Opportunity extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('photos')
-            ->useDisk('public')
-            ->singleFile(); // altera para false se quiseres múltiplas fotos
+            ->useDisk('public');
     }
 
     // Acesso para a primeira foto (thumbnail)

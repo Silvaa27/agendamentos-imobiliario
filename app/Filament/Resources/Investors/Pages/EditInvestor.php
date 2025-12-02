@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\InvestorResource\Pages;
+namespace App\Filament\Resources\Investors\Pages;
 
-use App\Filament\Resources\InvestorResource;
-use Filament\Actions;
+use App\Filament\Resources\Investors\InvestorResource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditInvestor extends EditRecord
@@ -13,10 +15,9 @@ class EditInvestor extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make(),
-            Actions\RestoreAction::make(),
+            DeleteAction::make(),
+            ForceDeleteAction::make(),
+            RestoreAction::make(),
         ];
     }
 }

@@ -1,17 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\OpportunityResource\Pages;
+namespace App\Filament\Resources\Opportunities\Pages;
 
-use App\Filament\Resources\OpportunityResource;
-use Filament\Actions;
+use App\Filament\Resources\Opportunities\OpportunityResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateOpportunity extends CreateRecord
 {
     protected static string $resource = OpportunityResource::class;
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
 }

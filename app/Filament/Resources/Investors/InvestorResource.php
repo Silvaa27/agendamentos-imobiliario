@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Investors;
 
-use App\Filament\Resources\InvestorResource\Pages\CreateInvestor;
-use App\Filament\Resources\InvestorResource\Pages\EditInvestor;
-use App\Filament\Resources\InvestorResource\Pages\ListInvestors;
+use App\Filament\Resources\Investors\Pages\CreateInvestor;
+use App\Filament\Resources\Investors\Pages\EditInvestor;
+use App\Filament\Resources\Investors\Pages\ListInvestor;
+
+use App\Filament\Resources\Investors\Pages\ListInvestors;
 use App\Filament\Resources\Investors\Schemas\InvestorForm;
 use App\Filament\Resources\Investors\Tables\InvestorsTable;
 use App\Models\Investor;
@@ -35,7 +37,7 @@ class InvestorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

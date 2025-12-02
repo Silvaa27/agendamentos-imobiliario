@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\OpportunityResource\Pages;
+namespace App\Filament\Resources\Opportunities\Pages;
 
-use App\Filament\Resources\OpportunityResource;
-use Filament\Actions;
+use App\Filament\Resources\Opportunities\OpportunityResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListOpportunities extends ListRecords
@@ -13,8 +13,7 @@ class ListOpportunities extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Nova Oportunidade'),
+            CreateAction::make(),
         ];
     }
 }
