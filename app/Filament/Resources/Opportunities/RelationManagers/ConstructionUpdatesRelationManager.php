@@ -25,6 +25,7 @@ use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -114,7 +115,21 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->responsiveImages()
                     ->image()
                     ->imageEditor()
-                    ->columnSpanFull()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                    ->maxSize(5120) // 5MB
+                    ->helperText('Formatos: JPG, PNG, WebP, GIF. Máximo 5MB por imagem.')
+                    ->imagePreviewHeight('150')
+                    ->imageCropAspectRatio('16:9')
+                    ->imageResizeTargetWidth('1920')
+                    ->imageResizeTargetHeight('1080')
+                    ->imageResizeMode('cover')
+                    ->getUploadedFileNameForStorageUsing(
+                        fn($file): string => (string) str($file->getClientOriginalName())
+                            ->slug()
+                            ->prepend('obra-')
+                            ->append('-' . uniqid())
+                    )
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -123,15 +138,18 @@ class ConstructionUpdatesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                ImageColumn::make('first_photo')
-                    ->label('Foto')
-                    ->getStateUsing(function ($record) {
-                        return $record->getFirstMediaUrl('photos');
-                    })
+                SpatieMediaLibraryImageColumn::make('photos')
+                    ->label('Fotos')
+                    ->collection('photos')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-construction.jpg'))
-                    ->size(50)
-                    ->disk('public'),
+                    ->size(60)
+                    ->stacked()
+                    ->limit(3)
+                    ->limitedRemainingText()
+                    ->extraImgAttributes(['class' => 'rounded-lg border-2 border-white shadow-sm'])
+                    ->getStateUsing(function ($record) {
+                        return $record->getMedia('photos')->take(3);
+                    }),
 
                 TextColumn::make('date')
                     ->label('Data')
@@ -226,6 +244,28 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     EditAction::make()
                         ->label('Editar')
                         ->modalHeading('Editar Atualização de Obra'),
+
+                    Action::make('viewPhotos')
+                        ->label('Ver Fotos')
+                        ->icon('heroicon-o-photo')
+                        ->color('primary')
+                        ->url(fn($record) => route('construction-update.photos', $record))
+                        ->openUrlInNewTab()
+                        ->hidden(fn($record) => $record->getMedia('photos')->isEmpty()),
+
+                    Action::make('downloadPhotos')
+                        ->label('Baixar Fotos')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->color('info')
+                        ->action(function ($record) {
+                            // Aqui você pode implementar a lógica para baixar todas as fotos como ZIP
+                            // Por enquanto, vamos apenas abrir a primeira foto
+                            $firstPhoto = $record->getFirstMedia('photos');
+                            if ($firstPhoto) {
+                                return redirect($firstPhoto->getUrl());
+                            }
+                        })
+                        ->hidden(fn($record) => $record->getMedia('photos')->isEmpty()),
 
                     DeleteAction::make()
                         ->label('Eliminar')

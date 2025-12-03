@@ -17,6 +17,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -126,15 +127,6 @@ class OpportunitiesTable
                     ->sortable()
                     ->alignEnd()
                     ->color(fn($record) => $record->potential_profit > 0 ? 'success' : 'danger')
-                    ->toggleable(isToggledHiddenByDefault: false),
-
-                TextColumn::make('profit_margin')
-                    ->label('Margem (%)')
-                    ->getStateUsing(fn($record) => $record->profit_margin)
-                    ->sortable()
-                    ->alignEnd()
-                    ->color(fn($record) => $record->profit_margin > 20 ? 'success' : ($record->profit_margin > 0 ? 'warning' : 'danger'))
-                    ->formatStateUsing(fn($state) => $state ? number_format($state, 2, ',', ' ') . '%' : '0%')
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('user.name')

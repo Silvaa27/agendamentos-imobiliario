@@ -45,6 +45,21 @@ class OpportunityForm
                                             ->relationship('investorsOnly', 'name')
                                             ->preload()
                                             ->multiple(),
+                                        Section::make('Informação do Imóvel')
+                                            ->schema([
+                                                Textarea::make('property_info')
+                                                    ->label('Informação Detalhada')
+                                                    ->rows(10)
+                                                    ->columnSpanFull(),
+                                            ]),
+
+                                        Section::make('Links e Acessos')
+                                            ->schema([
+                                                TextInput::make('opportunity_link')
+                                                    ->label('Link da Oportunidade (URL)')
+                                                    ->url()
+                                                    ->columnSpanFull(),
+                                            ]),
                                     ])->columns(2),
 
                                 Section::make('Localização')
@@ -147,25 +162,6 @@ class OpportunityForm
                                                 return number_format($record->profit_margin, 2, ',', ' ') . '%';
                                             }),
                                     ])->columns(3),
-                            ]),
-
-                        Tabs\Tab::make('Informações Adicionais')
-                            ->schema([
-                                Section::make('Informação do Imóvel')
-                                    ->schema([
-                                        Textarea::make('property_info')
-                                            ->label('Informação Detalhada')
-                                            ->rows(10)
-                                            ->columnSpanFull(),
-                                    ]),
-
-                                Section::make('Links e Acessos')
-                                    ->schema([
-                                        TextInput::make('opportunity_link')
-                                            ->label('Link da Oportunidade (URL)')
-                                            ->url()
-                                            ->columnSpanFull(),
-                                    ]),
                             ]),
                     ])->columnSpanFull(),
             ]);

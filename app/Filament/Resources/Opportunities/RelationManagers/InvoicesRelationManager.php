@@ -25,6 +25,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -214,6 +215,9 @@ class InvoicesRelationManager extends RelationManager
                     ->money('EUR', locale: 'pt')
                     ->sortable()
                     ->alignEnd()
+                    ->summarize([
+                        Sum::make(),
+                    ])
                     ->color(fn($record) => $record->status === 'pago' ? 'success' : 'warning')
                     ->formatStateUsing(fn($state) => '€ ' . number_format($state, 2, ',', ' '))
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -372,6 +376,25 @@ class InvoicesRelationManager extends RelationManager
                         )
                         ->openUrlInNewTab()
                         ->visible(fn($record): bool => !empty($record->file_path)),
+                    Action::make('viewGallery')
+                        ->label('Ver Fotos')
+                        ->icon('heroicon-o-photo')
+                        ->color('primary')
+                        ->modalHeading(fn($record) => "Fatura: {$record->invoice_number}")
+                        ->modalSubmitAction(false)
+                        ->modalCancelAction(false)
+                        ->modalContent(function ($record) {
+                            $mediaItems = $record->getMedia('invoices');
+
+                            if ($mediaItems->isEmpty()) {
+                                return view('filament.components.empty-gallery');
+                            }
+
+                            return view('filament.components.gallery-modal', [
+                                'mediaItems' => $mediaItems,
+                                'record' => $record,
+                            ]);
+                        }),
 
                     Action::make('mark_as_paid')
                         ->label('Marcar como Pago')

@@ -33,7 +33,6 @@ class Invoice extends Model implements HasMedia
         'payment_date' => 'date',
     ];
 
-    // Tipos disponíveis
     public const TYPES = [
         'obra' => 'Obra',
         'imposto' => 'Imposto',
@@ -41,32 +40,27 @@ class Invoice extends Model implements HasMedia
         'compra' => 'Compra',
     ];
 
-    // Status disponíveis
     public const STATUSES = [
         'pendente' => 'Pendente',
         'pago' => 'Pago',
         'atrasado' => 'Atrasado',
     ];
 
-    // Relação com a oportunidade
     public function opportunity(): BelongsTo
     {
         return $this->belongsTo(Opportunity::class);
     }
 
-    // Acesso ao tipo formatado
     public function getTypeLabelAttribute(): string
     {
         return self::TYPES[$this->type] ?? $this->type;
     }
 
-    // Acesso ao status formatado
     public function getStatusLabelAttribute(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
     }
 
-    // Verificar se está atrasado
     public function getIsOverdueAttribute(): bool
     {
         if ($this->status === 'pago') {
@@ -76,7 +70,6 @@ class Invoice extends Model implements HasMedia
         return $this->due_date && $this->due_date->isPast();
     }
 
-    // Formatar datas
     public function getFormattedInvoiceDateAttribute(): string
     {
         return $this->invoice_date->format('d/m/Y');
@@ -97,9 +90,8 @@ class Invoice extends Model implements HasMedia
                 'image/png',
                 'image/webp',
             ])
-            ->singleFile(); // Apenas 1 ficheiro por fatura
+            ->singleFile();
 
-        // Para PDFs, pode querer gerar uma thumbnail
         if (config('media-library.generate_thumbnails_for_pdfs', false)) {
             $this->addMediaConversion('thumb')
                 ->width(300)
