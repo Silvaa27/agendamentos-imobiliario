@@ -251,6 +251,7 @@ return [
         'create_default_unavailabilities',
         'view_all_schedules',
         'view_all_opportunities',
+        'view_opportunities',
     ],
 
     /*

@@ -16,31 +16,30 @@ class UsersTable
     {
         return $table
             ->columns([
-               TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('email')
-                    ->label('E-mail')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Email')
+                    ->searchable(),
+
+                TextColumn::make('nif')
+                    ->label('NIF')
+                    ->searchable(),
+
+                TextColumn::make('phone')
+                    ->label('Telefone')
+                    ->searchable(),
+
                 TextColumn::make('roles.name')
-                    ->label('Funções')
-                    ->badge()
-                    ->color('primary'),
-                TextColumn::make('email_verified_at')
-                    ->label('Verificado em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->label('Criado em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Cargo')
+                    ->badge(),
             ])
             ->filters([
                 SelectFilter::make('roles')
-                    ->label('Função')
+                    ->label('Filtrar por Cargo')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload(),
@@ -48,22 +47,6 @@ class UsersTable
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

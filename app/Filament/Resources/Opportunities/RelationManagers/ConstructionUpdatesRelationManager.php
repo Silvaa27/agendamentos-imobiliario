@@ -50,11 +50,22 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->maxValue(100)
                     ->suffix('%'),
 
-                SpatieMediaLibraryFileUpload::make('construction_photos')
+                SpatieMediaLibraryFileUpload::make('photos')
                     ->label('Galeria de Fotos')
                     ->collection('photos')
                     ->multiple()
                     ->maxFiles(20)
+                    ->appendFiles()
+                    ->reorderable()
+                    ->panelLayout('grid')
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('16:9')
+                    ->imageResizeTargetWidth('1920')
+                    ->imageResizeTargetHeight('1080')
+                    ->imagePreviewHeight('150')
+                    ->openable()
+                    ->downloadable()
+                    ->responsiveImages()
                     ->columnSpanFull(),
             ]);
     }

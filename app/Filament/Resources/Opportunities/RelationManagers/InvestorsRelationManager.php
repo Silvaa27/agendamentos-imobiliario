@@ -26,6 +26,7 @@ class InvestorsRelationManager extends RelationManager
     protected static string $relationship = 'investors';
 
     protected static ?string $title = 'Investors';
+    
 
     public function table(Table $table): Table
     {
@@ -89,4 +90,5 @@ class InvestorsRelationManager extends RelationManager
                 ]),
             ]);
     }
+    
 }

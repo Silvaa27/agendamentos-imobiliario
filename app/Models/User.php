@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -16,6 +17,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'nif',
+        'phone',
     ];
 
     protected $hidden = [
@@ -36,6 +39,12 @@ class User extends Authenticatable
     public function isInvestor(): bool
     {
         return $this->hasRole('investidor');
+    }
+
+    // Relação com Investor
+    public function investor(): HasOne
+    {
+        return $this->hasOne(Investor::class);
     }
 
     // Relação com oportunidades (como responsável)

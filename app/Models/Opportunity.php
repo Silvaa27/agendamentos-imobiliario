@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Forms\Components\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,12 +65,41 @@ class Opportunity extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function associatedUsers()
+    {
+        return $this->belongsToMany(User::class, 'opportunity_user')
+            ->withTimestamps();
+    }
     // Relação muitos-para-muitos com investidores
     public function investors(): BelongsToMany
     {
-        return $this->belongsToMany(Investor::class, 'opportunity_investor')
+        return $this->belongsToMany(User::class, 'opportunity_investor', 'opportunity_id', 'investor_id')
+            ->whereHas('roles', function ($query) {
+                $query->where('id', 5); // role ID do investidor
+            })
             ->withPivot('investment_amount', 'percentage', 'has_access', 'access_granted_at')
             ->withTimestamps();
+    }
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        // Se tem permissão para ver todas
+        if ($user->can('view_all_opportunities')) {
+            return $query;
+        }
+
+        // Se tem permissão view_opportunities, vê as suas e associadas
+        if ($user->can('view_opportunities')) {
+            return $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('associatedUsers', function ($subQuery) use ($user) {
+                        $subQuery->where('user_id', $user->id);
+                    });
+            });
+        }
+
+        // Se não tem nenhuma permissão, não vê nada
+        return $query->whereRaw('1 = 0');
     }
 
 
