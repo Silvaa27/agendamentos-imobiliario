@@ -43,7 +43,6 @@ class Invoice extends Model implements HasMedia
     public const STATUSES = [
         'pendente' => 'Pendente',
         'pago' => 'Pago',
-        'atrasado' => 'Atrasado',
     ];
 
     public function opportunity(): BelongsTo

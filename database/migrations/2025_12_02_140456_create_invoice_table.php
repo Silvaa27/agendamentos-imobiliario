@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->date('invoice_date');
             $table->date('due_date')->nullable();
             $table->date('payment_date')->nullable();
-            $table->enum('status', ['pendente', 'pago', 'atrasado'])->default('pendente');
-            $table->string('file_path')->nullable(); // caminho do ficheiro
+            $table->enum('status', ['pendente', 'pago'])->default('pendente');
+            $table->string('file_path')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

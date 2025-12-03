@@ -76,15 +76,12 @@ class ConstructionUpdatesRelationManager extends RelationManager
                             ->maxLength(255)
                             ->columnSpan(2),
 
-                        Slider::make('progress_percentage')
+                        TextInput::make('progress_percentage')
                             ->label('Progresso Geral da Obra')
+                            ->numeric()
                             ->minValue(0)
                             ->maxValue(100)
                             ->step(1)
-                            ->tooltips(RawJs::make(<<<'JS'
-        `${$value}%`
-        JS))
-                            ->fillTrack()
                             ->columnSpan(2),
                     ]),
 

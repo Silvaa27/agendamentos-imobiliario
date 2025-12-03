@@ -249,18 +249,15 @@ class InvoicesRelationManager extends RelationManager
                     ->formatStateUsing(fn($state): string => match ($state) {
                         'pendente' => 'Pendente',
                         'pago' => 'Pago',
-                        'atrasado' => 'Atrasado',
                         default => $state,
                     })
                     ->colors([
                         'warning' => 'pendente',
                         'success' => 'pago',
-                        'danger' => 'atrasado',
                     ])
                     ->icons([
                         'heroicon-o-clock' => 'pendente',
                         'heroicon-o-check-circle' => 'pago',
-                        'heroicon-o-exclamation-circle' => 'atrasado',
                     ])
                     ->toggleable(isToggledHiddenByDefault: false),
 
