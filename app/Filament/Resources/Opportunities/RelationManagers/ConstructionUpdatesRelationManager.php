@@ -36,9 +36,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 class ConstructionUpdatesRelationManager extends RelationManager
 {
     protected static string $relationship = 'constructionUpdates';
-
     protected static ?string $title = 'Atualizações de Obra';
-
     protected static ?string $modelLabel = 'Acompanhamento de Obra';
     protected static ?string $pluralModelLabel = 'Atualizações de Obra';
 
@@ -224,88 +222,6 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     EditAction::make()
                         ->label('Editar')
                         ->modalHeading('Editar Atualização de Obra'),
-
-                    Action::make('photos')
-                        ->label('Ver Todas as Fotos')
-                        ->icon('heroicon-o-photo')
-                        ->color('info')
-                        ->action(function ($record) {
-                            $photos = $record->getMedia('construction_photos');
-
-                            if ($photos->isEmpty()) {
-                                return;
-                            }
-
-                            // Cria uma página simples com iframes para cada foto
-                            $html = '<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Fotos da Obra</title>
-            <style>
-                body { margin: 0; padding: 10px; background: #f0f0f0; }
-                .iframe-container { margin-bottom: 10px; }
-                iframe { width: 100%; height: 80vh; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-                .photo-nav { display: flex; justify-content: center; margin: 10px 0; }
-                .photo-nav button { margin: 0 5px; padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer; }
-            </style>
-        </head>
-        <body>
-            <div class="photo-nav">
-                <button onclick="prevPhoto()">← Anterior</button>
-                <span id="photo-counter">1/' . $photos->count() . '</span>
-                <button onclick="nextPhoto()">Próxima →</button>
-            </div>';
-
-                            foreach ($photos as $index => $photo) {
-                                $displayStyle = $index === 0 ? 'block' : 'none';
-                                $html .= '<div class="iframe-container" id="photo-' . $index . '" style="display: ' . $displayStyle . ';">
-                <iframe src="' . $photo->getUrl() . '"></iframe>
-            </div>';
-                            }
-
-                            $html .= '
-            <script>
-                let currentPhoto = 0;
-                const totalPhotos = ' . $photos->count() . ';
-                
-                function showPhoto(index) {
-                    // Esconde todas as fotos
-                    for (let i = 0; i < totalPhotos; i++) {
-                        document.getElementById("photo-" + i).style.display = "none";
-                    }
-                    // Mostra a foto atual
-                    document.getElementById("photo-" + index).style.display = "block";
-                    document.getElementById("photo-counter").textContent = (index + 1) + "/" + totalPhotos;
-                    currentPhoto = index;
-                }
-                
-                function nextPhoto() {
-                    if (currentPhoto < totalPhotos - 1) {
-                        showPhoto(currentPhoto + 1);
-                    }
-                }
-                
-                function prevPhoto() {
-                    if (currentPhoto > 0) {
-                        showPhoto(currentPhoto - 1);
-                    }
-                }
-                
-                // Navegação por teclado
-                document.addEventListener("keydown", function(e) {
-                    if (e.key === "ArrowRight") nextPhoto();
-                    if (e.key === "ArrowLeft") prevPhoto();
-                });
-            </script>
-        </body>
-        </html>';
-
-                            return response()->streamDownload(function () use ($html) {
-                                echo $html;
-                            }, 'fotos_obra_' . $record->id . '.html', ['Content-Type' => 'text/html']);
-                        })
-                        ->openUrlInNewTab()
-                        ->visible(fn($record) => $record->getMedia('construction_photos')->count() > 0),
 
                     DeleteAction::make()
                         ->label('Eliminar')
