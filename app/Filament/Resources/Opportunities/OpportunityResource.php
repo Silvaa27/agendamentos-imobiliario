@@ -65,36 +65,15 @@ class OpportunityResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        // ⬇️ VERIFICA SE HÁ UTILIZADOR AUTENTICADO
-        if (!$user) {
-            return $query->whereRaw('1 = 0'); // Não mostra nada se não está autenticado
-        }
-
-        // Super admin vê tudo
-        if ($user->hasRole('super_admin')) {
-            return $query;
-        }
-
-        // Se tem view_all_opportunities, vê tudo
-        if ($user->can('view_all_opportunities')) {
-            return $query;
-        }
-
-        // Se tem view_opportunities, vê só as suas/associadas OU partilhadas com acesso
-        if ($user->can('view_opportunities')) {
-            return $query->where(function ($q) use ($user) {
-                $q->where('user_id', $user->id) // É dono da oportunidade
+        if (!$user->can('view_all_opportunities')) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
                     ->orWhereHas('associatedUsers', function ($subQuery) use ($user) {
-                        $subQuery->where('user_id', $user->id); // Está associado
-                    })
-                    ->orWhereHas('investors', function ($subQuery) use ($user) {
-                        $subQuery->where('investor_id', $user->id)
-                            ->where('has_access', 1); // ← TEM ACESSO (has_access = 1)
+                        $subQuery->where('user_id', $user->id);
                     });
             });
         }
 
-        // Se não tem nenhuma permissão, não vê nada
-        return $query->whereRaw('1 = 0');
+        return $query;
     }
 }

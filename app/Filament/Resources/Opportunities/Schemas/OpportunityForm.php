@@ -43,9 +43,8 @@ class OpportunityForm
                                         Select::make('user_id')
                                             ->label('Adicionar Investidores')
                                             ->relationship('investorsOnly', 'name')
-                                            ->searchable()
-                                            ->multiple()
-                                            ->preload(),
+                                            ->preload()
+                                            ->multiple(),
                                     ])->columns(2),
 
                                 Section::make('Localização')

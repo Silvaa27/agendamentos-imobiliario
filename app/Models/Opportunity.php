@@ -78,15 +78,13 @@ class Opportunity extends Model implements HasMedia
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'opportunity_user')
-            ->withTimestamps()
-            ->withPivot(['created_at', 'updated_at']);
+        return $this->belongsToMany(User::class, 'opportunity_user');
     }
+
 
     public function associatedUsers()
     {
-        return $this->belongsToMany(User::class, 'opportunity_user')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class, 'opportunity_user');
     }
     // Relação muitos-para-muitos com investidores
     public function investors(): BelongsToMany

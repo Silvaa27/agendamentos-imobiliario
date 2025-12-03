@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Opportunities\Tables;
 
+use App\Filament\Resources\Opportunities\OpportunityResource;
 use App\Models\Opportunity;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -245,6 +246,45 @@ class OpportunitiesTable
                         true: fn(Builder $query) => $query->whereHas('constructionUpdates'),
                         false: fn(Builder $query) => $query->whereDoesntHave('constructionUpdates'),
                     ),
+            ])
+            ->actions([
+                viewAction::make()
+                    ->label('Ver Detalhes')
+                    ->icon('heroicon-o-eye')
+                    ->color('primary'),
+
+                Action::make('viewConstructionUpdates')
+                    ->label('Atualizações de Construção')
+                    ->icon('heroicon-o-building-office')
+                    ->color('warning')
+                    ->modalHeading(fn($record) => "Atualizações de Construção - {$record->title}")
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Fechar')
+                    ->modalContent(function ($record) {
+                        $record->load('constructionUpdates.user');
+
+                        return view('filament.components.construction-updates-relation-manager', [
+                            'record' => $record,
+                        ]);
+                    })
+                    ->modalWidth('5xl'),
+
+                Action::make('viewConstructionUpdates')
+                    ->label('Atualizações de Construção')
+                    ->icon('heroicon-o-building-office')
+                    ->color('warning')
+                    ->modalHeading(fn($record) => "Atualizações de Construção - {$record->title}")
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Fechar')
+                    ->modalContent(function ($record) {
+                        $record->load('constructionUpdates.user');
+
+                        return view('filament.components.construction-updates-relation-manager', [
+                            'record' => $record,
+                        ]);
+                    })
+                    ->modalWidth('5xl'),
+
             ])
             ->filtersLayout(FiltersLayout::AboveContentCollapsible)
             ->bulkActions([
