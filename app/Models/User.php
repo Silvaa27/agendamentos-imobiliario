@@ -34,31 +34,16 @@ class User extends Authenticatable
         ];
     }
 
-    // Relacionamento com Investor
-
     public function isInvestor(): bool
     {
         return $this->hasRole('investidor');
     }
 
-    // Relação com Investor
-    public function investor(): HasOne
-    {
-        return $this->hasOne(Investor::class);
-    }
-
-    // Relação com oportunidades (como responsável)
     public function opportunities(): HasMany
     {
         return $this->hasMany(Opportunity::class);
     }
-
-        public function investors(): HasMany
-    {
-        return $this->hasMany(Investor::class);
-    }
-
-    // Relação com atualizações de obra
+    
     public function constructionUpdates(): HasMany
     {
         return $this->hasMany(ConstructionUpdate::class);

@@ -25,18 +25,17 @@ class ConstructionUpdate extends Model implements HasMedia
         'progress_percentage' => 'decimal:2',
     ];
 
-    // Relação com a oportunidade
+    
     public function opportunity(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Opportunity::class, 'opportunity_id');
     }
-    // Relação com o utilizador (responsável)
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Registar coleção de media para fotos da obra
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('construction_photos')
