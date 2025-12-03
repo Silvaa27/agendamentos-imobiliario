@@ -77,12 +77,11 @@ class Opportunity extends Model implements HasMedia
         return $this->belongsToMany(User::class, 'opportunity_user');
     }
 
-
     public function associatedUsers()
     {
         return $this->belongsToMany(User::class, 'opportunity_user');
     }
-
+    
     // Isto deve dar problemas se o ID mudar mas not sure how to resolver melhor
     public function investors(): BelongsToMany
     {

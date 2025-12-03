@@ -1,4 +1,3 @@
-{{-- resources/views/filament/components/invoices-relation-manager.blade.php --}}
 <div>
     <div class="space-y-6">
         <div class="flex justify-between items-center">
@@ -70,10 +69,6 @@
                 <button type="button" onclick="filterInvoices('pendente')"
                     class="px-3 py-1.5 text-sm rounded-full border border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-colors">
                     Pendentes ({{ $pendingCount }})
-                </button>
-                <button type="button" onclick="filterInvoices('vencido')"
-                    class="px-3 py-1.5 text-sm rounded-full border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
-                    Vencidas ({{ $overdueCount }})
                 </button>
             </div>
 
@@ -262,7 +257,6 @@
                                         @endif
                                     </div>
                                 </td>
-
                             </tr>
                         @endforeach
                     </tbody>

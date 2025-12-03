@@ -42,7 +42,6 @@ class ConstructionUpdate extends Model implements HasMedia
             ->useDisk('public');
     }
 
-    // Formatação da data
     public function getFormattedDateAttribute(): string
     {
         return $this->date->format('d/m/Y');
