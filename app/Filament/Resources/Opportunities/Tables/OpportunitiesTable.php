@@ -269,21 +269,22 @@ class OpportunitiesTable
                     })
                     ->modalWidth('5xl'),
 
-                Action::make('viewConstructionUpdates')
-                    ->label('Atualizações de Construção')
-                    ->icon('heroicon-o-building-office')
-                    ->color('warning')
-                    ->modalHeading(fn($record) => "Atualizações de Construção - {$record->title}")
+                Action::make('viewInvoices')
+                    ->label('Faturas e Custos')
+                    ->icon('heroicon-o-document-text')
+                    ->color('danger')
+                    ->modalHeading(fn($record) => "Faturas - {$record->title}")
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Fechar')
                     ->modalContent(function ($record) {
-                        $record->load('constructionUpdates.user');
-
-                        return view('filament.components.construction-updates-relation-manager', [
+                        $record->load('invoices');
+                        return view('filament.components.invoices-relation-manager', [
                             'record' => $record,
                         ]);
                     })
-                    ->modalWidth('5xl'),
+                    ->modalWidth('7xl'),
+
+                DeleteAction::make(),
 
             ])
             ->filtersLayout(FiltersLayout::AboveContentCollapsible)
