@@ -25,7 +25,7 @@ class OpportunityResource extends Resource
     protected static ?string $model = Opportunity::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static ?string $modelLabel = 'Oportunidade de Investimento';
     public static function form(Schema $schema): Schema
     {
         return OpportunityForm::configure($schema);

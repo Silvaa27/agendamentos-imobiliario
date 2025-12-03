@@ -48,7 +48,6 @@ class Opportunity extends Model implements HasMedia
         'longitude' => 'decimal:8',
     ];
 
-    // Status disponíveis
     public const STATUSES = [
         'em_avaliacao' => 'Em Avaliação',
         'em_negociacao' => 'Em Negociação',
@@ -57,7 +56,6 @@ class Opportunity extends Model implements HasMedia
         'concluido' => 'Concluído',
     ];
 
-    // Relação com o utilizador (responsável)
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -84,12 +82,12 @@ class Opportunity extends Model implements HasMedia
     {
         return $this->belongsToMany(User::class, 'opportunity_user');
     }
-    // Relação muitos-para-muitos com investidores
+
     public function investors(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'opportunity_investor', 'opportunity_id', 'investor_id')
             ->whereHas('roles', function ($query) {
-                $query->where('id', 5); // role ID do investidor
+                $query->where('id', 5);
             })
             ->withPivot('investment_amount', 'percentage', 'has_access', 'access_granted_at')
             ->withTimestamps();
@@ -97,12 +95,10 @@ class Opportunity extends Model implements HasMedia
 
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
-        // Se tem permissão para ver todas
         if ($user->can('view_all_opportunities')) {
             return $query;
         }
 
-        // Se tem permissão view_opportunities, vê as suas e associadas
         if ($user->can('view_opportunities')) {
             return $query->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)
@@ -112,12 +108,9 @@ class Opportunity extends Model implements HasMedia
             });
         }
 
-        // Se não tem nenhuma permissão, não vê nada
         return $query->whereRaw('1 = 0');
     }
 
-
-    // Relação com atualizações de obra
     public function constructionUpdates(): HasMany
     {
         return $this->hasMany(\App\Models\ConstructionUpdate::class, 'opportunity_id');
@@ -127,14 +120,11 @@ class Opportunity extends Model implements HasMedia
         return $this->hasMany(Invoice::class);
     }
 
-    // Acesso ao status formatado
     public function getStatusLabelAttribute(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
     }
 
-
-    // Cálculo do preço total (compra + obras + outros custos + impostos)
     public function getTotalCostAttribute(): float
     {
         return (float) $this->purchase_price
@@ -143,13 +133,11 @@ class Opportunity extends Model implements HasMedia
             + (float) $this->tax_costs;
     }
 
-    // Cálculo do lucro potencial (cenário mercado - custo total)
     public function getPotentialProfitAttribute(): float
     {
         return (float) $this->price_market - $this->total_cost;
     }
 
-    // Cálculo da margem (%)
     public function getProfitMarginAttribute(): float
     {
         if ($this->total_cost == 0) {
@@ -158,14 +146,12 @@ class Opportunity extends Model implements HasMedia
         return ($this->potential_profit / $this->total_cost) * 100;
     }
 
-    // Registar coleção de media para fotos
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('photos')
             ->useDisk('public');
     }
 
-    // Acesso para a primeira foto (thumbnail)
     public function getFirstPhotoUrlAttribute(): ?string
     {
         $media = $this->getFirstMedia('photos');

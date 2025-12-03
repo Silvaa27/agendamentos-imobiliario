@@ -75,6 +75,7 @@ class OpportunityForm
                                             ->multiple()
                                             ->maxFiles(20)
                                             ->appendFiles()
+                                            ->imageEditor()
                                             ->reorderable()
                                             ->panelLayout('grid')
                                             ->openable()

@@ -131,7 +131,7 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->circular()
                     ->defaultImageUrl(url('/images/default-construction.jpg'))
                     ->size(50)
-                    ->disk('public'), // ← Especificar o disk
+                    ->disk('public'),
 
                 TextColumn::make('date')
                     ->label('Data')
@@ -167,7 +167,7 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->trueIcon('heroicon-o-camera')
                     ->trueColor('success')
                     ->falseColor('gray')
-                    ->getStateUsing(fn($record) => $record->getMedia('photos')->count() > 0) // ← Mesma collection
+                    ->getStateUsing(fn($record) => $record->getMedia('photos')->count() > 0)
                     ->alignCenter(),
             ])
             ->defaultSort('date', 'desc')

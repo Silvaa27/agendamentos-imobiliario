@@ -235,12 +235,12 @@ class OpportunitiesTable
             ->actions([
                 ActionGroup::make([
                     viewAction::make()
-                        ->label('Ver Detalhes')
+                        ->label('Ver Oportunidade')
                         ->icon('heroicon-o-eye')
                         ->color('info'),
 
                     Action::make('viewConstructionUpdates')
-                        ->label('Atualizações de Construção')
+                        ->label('Ver Atualizações C.')
                         ->icon('heroicon-o-building-office')
                         ->color('warning')
                         ->modalHeading(fn($record) => "Atualizações de Construção - {$record->title}")
@@ -253,10 +253,15 @@ class OpportunitiesTable
                                 'record' => $record,
                             ]);
                         })
+                        ->visible(
+                            fn(Opportunity $record): bool =>
+                            auth()->user()->can('view_opportunity', $record) || // Permissão específica
+                            $record->user_id === auth()->id() // Dono do registro
+                        )
                         ->modalWidth('5xl'),
 
                     Action::make('viewInvoices')
-                        ->label('Faturas e Custos')
+                        ->label('Ver Faturas')
                         ->icon('heroicon-o-document-text')
                         ->color('success')
                         ->modalHeading(fn($record) => "Faturas - {$record->title}")
@@ -268,6 +273,11 @@ class OpportunitiesTable
                                 'record' => $record,
                             ]);
                         })
+                        ->visible(
+                            fn(Opportunity $record): bool =>
+                            auth()->user()->can('view_opportunity', $record) || // Permissão específica
+                            $record->user_id === auth()->id() // Dono do registro
+                        )
                         ->modalWidth('7xl'),
 
                     DeleteAction::make(),
