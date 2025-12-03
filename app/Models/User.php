@@ -53,6 +53,11 @@ class User extends Authenticatable
         return $this->hasMany(Opportunity::class);
     }
 
+        public function investors(): HasMany
+    {
+        return $this->hasMany(Investor::class);
+    }
+
     // Relação com atualizações de obra
     public function constructionUpdates(): HasMany
     {

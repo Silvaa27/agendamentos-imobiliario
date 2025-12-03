@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Opportunities\Schemas;
 
 use App\Models\Opportunity;
+use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
@@ -40,9 +41,10 @@ class OpportunityForm
                                             ->default('em_avaliacao')
                                             ->required(),
                                         Select::make('user_id')
-                                            ->label('Responsável')
-                                            ->relationship('user', 'name')
+                                            ->label('Adicionar Investidores')
+                                            ->relationship('investorsOnly', 'name')
                                             ->searchable()
+                                            ->multiple()
                                             ->preload(),
                                     ])->columns(2),
 
@@ -76,11 +78,6 @@ class OpportunityForm
                                             ->appendFiles()
                                             ->reorderable()
                                             ->panelLayout('grid')
-                                            ->imageResizeMode('cover')
-                                            ->imageCropAspectRatio('16:9')
-                                            ->imageResizeTargetWidth('1920')
-                                            ->imageResizeTargetHeight('1080')
-                                            ->imagePreviewHeight('150')
                                             ->openable()
                                             ->downloadable()
                                             ->responsiveImages()

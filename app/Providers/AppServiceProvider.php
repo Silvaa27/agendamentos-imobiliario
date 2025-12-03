@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    // Em app/Providers/AppServiceProvider.php
+    public function boot()
     {
     }
 }

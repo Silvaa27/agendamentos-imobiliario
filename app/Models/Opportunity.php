@@ -60,9 +60,27 @@ class Opportunity extends Model implements HasMedia
     ];
 
     // Relação com o utilizador (responsável)
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'opportunity_id');
+    }
+
+    public function investorsOnly()
+    {
+        return $this->belongsToMany(User::class, 'opportunity_user')
+            ->whereHas('roles', fn($query) => $query->where('name', 'investidor'));
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'opportunity_user')
+            ->withTimestamps()
+            ->withPivot(['created_at', 'updated_at']);
     }
 
     public function associatedUsers()

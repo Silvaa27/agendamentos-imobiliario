@@ -2,53 +2,105 @@
 
 namespace App\Filament\Resources\Opportunities\RelationManagers;
 
-use App\Filament\Resources\Opportunities\OpportunityResource;
+use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Slider;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Forms\Form;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class ConstructionUpdatesRelationManager extends RelationManager
 {
     protected static string $relationship = 'constructionUpdates';
 
-    protected static ?string $title = 'Construction Updates';
+    protected static ?string $title = 'Atualizações de Obra';
+
+    protected static ?string $modelLabel = 'Acompanhamento de Obra';
+    protected static ?string $pluralModelLabel = 'Atualizações de Obra';
 
     public function form(Schema $schema): Schema
     {
         return $schema
-            ->components([
-                DatePicker::make('date')
-                    ->label('Data')
-                    ->required()
-                    ->default(now()),
+            ->schema([
+                Section::make('Informações Básicas')
+                    ->description('Detalhes principais da atualização')
+                    ->icon('heroicon-o-document-text')
+                    ->columns(2)
+                    ->schema([
+                        Select::make('user_id')
+                            ->label('Responsável')
+                            ->options(
+                                User::query()
+                                    ->pluck('name', 'id')
+                            )
+                            ->default(auth()->id())
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpan(1),
 
-                TextInput::make('title')
-                    ->label('Título')
-                    ->required()
-                    ->maxLength(255),
+                        DatePicker::make('date')
+                            ->label('Data da Atualização')
+                            ->required()
+                            ->default(now())
+                            ->displayFormat('d/m/Y')
+                            ->columnSpan(1),
 
-                Textarea::make('report')
-                    ->label('Relatório/Descrição')
-                    ->rows(5)
-                    ->columnSpanFull(),
+                        TextInput::make('title')
+                            ->label('Título da Atualização')
+                            ->placeholder('Ex: Conclusão da fase de alvenaria')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan(2),
 
-                TextInput::make('progress_percentage')
-                    ->label('Progresso (%)')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(100)
-                    ->suffix('%'),
+                        Slider::make('progress_percentage')
+                            ->label('Progresso Geral da Obra')
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->step(1)
+                            ->tooltips(RawJs::make(<<<'JS'
+        `${$value}%`
+        JS))
+                            ->fillTrack()
+                            ->columnSpan(2),
+                    ]),
+
+                Section::make('Relatório Detalhado')
+                    ->description('Descrição completa dos trabalhos realizados')
+                    ->icon('heroicon-o-clipboard-document-list')
+                    ->schema([
+                        Textarea::make('report')
+                            ->label('Relatório Técnico')
+                            ->placeholder('Descreva em detalhe os trabalhos realizados, problemas encontrados e soluções aplicadas...')
+                            ->rows(8)
+                            ->required()
+                            ->columnSpanFull()
+                            ->extraInputAttributes(['style' => 'min-height: 200px']),
+                    ]),
 
                 SpatieMediaLibraryFileUpload::make('photos')
                     ->label('Galeria de Fotos')
@@ -58,54 +110,231 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->appendFiles()
                     ->reorderable()
                     ->panelLayout('grid')
-                    ->imageResizeMode('cover')
-                    ->imageCropAspectRatio('16:9')
-                    ->imageResizeTargetWidth('1920')
-                    ->imageResizeTargetHeight('1080')
-                    ->imagePreviewHeight('150')
                     ->openable()
                     ->downloadable()
                     ->responsiveImages()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('title')
             ->columns([
+                ImageColumn::make('first_photo')
+                    ->label('Foto')
+                    ->getStateUsing(function ($record) {
+                        return $record->getFirstMediaUrl('construction_photos');
+                    })
+                    ->circular()
+                    ->defaultImageUrl(url('/images/default-construction.jpg'))
+                    ->size(50),
+
                 TextColumn::make('date')
                     ->label('Data')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->description(fn($record) => $record->date->diffForHumans())
+                    ->toggleable(),
 
                 TextColumn::make('title')
                     ->label('Título')
-                    ->limit(50),
-
-                TextColumn::make('progress_percentage')
-                    ->label('Progresso')
-                    ->suffix('%')
-                    ->sortable(),
+                    ->searchable()
+                    ->limit(40)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= 40) {
+                            return null;
+                        }
+                        return $state;
+                    })
+                    ->wrap()
+                    ->weight('medium'),
 
                 TextColumn::make('user.name')
-                    ->label('Responsável'),
+                    ->label('Responsável')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('primary'),
+
+                IconColumn::make('has_photos')
+                    ->label('Fotos')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-camera')
+                    ->trueColor('success')
+                    ->falseColor('gray')
+                    ->getStateUsing(fn($record) => $record->getMedia('construction_photos')->count() > 0)
+                    ->alignCenter(),
             ])
+            ->defaultSort('date', 'desc')
             ->filters([
-                //
+                SelectFilter::make('user_id')
+                    ->label('Responsável')
+                    ->options(
+                        User::whereHas('constructionUpdates')
+                            ->pluck('name', 'id')
+                            ->toArray()
+                    )
+                    ->searchable()
+                    ->preload(),
+
+                Filter::make('date')
+                    ->label('Período')
+                    ->form([
+                        DatePicker::make('date_from')
+                            ->label('De'),
+                        DatePicker::make('date_until')
+                            ->label('Até'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['date_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                            )
+                            ->when(
+                                $data['date_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                            );
+                    }),
+
+                TernaryFilter::make('has_photos')
+                    ->label('Tem Fotos')
+                    ->placeholder('Todos')
+                    ->trueLabel('Com fotos')
+                    ->falseLabel('Sem fotos'),
             ])
+            ->filtersLayout(Tables\Enums\FiltersLayout::AboveContentCollapsible)
             ->headerActions([
                 CreateAction::make()
-                    ->label('Nova Atualização'), // Personaliza o botão
+                    ->label('Nova Atualização')
+                    ->icon('heroicon-o-plus-circle')
+                    ->modalHeading('Criar Nova Atualização de Obra')
+                    ->modalSubmitActionLabel('Criar Atualização')
+                    ->successNotificationTitle('Atualização de obra criada com sucesso!'),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make()
+                        ->label('Ver Detalhes')
+                        ->modalHeading(fn($record) => "Atualização: {$record->title}"),
+
+                    EditAction::make()
+                        ->label('Editar')
+                        ->modalHeading('Editar Atualização de Obra'),
+
+                    Action::make('photos')
+                        ->label('Ver Todas as Fotos')
+                        ->icon('heroicon-o-photo')
+                        ->color('info')
+                        ->action(function ($record) {
+                            $photos = $record->getMedia('construction_photos');
+
+                            if ($photos->isEmpty()) {
+                                return;
+                            }
+
+                            // Cria uma página simples com iframes para cada foto
+                            $html = '<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Fotos da Obra</title>
+            <style>
+                body { margin: 0; padding: 10px; background: #f0f0f0; }
+                .iframe-container { margin-bottom: 10px; }
+                iframe { width: 100%; height: 80vh; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+                .photo-nav { display: flex; justify-content: center; margin: 10px 0; }
+                .photo-nav button { margin: 0 5px; padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer; }
+            </style>
+        </head>
+        <body>
+            <div class="photo-nav">
+                <button onclick="prevPhoto()">← Anterior</button>
+                <span id="photo-counter">1/' . $photos->count() . '</span>
+                <button onclick="nextPhoto()">Próxima →</button>
+            </div>';
+
+                            foreach ($photos as $index => $photo) {
+                                $displayStyle = $index === 0 ? 'block' : 'none';
+                                $html .= '<div class="iframe-container" id="photo-' . $index . '" style="display: ' . $displayStyle . ';">
+                <iframe src="' . $photo->getUrl() . '"></iframe>
+            </div>';
+                            }
+
+                            $html .= '
+            <script>
+                let currentPhoto = 0;
+                const totalPhotos = ' . $photos->count() . ';
+                
+                function showPhoto(index) {
+                    // Esconde todas as fotos
+                    for (let i = 0; i < totalPhotos; i++) {
+                        document.getElementById("photo-" + i).style.display = "none";
+                    }
+                    // Mostra a foto atual
+                    document.getElementById("photo-" + index).style.display = "block";
+                    document.getElementById("photo-counter").textContent = (index + 1) + "/" + totalPhotos;
+                    currentPhoto = index;
+                }
+                
+                function nextPhoto() {
+                    if (currentPhoto < totalPhotos - 1) {
+                        showPhoto(currentPhoto + 1);
+                    }
+                }
+                
+                function prevPhoto() {
+                    if (currentPhoto > 0) {
+                        showPhoto(currentPhoto - 1);
+                    }
+                }
+                
+                // Navegação por teclado
+                document.addEventListener("keydown", function(e) {
+                    if (e.key === "ArrowRight") nextPhoto();
+                    if (e.key === "ArrowLeft") prevPhoto();
+                });
+            </script>
+        </body>
+        </html>';
+
+                            return response()->streamDownload(function () use ($html) {
+                                echo $html;
+                            }, 'fotos_obra_' . $record->id . '.html', ['Content-Type' => 'text/html']);
+                        })
+                        ->openUrlInNewTab()
+                        ->visible(fn($record) => $record->getMedia('construction_photos')->count() > 0),
+
+                    DeleteAction::make()
+                        ->label('Eliminar')
+                        ->modalHeading('Eliminar Atualização')
+                        ->modalDescription('Tem certeza que deseja eliminar esta atualização? Esta ação não pode ser desfeita.')
+                        ->successNotificationTitle('Atualização eliminada com sucesso'),
+                ])->icon('heroicon-o-ellipsis-vertical')
+                    ->button()
+                    ->color('gray'),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Eliminar Selecionados')
+                        ->modalHeading('Eliminar Atualizações Selecionadas')
+                        ->modalDescription('Tem certeza que deseja eliminar as atualizações selecionadas? Esta ação não pode ser desfeita.')
+                        ->successNotificationTitle('Atualizações eliminadas com sucesso'),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading('Nenhuma atualização de obra registrada')
+            ->emptyStateDescription('Crie a primeira atualização para acompanhar o progresso da obra.')
+            ->emptyStateIcon('heroicon-o-clipboard-document-list')
+            ->emptyStateActions([
+                CreateAction::make()
+                    ->label('Criar Primeira Atualização')
+                    ->button(),
+            ])
+            ->deferLoading()
+            ->persistFiltersInSession()
+            ->poll('30s');
     }
 }

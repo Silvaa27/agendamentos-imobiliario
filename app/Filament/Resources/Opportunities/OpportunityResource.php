@@ -39,7 +39,6 @@ class OpportunityResource extends Resource
     public static function getRelations(): array
     {
         return [
-            InvestorsRelationManager::class,
             ConstructionUpdatesRelationManager::class,
             InvoicesRelationManager::class,
         ];
