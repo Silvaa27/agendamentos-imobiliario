@@ -16,6 +16,7 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -139,6 +140,11 @@ class InvoicesRelationManager extends RelationManager
                     ->description('Detalhes e anexos')
                     ->icon('heroicon-o-paper-clip')
                     ->schema([
+                        Textarea::make('description')
+                            ->label('Descrição Resumida')
+                            ->placeholder('Breve descrição da fatura...')
+                            ->rows(2)
+                            ->columnSpanFull(),
                         Textarea::make('notes')
                             ->label('Descrição Detalhada')
                             ->placeholder('Descreva o que foi adquirido/pago com esta fatura...')
@@ -147,27 +153,28 @@ class InvoicesRelationManager extends RelationManager
                             ->columnSpanFull(),
                     ]),
 
-                FileUpload::make('file_path')
+                SpatieMediaLibraryFileUpload::make('invoice_document')
                     ->label('Ficheiro da Fatura')
+                    ->collection('invoices')
+                    ->disk('public')
                     ->acceptedFileTypes([
                         'application/pdf',
                         'image/jpeg',
                         'image/png',
                         'image/webp',
-                        'image/jpg'
                     ])
-                    ->directory('invoices/' . date('Y/m'))
-                    ->disk('public')
-                    ->visibility('public')
-                    ->preserveFilenames()
+                    ->multiple(false)
+                    ->maxFiles(1)
                     ->maxSize(10240)
-                    ->downloadable()
+                    ->appendFiles()
                     ->openable()
-                    ->previewable()
+                    ->downloadable()
                     ->helperText('Formatos: PDF, JPG, PNG, WebP. Máximo 10MB.')
                     ->getUploadedFileNameForStorageUsing(
                         fn($file): string => (string) str($file->getClientOriginalName())
-                            ->prepend('fatura-' . now()->format('Y-m-d-') . rand(1000, 9999) . '-')
+                            ->slug()
+                            ->prepend('fatura-')
+                            ->append('-' . uniqid())
                     )
                     ->columnSpanFull(),
             ]);
@@ -278,7 +285,7 @@ class InvoicesRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_overdue')
-                    ->label('Atrasado')
+                    ->label('Status Pag.')
                     ->boolean()
                     ->trueIcon('heroicon-o-exclamation-triangle')
                     ->falseIcon('heroicon-o-check')

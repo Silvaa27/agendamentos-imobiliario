@@ -137,15 +137,6 @@ class OpportunitiesTable
                     ->formatStateUsing(fn($state) => $state ? number_format($state, 2, ',', ' ') . '%' : '0%')
                     ->toggleable(isToggledHiddenByDefault: false),
 
-                IconColumn::make('has_investment_program')
-                    ->label('Programa Inv.')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-user-group')
-                    ->trueColor('success')
-                    ->falseColor('gray')
-                    ->alignCenter()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('user.name')
                     ->label('Responsável')
                     ->searchable()
@@ -211,12 +202,6 @@ class OpportunitiesTable
                     ->searchable()
                     ->preload(),
 
-                TernaryFilter::make('has_investment_program')
-                    ->label('Tem Programa')
-                    ->placeholder('Todos')
-                    ->trueLabel('Com programa')
-                    ->falseLabel('Sem programa'),
-
                 TernaryFilter::make('has_photos')
                     ->label('Tem Fotos')
                     ->placeholder('Todos')
@@ -248,43 +233,48 @@ class OpportunitiesTable
                     ),
             ])
             ->actions([
-                viewAction::make()
-                    ->label('Ver Detalhes')
-                    ->icon('heroicon-o-eye')
-                    ->color('primary'),
+                ActionGroup::make([
+                    viewAction::make()
+                        ->label('Ver Detalhes')
+                        ->icon('heroicon-o-eye')
+                        ->color('info'),
 
-                Action::make('viewConstructionUpdates')
-                    ->label('Atualizações de Construção')
-                    ->icon('heroicon-o-building-office')
-                    ->color('warning')
-                    ->modalHeading(fn($record) => "Atualizações de Construção - {$record->title}")
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Fechar')
-                    ->modalContent(function ($record) {
-                        $record->load('constructionUpdates.user');
+                    Action::make('viewConstructionUpdates')
+                        ->label('Atualizações de Construção')
+                        ->icon('heroicon-o-building-office')
+                        ->color('warning')
+                        ->modalHeading(fn($record) => "Atualizações de Construção - {$record->title}")
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Fechar')
+                        ->modalContent(function ($record) {
+                            $record->load('constructionUpdates.user');
 
-                        return view('filament.components.construction-updates-relation-manager', [
-                            'record' => $record,
-                        ]);
-                    })
-                    ->modalWidth('5xl'),
+                            return view('filament.components.construction-updates-relation-manager', [
+                                'record' => $record,
+                            ]);
+                        })
+                        ->modalWidth('5xl'),
 
-                Action::make('viewInvoices')
-                    ->label('Faturas e Custos')
-                    ->icon('heroicon-o-document-text')
-                    ->color('danger')
-                    ->modalHeading(fn($record) => "Faturas - {$record->title}")
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Fechar')
-                    ->modalContent(function ($record) {
-                        $record->load('invoices');
-                        return view('filament.components.invoices-relation-manager', [
-                            'record' => $record,
-                        ]);
-                    })
-                    ->modalWidth('7xl'),
+                    Action::make('viewInvoices')
+                        ->label('Faturas e Custos')
+                        ->icon('heroicon-o-document-text')
+                        ->color('success')
+                        ->modalHeading(fn($record) => "Faturas - {$record->title}")
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Fechar')
+                        ->modalContent(function ($record) {
+                            $record->load('invoices');
+                            return view('filament.components.invoices-relation-manager', [
+                                'record' => $record,
+                            ]);
+                        })
+                        ->modalWidth('7xl'),
 
-                DeleteAction::make(),
+                    DeleteAction::make(),
+
+                ])->icon('heroicon-o-ellipsis-vertical')
+                    ->button()
+                    ->color('gray'),
 
             ])
             ->filtersLayout(FiltersLayout::AboveContentCollapsible)

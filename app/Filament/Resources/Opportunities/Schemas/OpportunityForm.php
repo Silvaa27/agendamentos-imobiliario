@@ -164,9 +164,6 @@ class OpportunityForm
                                             ->label('Link da Oportunidade (URL)')
                                             ->url()
                                             ->columnSpanFull(),
-                                        Toggle::make('has_investment_program')
-                                            ->label('Tem Programa de Investidores')
-                                            ->inline(false),
                                     ]),
                             ]),
                     ])->columnSpanFull(),

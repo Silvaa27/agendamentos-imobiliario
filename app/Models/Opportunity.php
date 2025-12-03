@@ -33,7 +33,6 @@ class Opportunity extends Model implements HasMedia
         'tax_costs',
         'opportunity_link',
         'status',
-        'has_investment_program',
         'user_id',
     ];
 
@@ -47,7 +46,6 @@ class Opportunity extends Model implements HasMedia
         'tax_costs' => 'decimal:2',
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
-        'has_investment_program' => 'boolean',
     ];
 
     // Status disponíveis

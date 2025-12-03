@@ -89,7 +89,27 @@ class Invoice extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('photos')
-            ->useDisk('public');
+        $this->addMediaCollection('invoices')
+            ->useDisk('public')
+            ->acceptsMimeTypes([
+                'application/pdf',
+                'image/jpeg',
+                'image/png',
+                'image/webp',
+            ])
+            ->singleFile(); // Apenas 1 ficheiro por fatura
+
+        // Para PDFs, pode querer gerar uma thumbnail
+        if (config('media-library.generate_thumbnails_for_pdfs', false)) {
+            $this->addMediaConversion('thumb')
+                ->width(300)
+                ->height(300)
+                ->performOnCollections('invoices');
+        }
+    }
+
+    public function getHasDocumentAttribute(): bool
+    {
+        return $this->hasMedia('invoices');
     }
 }

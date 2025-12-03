@@ -103,6 +103,7 @@ class ConstructionUpdatesRelationManager extends RelationManager
                 SpatieMediaLibraryFileUpload::make('photos')
                     ->label('Galeria de Fotos')
                     ->collection('photos')
+                    ->disk('public')
                     ->multiple()
                     ->maxFiles(20)
                     ->appendFiles()
@@ -111,6 +112,8 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->openable()
                     ->downloadable()
                     ->responsiveImages()
+                    ->image()
+                    ->imageEditor()
                     ->columnSpanFull()
             ]);
     }
@@ -123,11 +126,12 @@ class ConstructionUpdatesRelationManager extends RelationManager
                 ImageColumn::make('first_photo')
                     ->label('Foto')
                     ->getStateUsing(function ($record) {
-                        return $record->getFirstMediaUrl('construction_photos');
+                        return $record->getFirstMediaUrl('photos');
                     })
                     ->circular()
                     ->defaultImageUrl(url('/images/default-construction.jpg'))
-                    ->size(50),
+                    ->size(50)
+                    ->disk('public'), // ← Especificar o disk
 
                 TextColumn::make('date')
                     ->label('Data')
@@ -163,7 +167,7 @@ class ConstructionUpdatesRelationManager extends RelationManager
                     ->trueIcon('heroicon-o-camera')
                     ->trueColor('success')
                     ->falseColor('gray')
-                    ->getStateUsing(fn($record) => $record->getMedia('construction_photos')->count() > 0)
+                    ->getStateUsing(fn($record) => $record->getMedia('photos')->count() > 0) // ← Mesma collection
                     ->alignCenter(),
             ])
             ->defaultSort('date', 'desc')
